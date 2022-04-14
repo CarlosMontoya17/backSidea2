@@ -4,28 +4,27 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cnfg = require("../config/auth");
 
-
-exports.signIn = async (req, res) => {
+exports.signIn = (req, res) => {
     const { username, password } = req.body;
     Users.findOne({
-        where: {username}
+        where: { username }
     }).then(data => {
-        if(!data){
+        if (!data) {
             return res.status(404).json({
-                message: 'User dont found'
+                message: "User don't found"
             });
         }
-        else{
+        else {
             const validate = bcrypt.compareSync(password, data.password);
-            if(!validate){
+            if (!validate) {
                 return res.status(401).json({
                     message: 'Invalid Password'
                 });
             }
-            else{
+            else {
 
-                const token = jwt.sign({username: username}, cnfg.secret, {
-                    expiresIn: 86400
+                const token = jwt.sign({ username: username, rol: data.rol }, cnfg.secret, {
+                    expiresIn: 60 * 60 * 24
                 });
                 res.status(200).json({
                     token: token
@@ -37,7 +36,7 @@ exports.signIn = async (req, res) => {
             message: err
         });
     });
-    
+
 }
 
 
@@ -46,7 +45,7 @@ exports.getAll = async (req, res) => {
 
     Users.findAll().then(data => {
         res.status(200).send(data);
-    }).catch(err =>{
+    }).catch(err => {
         res.status(500).json({
             message: "Internal Error"
         })
@@ -93,43 +92,59 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.deleteUser = async (req, res) => {
-    const { id } = req.params;
-    await Users.destroy({
-        where: { id }
-    }).then(data => {
-        console.log(data);
-        res.json({
-            message: 'User deleted'
+exports.deleteUser = async (req, res, next) => {
+    const rol = req.usuarioRol;
+    if (rol != "admin") {
+        res.status(401).json({
+            message: "No have auth"
         });
-    }).catch(err => {
-        console.log(err);
-        res.status(500).json({
-            message: 'Internal Error'
-        });
-    });
+    }
+    else {
+            const { id } = req.params;
+            await Users.destroy({
+                where: { id }
+            }).then(data => {
+                if(data == 0){
+                    return res.status(404).json({
+                        message: 'User dont found'
+                    });
+                }
+                else{
+                    return res.status(200).json({
+                        message: 'User deleted'
+                    });
+                }
+                
+            }).catch(err => {
+                console.log(err);
+                return res.status(500).json({
+                    message: 'Internal Error'
+                });
+            });
+    }
+
 }
 
 exports.updatedUser = async (req, res) => {
     const { id } = req.params;
-    const { username, password, rol, type } = req.body; 
+    const { username, password, rol, type } = req.body;
 
 
     const salt = await bcrypt.genSalt(10);
     const hasedPs = await bcrypt.hash(password, salt)
     await Users.update({
-        username, 
-        password: hasedPs, 
-        rol, 
+        username,
+        password: hasedPs,
+        rol,
         type
-    }, {where: { id }}).then(data => {
-        if(data == 0){
+    }, { where: { id } }).then(data => {
+        if (data == 0) {
             res.sendStatus(500);
         }
-        else{
+        else {
             res.json({
                 message: 'User was updated'
-                
+
             });
         }
 
