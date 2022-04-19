@@ -1,25 +1,22 @@
 module.exports = (sequelize, Sequelize) => {
-    const Users = sequelize.define("users", 
+    const Capturistas = sequelize.define("capturistas", 
     {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        username: {
+        usuario: {
             type: Sequelize.TEXT
         },
         password: {
             type: Sequelize.TEXT
         },
-        rol: {
+        avatar: {
             type: Sequelize.TEXT
         },
-        type: {
+        email: {
             type: Sequelize.TEXT
-        },
-        idSuper: {
-            type: Sequelize.INTEGER
         },
         createdAt: {
             type: Sequelize.DATE
@@ -27,14 +24,19 @@ module.exports = (sequelize, Sequelize) => {
         updatedAt: {
             type: Sequelize.DATE
         },
-        precios: {
-            type: Sequelize.JSON
+        telefono: {
+            type: Sequelize.TEXT
         },
-        crm: {
+        estado: {
+            type: Sequelize.TEXT
+        },
+        status: {
             type: Sequelize.BOOLEAN
         }
-        
 
-    }, { freezeTableName: true });
-    return Users;
+
+
+    }, {freezeTableName: true});
+
+    return Capturistas;
 }

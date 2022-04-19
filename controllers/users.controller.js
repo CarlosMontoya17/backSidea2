@@ -64,7 +64,7 @@ exports.getOne = async (req, res) => {
 
 
 exports.create = async (req, res) => {
-    const { username, password, rol, type, idSuper } = req.body;
+    const { username, password, rol, type, idSuper, precios, crm } = req.body;
     try {
         const salt = await bcrypt.genSalt(10);
         const hasedPs = await bcrypt.hash(req.body.password, salt)
@@ -73,9 +73,11 @@ exports.create = async (req, res) => {
             password: hasedPs,
             rol,
             type,
-            idSuper
+            idSuper,
+            precios,
+            crm
         }, {
-            fields: ['username', 'password', 'rol', 'type', 'idSuper']
+            fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'crm']
         });
         if (newUser) {
             return res.status(201).json({
@@ -96,7 +98,7 @@ exports.deleteUser = async (req, res, next) => {
     const rol = req.usuarioRol;
     if (rol != "admin") {
         res.status(401).json({
-            message: "No have auth"
+            message: "Don't have auth"
         });
     }
     else {
@@ -127,7 +129,7 @@ exports.deleteUser = async (req, res, next) => {
 
 exports.updatedUser = async (req, res) => {
     const { id } = req.params;
-    const { username, password, rol, type, idSuper } = req.body;
+    const { username, password, rol, type, idSuper, precios, crm } = req.body;
 
 
     const salt = await bcrypt.genSalt(10);
@@ -137,7 +139,9 @@ exports.updatedUser = async (req, res) => {
         password: hasedPs,
         rol,
         type,
-        idSuper
+        idSuper,
+        precios,
+        crm
     }, { where: { id } }).then(data => {
         if (data == 0) {
             res.sendStatus(500);

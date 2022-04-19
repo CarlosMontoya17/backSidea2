@@ -35,8 +35,9 @@ app.use(express.urlencoded({extended: false}));
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-    res.json({ message: "Server online"})
+    res.json({ message: "S I D E A - 2"})
 });
 
-
+//Routes
 require('./routes/users.routes')(app);
+require('./routes/capturistas.routes')(app);
