@@ -11,7 +11,9 @@ const options = {
     cert: pCert
   }
   
-https.createServer(options, app).listen(3030);
+https.createServer(options, app).listen(3030, ()=> {
+  console.log("Server working on port 3030");
+});
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

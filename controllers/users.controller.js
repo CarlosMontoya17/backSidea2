@@ -63,9 +63,8 @@ exports.getOne = async (req, res) => {
 }
 
 
-
 exports.create = async (req, res) => {
-    const { username, password, rol, type } = req.body;
+    const { username, password, rol, type, idSuper } = req.body;
     try {
         const salt = await bcrypt.genSalt(10);
         const hasedPs = await bcrypt.hash(req.body.password, salt)
@@ -73,9 +72,10 @@ exports.create = async (req, res) => {
             username,
             password: hasedPs,
             rol,
-            type
+            type,
+            idSuper
         }, {
-            fields: ['username', 'password', 'rol', 'type']
+            fields: ['username', 'password', 'rol', 'type', 'idSuper']
         });
         if (newUser) {
             return res.status(201).json({
@@ -127,7 +127,7 @@ exports.deleteUser = async (req, res, next) => {
 
 exports.updatedUser = async (req, res) => {
     const { id } = req.params;
-    const { username, password, rol, type } = req.body;
+    const { username, password, rol, type, idSuper } = req.body;
 
 
     const salt = await bcrypt.genSalt(10);
@@ -136,7 +136,8 @@ exports.updatedUser = async (req, res) => {
         username,
         password: hasedPs,
         rol,
-        type
+        type,
+        idSuper
     }, { where: { id } }).then(data => {
         if (data == 0) {
             res.sendStatus(500);
