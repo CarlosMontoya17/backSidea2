@@ -1,5 +1,6 @@
 const database = require("../models");
 const Capturistas = database.Capturistas;
+const Prospectos = database.Prospectos;
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cnfg = require("../config/auth");
@@ -76,4 +77,85 @@ exports.getAvatar = (req, res) => {
     } catch (error) {
         res.status(500).json({error});
     }
+}
+
+
+exports.getProspects = (req, res) => {
+    Prospectos.findAll().then(data => {
+        res.status(200).send(data);
+    }).catch(err => {
+        res.status(500).send(err)
+    });
+}
+
+exports.addProspect = async (req, res) => {
+    const { 
+        fechacontacto, 
+        nombre, 
+        apellido, 
+        contacto, 
+        movil, 
+        nombrefacebook, 
+        linkperfil, 
+        celularbandeja, 
+        correobandeja, 
+        cuidaddondevive, 
+        tipodenegocio, 
+        status, 
+        comentarios, 
+        notas, 
+        referidopor
+    } = req.body;
+
+    try {
+        const exist = await Prospectos.findOne({where: {nombre, apellido}})
+        if(!exist){
+            const prospecto = await Prospectos.create({
+                fechacontacto, 
+                nombre, 
+                apellido, 
+                contacto, 
+                movil, 
+                nombrefacebook, 
+                linkperfil, 
+                celularbandeja, 
+                correobandeja, 
+                cuidaddondevive, 
+                tipodenegocio, 
+                status, 
+                comentarios, 
+                notas, 
+                referidopor
+            }, {field: [
+            "fechacontacto", 
+            "nombre", 
+            "apellido", 
+            "contacto", 
+            "movil", 
+            "nombrefacebook", 
+            "linkperfil", 
+            "celularbandeja", 
+            "correobandeja", 
+            "cuidaddondevive", 
+            "tipodenegocio", 
+            "status", 
+            "comentarios", 
+            "notas", 
+            "referidopor"]});
+        
+            if(!prospecto){
+                return res.status(500).json({message: 'Internal error!'});
+            }
+        
+            return res.status(200).json({message: 'Prospecto creado'});
+        }
+        res.status(302).json({message: 'Prospect are exist!'})
+
+    } catch (error) {
+        res.status(500).json({message: error});
+    }
+
+    
+    
+
 }
