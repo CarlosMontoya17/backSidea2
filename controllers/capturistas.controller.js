@@ -3,7 +3,6 @@ const Capturistas = database.Capturistas;
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cnfg = require("../config/auth");
-const upAvatar = require("../middlewares/uploaderAvatar");
 const path = require("path");
 
 

@@ -71,3 +71,4 @@ app.get('/', (req, res) => {
 //Routes
 require('./routes/users.routes')(app);
 require('./routes/capturistas.routes')(app);
+require('./routes/actas.routes')(app);
