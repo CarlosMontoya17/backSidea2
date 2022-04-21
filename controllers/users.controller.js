@@ -3,6 +3,11 @@ const Users = database.Users;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cnfg = require("../config/auth");
+const PDFExtract = require('pdf.js-extract').PDFExtract;
+const pdfExtract = new PDFExtract();
+const options = {};
+const path = require("path");
+
 
 exports.signIn = (req, res) => {
     const { username, password } = req.body;
@@ -37,6 +42,20 @@ exports.signIn = (req, res) => {
         });
     });
 
+}
+
+
+
+exports.upPDF = (req, res) => {
+    const file = req.file;
+    if(!file){
+        res.status(500).json({message: 'Please upload a valid file'});
+    }
+    pdfExtract.extract(path.resolve('assets/docs/'+file.originalname), options).then(data =>{
+        res.status(200).send(data.pages[0].content);
+    }).catch(err => {
+        res.status(500).json({err})
+    });
 }
 
 
