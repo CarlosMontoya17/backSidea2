@@ -16,7 +16,7 @@ exports.upPDF = (req, res) => {
             const page = data.pages[0].content;
             const tipe = page[13].str
             if(tipe.includes("Nacimiento")){
-                res.status(200).send(`Es un ${tipe}`);
+                res.send(`Es un ${tipe}`);
             }
             else{
                 res.status(404).json({message: 'File doesnt exist'})
