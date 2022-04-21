@@ -1,6 +1,5 @@
 const controller = require("../controllers/users.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
-const uploaderDoc = require("../middlewares/uploaderDoc");
 
 module.exports = (app) => {
     app.post("/api/user/createOne/", verifyAuth, controller.create);
@@ -14,7 +13,5 @@ module.exports = (app) => {
     app.put("/api/user/updateId/:id", verifyAuth, controller.updatedUser);
     
     app.post("/api/user/signin/", controller.signIn);
-
-    app.post("/api/user/upActa", uploaderDoc.upload.single('doc'), controller.upPDF);
     
 }

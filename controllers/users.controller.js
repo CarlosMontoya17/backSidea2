@@ -41,24 +41,7 @@ exports.signIn = (req, res) => {
             message: err
         });
     });
-
 }
-
-
-
-exports.upPDF = (req, res) => {
-    const file = req.file;
-    if(!file){
-        res.status(500).json({message: 'Please upload a valid file'});
-    }
-    pdfExtract.extract(path.resolve('assets/docs/'+file.originalname), options).then(data =>{
-        res.status(200).send(data.pages[0].content);
-    }).catch(err => {
-        res.status(500).json({err})
-    });
-}
-
-
 
 exports.getAll = async (req, res) => {
 
@@ -83,7 +66,7 @@ exports.getOne = async (req, res) => {
 
 
 exports.create = async (req, res) => {
-    const { username, password, rol, type, idSuper, precios, crm } = req.body;
+    const { username, password, rol, type, idSuper, precios, crm, nombre } = req.body;
     try {
         const salt = await bcrypt.genSalt(10);
         const hasedPs = await bcrypt.hash(req.body.password, salt)
@@ -94,9 +77,10 @@ exports.create = async (req, res) => {
             type,
             idSuper,
             precios,
-            crm
+            crm,
+            nombre
         }, {
-            fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'crm']
+            fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'crm', 'nombre']
         });
         if (newUser) {
             return res.status(201).json({
@@ -160,7 +144,8 @@ exports.updatedUser = async (req, res) => {
         type,
         idSuper,
         precios,
-        crm
+        crm,
+        nombre
     }, { where: { id } }).then(data => {
         if (data == 0) {
             res.sendStatus(500);

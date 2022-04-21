@@ -30,11 +30,15 @@ module.exports = (sequelize, Sequelize) => {
         precios: {
             type: Sequelize.JSON
         },
-        crm: {
+        status: {
             type: Sequelize.BOOLEAN
+        },
+        nombre: {
+            type: Sequelize.TEXT
+        },
+        promocion: {
+            type: Sequelize.JSON
         }
-        
-
     }, { freezeTableName: true });
     return Users;
 }

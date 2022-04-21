@@ -15,52 +15,86 @@ exports.upPDF = (req, res) => {
         pdfExtract.extract(path.resolve('assets/docs/' + file.originalname), options).then(data => {
             const page = data.pages[0].content;
             const tipo = page[13].str;
+            const tipo2 = page[10].str;
             let curp, estado, nombre, apellidos;
-
             if (tipo.includes("Acta")) {
-
                 switch (tipo) {
                     case "Acta de Nacimiento":
                         curp = page[2].str;
                         estado = page[10].str;
                         nombre = page[21].str;
                         apellidos = page[23].str + " " + page[25].str;
-                        console.log(`tipo: ${tipo}`);
-                        console.log(`curp: ${curp}`);
-                        console.log(`estado: ${estado}`);
-                        console.log(`nombre: ${nombre}`);
-                        console.log(`apellidos: ${apellidos}`);
-                        data = { tipo, curp, estado, nombre, apellidos}
-
+                        data = { tipo, curp, estado, nombre, apellidos }
                         res.send(data);
                         break;
                     case "Acta de Defunción":
                         curp = page[4].str;
                         estado = page[8].str;
                         nombre = page[31].str;
-                        apellidos = page[32].str+" "+page[34].str;
-                        console.log(`tipo: ${tipo}`);
-                        console.log(`curp: ${curp}`);
-                        console.log(`estado: ${estado}`);
-                        console.log(`nombre: ${nombre}`);
-                        console.log(`apellidos: ${apellidos}`);
-                        data = { tipo, curp, estado, nombre, apellidos}
+                        apellidos = page[32].str + " " + page[34].str;
+                        data = { tipo, curp, estado, nombre, apellidos }
+                        res.send(data);
+                        break;
+                    case "Acta de Matrimonio":
+                        curp = page[4].str;
+                        estado = page[8].str;
+                        nombre = page[31].str;
+                        apellidos = page[32].str + " " + page[34].str;
+                        data = { tipo, curp, estado, nombre, apellidos }
                         res.send(data);
                         break;
                     default:
-                        res.status(500).json({message: "..."})
+                        res.status(500).json({ message: "Error" })
                         break
                 }
-
-                
-
-
             }
-            else {
-                res.status(404).json({ message: 'File doesnt exist' })
+            else if (tipo2.includes("Acta")) {
+                switch (tipo2) {
+                    case "Acta de Divorcio":
+                        curp = page[2].str;
+                        estado = page[7].str;
+                        nombre = page[24].str;
+                        apellidos = page[26].str + " " + page[28].str;
+                        data = { tipo: tipo2, curp, estado, nombre, apellidos }
+                        res.send(data);
+                        break;
+                    case "Acta de Matrimonio":
+                        curp = page[2].str;
+                        estado = page[7].str;
+                        nombre = page[22].str;
+                        apellidos = page[24].str + " " + page[26].str;
+                        data = { tipo: tipo2, curp, estado, nombre, apellidos }
+                        res.send(data);
+                        break;
+                    default:
+                        res.status(500).json({ message: "Error" })
+                        break
+                }
             }
-
-
+            else if(page[59].str == "Constancia de Vigencia de Derechos") {
+                curp = page[36].str;
+                estado = page[28].str;
+                nombre = page[35].str;
+                data = { tipo: page[59].str, curp, estado, nombre }
+                res.send(data);
+            }
+            else if(page[10].str == "Constancia de Semanas Cotizadas en el IMSS"){
+                curp = page[16].str;
+                estado = page[45].str;
+                nombre = page[14].str;
+                data = { tipo: page[10].str, curp, estado, nombre }
+                res.send(data);
+            }
+            else if(page[60].str == "Asignación de Número de Seguridad Social"){
+                curp = page[19].str;
+                estado = page[18].str;
+                nombre = page[13].str+" "+page[14].str+" "+page[15].str;
+                data = { tipo: page[60].str, curp, estado, nombre }
+                res.send(data);
+            }
+            else{
+                res.status(406).send({message: 'Actas/NSS Only!'});
+            }
 
         }).catch(err => {
             res.status(500).json({ err })
