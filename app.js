@@ -2,9 +2,14 @@ const express = require("express");
 const morgan = require("morgan");
 const fs = require("fs");
 const https = require("http");
+const cors = require("cors");
+const multer = require("multer");
+const sharp = require("sharp");
 var pKey = fs.readFileSync('./server.key', 'utf8');
 var pCert = fs.readFileSync('./server.crt', 'utf8');
 const app = express();
+
+app.use(cors());
 
 const options = {
     key: pKey,
@@ -14,6 +19,10 @@ const options = {
 https.createServer(options, app).listen(3030, ()=> {
   console.log("Server working on port 3030");
 });
+
+
+
+
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -28,6 +37,7 @@ app.listen(3030, () =>{
 });*/
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
@@ -35,8 +45,28 @@ app.use(express.urlencoded({extended: false}));
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-    res.json({ message: "S I D E A - 2"})
+    res.json({ welcome: "S I D E A - 2"})
 });
+
+
+// const storage = multer.diskStorage({
+//   destination:(req, file, cb) => {
+//     cb(null, './assets/avatars')
+//   },
+//   filename:(req, file, cb) => {
+//     const ext = file.originalname.split('.').pop();
+//     cb(null, `${Date.now()}.${ext}`)
+//   }
+// });
+
+// const upload = multer({storage});
+
+
+// app.post('/api/uploadAvatar/', upload.single('avatar'), (req, res) => {
+//     res.status(201).json({
+//       message: 'Image was upload!'
+//     });
+// });
 
 //Routes
 require('./routes/users.routes')(app);

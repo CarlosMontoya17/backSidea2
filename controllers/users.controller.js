@@ -23,7 +23,7 @@ exports.signIn = (req, res) => {
             }
             else {
 
-                const token = jwt.sign({ username: username, rol: data.rol }, cnfg.secret, {
+                const token = jwt.sign({ username: username, rol: data.rol, id: data.id }, cnfg.secret, {
                     expiresIn: 60 * 60 * 24
                 });
                 res.status(200).json({

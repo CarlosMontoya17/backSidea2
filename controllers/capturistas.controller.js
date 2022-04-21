@@ -3,6 +3,8 @@ const Capturistas = database.Capturistas;
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cnfg = require("../config/auth");
+const upAvatar = require("../middlewares/uploaderAvatar");
+const path = require("path");
 
 
 exports.signUp = async (req, res) => {
@@ -52,8 +54,27 @@ exports.signIn = async (req, res) => {
             message: "Invalid password!"
         });
     }
-    const token = jwt.sign({usuario: usuario, rol: user.rol}, cnfg.secret, {expiresIn: 60 * 60 * 24});
+    const token = jwt.sign({usuario: usuario, id: user.id}, cnfg.secret, {expiresIn: 60 * 60 * 24});
     res.status(200).json({
         token: token
     });
+}
+
+exports.upAvatar = (req, res) => {
+   const id = req.usuarioID;
+   const file = req.file;
+    if(!file){
+        res.status(500).json({message: 'Please upload a file'});
+    }
+    res.send(file);
+}
+
+
+exports.getAvatar = (req, res) => {
+    const { id } = req.params;
+    try {
+        res.sendFile(path.resolve('assets/avatars/'+id+'.jpg'));
+    } catch (error) {
+        res.status(500).json({error});
+    }
 }

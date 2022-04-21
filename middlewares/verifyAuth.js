@@ -11,5 +11,6 @@ module.exports = function verifyAuth (req, res, next){
 
     const decoded = jwt.verify(token, cnfg.secret);
     req.usuarioRol = decoded.rol;
+    req.usuarioID = decoded.id;
     next();
 }
