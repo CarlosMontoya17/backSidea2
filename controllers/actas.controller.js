@@ -71,33 +71,59 @@ exports.upPDF = (req, res) => {
                         break
                 }
             }
-            else if(page[59].str == "Constancia de Vigencia de Derechos") {
+            else if (page[59].str == "Constancia de Vigencia de Derechos") {
                 curp = page[36].str;
                 estado = page[28].str;
                 nombre = page[35].str;
                 data = { tipo: page[59].str, curp, estado, nombre }
                 res.send(data);
             }
-            else if(page[10].str == "Constancia de Semanas Cotizadas en el IMSS"){
+            else if (page[10].str == "Constancia de Semanas Cotizadas en el IMSS") {
                 curp = page[16].str;
                 estado = page[45].str;
                 nombre = page[14].str;
                 data = { tipo: page[10].str, curp, estado, nombre }
                 res.send(data);
             }
-            else if(page[60].str == "Asignación de Número de Seguridad Social"){
+            else if (page[60].str == "Asignación de Número de Seguridad Social") {
                 curp = page[19].str;
                 estado = page[18].str;
-                nombre = page[13].str+" "+page[14].str+" "+page[15].str;
+                nombre = page[13].str + " " + page[14].str + " " + page[15].str;
                 data = { tipo: page[60].str, curp, estado, nombre }
                 res.send(data);
             }
-            else{
-                res.status(406).send({message: 'Actas/NSS Only!'});
+            else {
+                res.status(406).send({ message: 'Actas/NSS Only!' });
             }
 
         }).catch(err => {
             res.status(500).json({ err })
         });
     }
+}
+
+exports.loadActa = async (req, res) => {
+    const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
+    try { 
+        let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price },
+            { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price'] });
+        if (newActa) {
+            res.status(201).send("Acta added!");
+        }
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+
+
+exports.getMyCorte = async (req, res) => {
+    const { id } = req.params;
+    await Actas.findAll({where: { idcreated: id }}).then(data => {
+        res.status(200).send(data);
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+
+
 }

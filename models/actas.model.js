@@ -3,12 +3,31 @@ module.exports = (sequelize, Sequelize) => {
     {
         id: {
             type: Sequelize.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
-        datos: {
+        enterprise: {
             type: Sequelize.JSON
         },
-        estado: {
+        provider: {
+            type: Sequelize.TEXT
+        },
+        document: {
+            type: Sequelize.TEXT
+        },
+        states: {
+            type: Sequelize.TEXT
+        },
+        curp: {
+            type: Sequelize.TEXT
+        },
+        nombreacta: {
+            type: Sequelize.TEXT
+        },
+        requested: {
+            type: Sequelize.TEXT
+        },
+        idcreated: {
             type: Sequelize.TEXT
         },
         createdAt: {
@@ -16,6 +35,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         updatedAt: {
             type: Sequelize.TIME
+        },
+        price: {
+            type: Sequelize.DOUBLE
+        },
+        corte: {
+            type: Sequelize.TEXT
         }
     }, {freezeTableName:true});
     return actas;

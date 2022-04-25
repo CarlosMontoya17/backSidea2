@@ -7,6 +7,7 @@ const PDFExtract = require('pdf.js-extract').PDFExtract;
 const pdfExtract = new PDFExtract();
 const options = {};
 const path = require("path");
+const { Op } = require("sequelize");
 
 
 exports.signIn = (req, res) => {
@@ -66,28 +67,34 @@ exports.getOne = async (req, res) => {
 
 
 exports.create = async (req, res) => {
-    const { username, password, rol, type, idSuper, precios, crm, nombre } = req.body;
+    const { username, password, rol, type, idSuper, precios, status, nombre } = req.body;
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hasedPs = await bcrypt.hash(req.body.password, salt)
-        let newUser = await Users.create({
-            username,
-            password: hasedPs,
-            rol,
-            type,
-            idSuper,
-            precios,
-            crm,
-            nombre
-        }, {
-            fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'crm', 'nombre']
-        });
-        if (newUser) {
-            return res.status(201).json({
-                message: 'User created',
-                data: newUser
+        let userExist = await Users.findOne({where: { username }});
+        if(userExist){
+            const salt = await bcrypt.genSalt(10);
+            const hasedPs = await bcrypt.hash(password, salt)
+            let newUser = await Users.create({
+                username,
+                password: hasedPs,
+                rol,
+                type,
+                idSuper,
+                precios,
+                status,
+                nombre
+            }, {
+                fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
             });
+            if (newUser) {
+                return res.status(201).json({
+                    message: 'User created',
+                    data: newUser
+                });
+            }
         }
+        res.status(200).json({
+            message: 'User already exist'
+        });
     }
     catch (err) {
         console.log(err);
@@ -99,7 +106,7 @@ exports.create = async (req, res) => {
 
 exports.deleteUser = async (req, res, next) => {
     const rol = req.usuarioRol;
-    if (rol != "admin") {
+    if (rol != "Admin") {
         res.status(401).json({
             message: "Don't have auth"
         });
@@ -163,4 +170,69 @@ exports.updatedUser = async (req, res) => {
             message: 'Error while user trying updated'
         });
     });
+}
+
+
+exports.updatePrecios = async (req, res) => {
+    const { precios } = req.body;
+    await Users.update({
+        precios
+    }, {where: { id: {[Op.gte]: 386} }}).then(data => {
+        if (data == 0) {
+            res.sendStatus(500);
+        }
+        else {
+            res.json({
+                message: 'Prices was updated'
+
+            });
+        }
+    }).catch(err => {
+        res.status(500).json({
+            message: 'Error while user trying updated'
+        });
+    });
+
+}
+
+
+exports.hasheo = async (req, res) => {
+    const { secret } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hasedPs = await bcrypt.hash(secret, salt)
+    res.send(hasedPs);
+}
+
+exports.getAllCibers = async (req, res) => {
+    const data = await Users.findAll({where: {rol: 'Cliente'}, attributes: ['id','nombre']});
+    if(data){res.send(data);}
+    
+}
+
+exports.getMyData = async (req, res)=>{
+    const { id } = req.params;
+    const { tipo, estado } = req.body;
+    const { idSuper, precios } = await Users.findOne({where: { id }, attributes: ['idSuper', 'precios']});    
+    if(idSuper){
+        
+        var datos = {};
+        if(tipo == 'nac' && Object.keys(precios[tipo]).length > 2){
+                if(estado){
+                    datos.precio = precios[tipo][estado];
+                }
+                else{
+                    return res.status(500).json({message: 'Indicate State/Mun'});
+                }
+                
+        }
+        else{
+            datos.precio = precios[tipo];
+        }
+        const { username } = await Users.findOne({where: {id: idSuper}, attributes: ['username']});
+        datos.superviser = username;
+        return res.send(datos);
+    }
+    else{
+        return res.status(404).json({message: 'without a Superviser'})
+    }
 }

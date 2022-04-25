@@ -2,7 +2,7 @@ const controller = require("../controllers/users.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
 
 module.exports = (app) => {
-    app.post("/api/user/createOne/", verifyAuth, controller.create);
+    app.post("/api/user/createOne/", controller.create);
 
     app.get("/api/user/getFull/", controller.getAll);
     
@@ -11,7 +11,17 @@ module.exports = (app) => {
     app.delete("/api/user/delete/:id", verifyAuth, controller.deleteUser);
     
     app.put("/api/user/updateId/:id", verifyAuth, controller.updatedUser);
+
+    app.put("/api/user/updatePrice", controller.updatePrecios);
+
+
+    app.get("/api/clients/getAll", controller.getAllCibers);
+
+
+    app.get("/api/clients/getMyData/:id", controller.getMyData);
     
     app.post("/api/user/signin/", controller.signIn);
+
+    app.post("/api/hash/", controller.hasheo);
     
 }

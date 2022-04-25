@@ -3,11 +3,10 @@ const morgan = require("morgan");
 const fs = require("fs");
 const https = require("http");
 const cors = require("cors");
-const multer = require("multer");
-const sharp = require("sharp");
 var pKey = fs.readFileSync('./server.key', 'utf8');
 var pCert = fs.readFileSync('./server.crt', 'utf8');
 const app = express();
+const cron = require("./auto/cron");
 
 app.use(cors());
 
@@ -48,6 +47,7 @@ app.get('/', (req, res) => {
     res.json({ welcome: "S I D E A - 2"})
 });
 
+cron.corte();
 
 // const storage = multer.diskStorage({
 //   destination:(req, file, cb) => {
@@ -72,3 +72,4 @@ app.get('/', (req, res) => {
 require('./routes/users.routes')(app);
 require('./routes/capturistas.routes')(app);
 require('./routes/actas.routes')(app);
+
