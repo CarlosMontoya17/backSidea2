@@ -18,7 +18,7 @@ module.exports = (app) => {
     app.get("/api/clients/getAll", controller.getAllCibers);
 
 
-    app.get("/api/clients/getMyData/:id", controller.getMyData);
+    app.post("/api/clients/getMyData/:id", controller.getMyData);
     
     app.post("/api/user/signin/", controller.signIn);
 
