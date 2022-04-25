@@ -103,7 +103,7 @@ exports.upPDF = (req, res) => {
 }
 
 exports.loadActa = async (req, res) => {
-    if(!req.body.document){
+    if(!req.body.price){
         return res.status(500).json({message: 'No data recived!'})
     }
     else{
