@@ -103,20 +103,23 @@ exports.upPDF = (req, res) => {
 }
 
 exports.loadActa = async (req, res) => {
-    if(!req.body){
+    if(!req.body.document){
         return res.status(500).json({message: 'No data recived!'})
     }
-    const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
-    try {
-        
-        let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price },
-            { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price'] });
-        if (newActa) {
-            res.status(201).send("Acta added!");
+    else{
+        const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
+        try {
+            
+            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price },
+                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price'] });
+            if (newActa) {
+                res.status(201).send("Acta added!");
+            }
+        } catch (error) {
+            res.status(500).json(error);
         }
-    } catch (error) {
-        res.status(500).json(error);
     }
+    
 }
 
 
