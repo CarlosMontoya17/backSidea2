@@ -33,6 +33,8 @@ exports.signIn = (req, res) => {
                     expiresIn: 60 * 60 * 24
                 });
                 res.status(200).json({
+                    id: data.id,
+                    username: data.username,
                     token: token
                 });
             }
