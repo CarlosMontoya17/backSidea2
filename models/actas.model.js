@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
         enterprise: {
-            type: Sequelize.JSON
+            type: Sequelize.TEXT
         },
         provider: {
             type: Sequelize.TEXT
