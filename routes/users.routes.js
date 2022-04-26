@@ -14,6 +14,7 @@ module.exports = (app) => {
 
     app.put("/api/user/updatePrice", controller.updatePrecios);
 
+    app.get("/api/user/getMyClients/:id", controller.getMyClients);
 
     app.get("/api/clients/getAll", controller.getAllCibers);
 
