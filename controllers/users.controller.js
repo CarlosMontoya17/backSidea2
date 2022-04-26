@@ -48,9 +48,11 @@ exports.signIn = (req, res) => {
 
 exports.getAll = async (req, res) => {
 
-    Users.findAll({order: [ 
-        ['id', 'ASC']
-    ]}).then(data => {
+    Users.findAll({
+        order: [
+            ['id', 'ASC']
+        ]
+    }).then(data => {
         res.status(200).send(data);
     }).catch(err => {
         res.status(500).json({
@@ -62,14 +64,14 @@ exports.getAll = async (req, res) => {
 exports.getMyClients = async (req, res) => {
     const id = req.params.id;
 
-    const users = await Users.findAll({where: { idSuper: id }});
+    const users = await Users.findAll({ where: { idSuper: id } });
 
-    if(!users){
+    if (!users) {
         return res.status(500).json({
             message: 'Not users'
         });
     }
-    else{
+    else {
         return res.status(200).send(users);
     }
 
@@ -78,13 +80,46 @@ exports.getMyClients = async (req, res) => {
 
 exports.getMyProvider = async (req, res) => {
     const { rol } = req.params;
-    const users = await Users.findAll({where: { rol }});
-    if(!users){
+    var users;
+    switch (rol) {
+        case "Asesor":
+            users = await Users.findAll({
+                order: [
+                    ['id', 'ASC']
+                ]
+            }, { where: { rol: 'Supervisor' } });
+            break;
+        case "Cliente":
+            users = await Users.findAll({
+                order: [
+                    ['id', 'ASC']
+                ]
+            }, { where: { rol: ['Supervisor', 'Asesor'] } });
+            break;
+        case "Sucursal":
+            users = await Users.findAll({
+                order: [
+                    ['id', 'ASC']
+                ]
+            }, { where: { rol: ['Supervisor', 'Asesor', 'Cliente'] } });
+            break;
+        case "Empleado":
+            users = await Users.findAll({
+                order: [
+                    ['id', 'ASC']
+                ]
+            }, { where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Sucursal'] } });
+            break;
+        default:
+            users = [];
+            break;
+    }
+    if (!users) {
         return res.status(500).json({
             message: 'Not users'
         });
     }
-    else{
+    else {
         return res.status(200).send(users);
     }
 }
@@ -103,8 +138,8 @@ exports.getOne = async (req, res) => {
 exports.create = async (req, res) => {
     const { username, password, rol, type, idSuper, precios, status, nombre } = req.body;
     try {
-        let userExist = await Users.findOne({where: { username }});
-        if(userExist){
+        let userExist = await Users.findOne({ where: { username } });
+        if (userExist) {
             const salt = await bcrypt.genSalt(10);
             const hasedPs = await bcrypt.hash(password, salt)
             let newUser = await Users.create({
@@ -146,27 +181,27 @@ exports.deleteUser = async (req, res, next) => {
         });
     }
     else {
-            const { id } = req.params;
-            await Users.destroy({
-                where: { id }
-            }).then(data => {
-                if(data == 0){
-                    return res.status(404).json({
-                        message: 'User dont found'
-                    });
-                }
-                else{
-                    return res.status(200).json({
-                        message: 'User deleted'
-                    });
-                }
-                
-            }).catch(err => {
-                console.log(err);
-                return res.status(500).json({
-                    message: 'Internal Error'
+        const { id } = req.params;
+        await Users.destroy({
+            where: { id }
+        }).then(data => {
+            if (data == 0) {
+                return res.status(404).json({
+                    message: 'User dont found'
                 });
+            }
+            else {
+                return res.status(200).json({
+                    message: 'User deleted'
+                });
+            }
+
+        }).catch(err => {
+            console.log(err);
+            return res.status(500).json({
+                message: 'Internal Error'
             });
+        });
     }
 
 }
@@ -211,7 +246,7 @@ exports.updatePrecios = async (req, res) => {
     const { precios } = req.body;
     await Users.update({
         precios
-    }, {where: { id: {[Op.gte]: 386} }}).then(data => {
+    }, { where: { id: { [Op.gte]: 386 } } }).then(data => {
         if (data == 0) {
             res.sendStatus(500);
         }
@@ -238,37 +273,39 @@ exports.hasheo = async (req, res) => {
 }
 
 exports.getAllCibers = async (req, res) => {
-    const data = await Users.findAll({order: [ 
-        ['id', 'ASC']
-    ]},{where: {rol: 'Cliente'}, attributes: ['id','nombre']});
-    if(data){res.send(data);}
-    
+    const data = await Users.findAll({
+        order: [
+            ['id', 'ASC']
+        ]
+    }, { where: { rol: 'Cliente' }, attributes: ['id', 'nombre'] });
+    if (data) { res.send(data); }
+
 }
 
-exports.getMyData = async (req, res)=>{
+exports.getMyData = async (req, res) => {
     const { id } = req.params;
     const { tipo, estado } = req.body;
-    const { idSuper, precios } = await Users.findOne({where: { id }, attributes: ['idSuper', 'precios']});    
-    if(idSuper){
-        
+    const { idSuper, precios } = await Users.findOne({ where: { id }, attributes: ['idSuper', 'precios'] });
+    if (idSuper) {
+
         var datos = {};
-        if(tipo == 'nac' && Object.keys(precios[tipo]).length > 2){
-                if(estado){
-                    datos.precio = precios[tipo][estado];
-                }
-                else{
-                    return res.status(500).json({message: 'Indicate State/Mun'});
-                }
-                
+        if (tipo == 'nac' && Object.keys(precios[tipo]).length > 2) {
+            if (estado) {
+                datos.precio = precios[tipo][estado];
+            }
+            else {
+                return res.status(500).json({ message: 'Indicate State/Mun' });
+            }
+
         }
-        else{
+        else {
             datos.precio = precios[tipo];
         }
-        const { username } = await Users.findOne({where: {id: idSuper}, attributes: ['username']});
+        const { username } = await Users.findOne({ where: { id: idSuper }, attributes: ['username'] });
         datos.superviser = username;
         return res.send(datos);
     }
-    else{
-        return res.status(404).json({message: 'without a Superviser'})
+    else {
+        return res.status(404).json({ message: 'without a Superviser' })
     }
 }
