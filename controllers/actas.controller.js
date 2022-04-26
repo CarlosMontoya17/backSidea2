@@ -104,7 +104,7 @@ exports.upPDF = (req, res) => {
 
 exports.loadActa = async (req, res) => {
     if(!req.body.price){
-        return res.status(500).json({message: 'No data recived!'})
+        return res.status(500).send({message: 'No data recived!'})
     }
     else{
         const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
@@ -116,7 +116,7 @@ exports.loadActa = async (req, res) => {
                 res.status(201).send("Acta added!");
             }
         } catch (error) {
-            res.status(500).json(error);
+            res.status(500).send(error);
         }
     }
     

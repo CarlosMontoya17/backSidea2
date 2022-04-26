@@ -75,6 +75,20 @@ exports.getMyClients = async (req, res) => {
 
 }
 
+
+exports.getMyProvider = async (req, res) => {
+    const { rol } = req.params;
+    const users = await Users.findAll({where: { rol }});
+    if(!users){
+        return res.status(500).json({
+            message: 'Not users'
+        });
+    }
+    else{
+        return res.status(200).send(users);
+    }
+}
+
 exports.getOne = async (req, res) => {
     const { id } = req.params;
     const user = await Users.findOne({

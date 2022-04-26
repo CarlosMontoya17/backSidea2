@@ -18,6 +18,7 @@ module.exports = (app) => {
 
     app.get("/api/clients/getAll", controller.getAllCibers);
 
+    app.get("/api/user/getMySuperviser/:rol", controller.getMyProvider);
 
     app.put("/api/clients/getMyData/:id", controller.getMyData);
     
