@@ -20,6 +20,8 @@ module.exports = (app) => {
 
     app.get("/api/user/getMySuperviser/:rol", controller.getMyProvider);
 
+    app.put("/api/user/editPrice/:id", controller.editPrecios);
+
     app.put("/api/clients/getMyData/:id", controller.getMyData);
     
     app.post("/api/user/signin/", controller.signIn);

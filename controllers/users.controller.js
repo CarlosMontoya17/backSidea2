@@ -77,6 +77,19 @@ exports.getMyClients = async (req, res) => {
 
 }
 
+exports.editPrecios = async (req, res) => {
+    const { id } = req.params;
+    const { precios } = req.body;
+    await Users.update({ precios }, {where: { id }}).then(data => {
+        if(data == 1){
+            res.sendStatus(200);
+        }
+    }).catch(err => { 
+        res.status(500).send(err);
+    });
+
+}
+
 
 exports.getMyProvider = async (req, res) => {
     const { rol } = req.params;
