@@ -137,7 +137,7 @@ exports.create = async (req, res) => {
     const { username, password, rol, type, idSuper, precios, status, nombre } = req.body;
     try {
         let userExist = await Users.findOne({ where: { username } });
-        if (userExist) {
+        if (!userExist) {
             const salt = await bcrypt.genSalt(10);
             const hasedPs = await bcrypt.hash(password, salt)
             let newUser = await Users.create({
