@@ -2,7 +2,7 @@ const controller = require("../controllers/users.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
 
 module.exports = (app) => {
-    app.post("/api/user/createOne/", controller.create);
+    app.post("/api/user/createOne/", verifyAuth, controller.create);
 
     app.get("/api/user/getFull/", controller.getAll);
     
