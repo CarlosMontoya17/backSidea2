@@ -99,16 +99,16 @@ exports.getMyProvider = async (req, res) => {
     var users;
     switch (rol) {
         case "Asesor":
-            users = await Users.findAll({where: { rol: 'Supervisor' } });
+            users = await Users.findAll({where: { rol: ['Supervisor', 'Admin' ]} });
             break;
         case "Cliente":
-            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor'] } });
+            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Admin'] } });
             break;
         case "Sucursal":
-            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente'] } });
+            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Admin'] } });
             break;
         case "Empleado":
-            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Sucursal'] } });
+            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Sucursal', 'Admin'] } });
             break;
         default:
             users = [];
