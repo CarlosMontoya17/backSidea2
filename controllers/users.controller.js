@@ -273,11 +273,7 @@ exports.hasheo = async (req, res) => {
 }
 
 exports.getAllCibers = async (req, res) => {
-    const data = await Users.findAll({
-        order: [
-            ['id', 'ASC']
-        ]
-    }, { where: { rol: 'Cliente' }, attributes: ['id', 'nombre'] });
+    const data = await Users.findAll({ where: { rol: 'Cliente' }, attributes: ['id', 'nombre'] });
     if (data) { res.send(data); }
 
 }
