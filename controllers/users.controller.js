@@ -82,7 +82,9 @@ exports.editPrecios = async (req, res) => {
     const { precios } = req.body;
     await Users.update({ precios }, {where: { id }}).then(data => {
         if(data == 1){
-            res.sendStatus(200);
+            res.status(200).json({
+                message: 'User updated!'
+            });
         }
     }).catch(err => { 
         res.status(500).send(err);
