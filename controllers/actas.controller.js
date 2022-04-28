@@ -127,10 +127,10 @@ exports.loadActa = async (req, res) => {
             let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price },
                 { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price'] });
             if (newActa) {
-                res.status(201).send("Acta added!");
+                res.status(201).json({message: 'Acta Added!'});
             }
         } catch (error) {
-            res.status(500).send(error);
+            res.status(500).json(error);
         }
     }
     
