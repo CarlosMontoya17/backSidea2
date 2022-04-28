@@ -92,9 +92,23 @@ exports.upPDF = (req, res) => {
                 data = { tipo: page[60].str, curp, estado, nombre }
                 res.send(data);
             }
+            else if(page[71].str == "CONSTANCIA DE NO INHABILITACIÓN"){
+                estado = "CHIAPAS";
+                nombre = page[88].str;
+                curp = page[90].str;
+                data = { tipo: page[71].str, curp, estado, nombre }
+                res.json(data);
+            }
+            else if(page[5].str == "Registro Federal de Contribuyentes"){
+                estado = page[101].str;
+                nombre = page[6].str;
+                curp = page[30].str;
+                data = { tipo: page[5].str, curp, estado, nombre }
+                res.json(data);
+            }
             else {
                 res.status(406).send({ message: 'Actas/NSS Only!' });
-            }
+             }
 
         }).catch(err => {
             res.status(500).json({ err })
