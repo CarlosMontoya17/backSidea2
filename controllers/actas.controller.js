@@ -12,8 +12,10 @@ exports.upPDF = (req, res) => {
         res.status(500).json({ message: 'Please upload a file' });
     }
     else {
+        var data = {};
         pdfExtract.extract(path.resolve('assets/docs/' + file.originalname), options).then(data => {
             const page = data.pages[0].content;
+            console.log(page[5].str);
             const tipo = page[13].str;
             const tipo2 = page[10].str;
             let curp, estado, nombre, apellidos;
@@ -100,18 +102,27 @@ exports.upPDF = (req, res) => {
                 res.json(data);
             }
             else if(page[5].str == "Registro Federal de Contribuyentes"){
-                estado = page[101].str;
-                nombre = page[6].str;
-                curp = page[30].str;
-                data = { tipo: page[5].str, curp, estado, nombre }
+                let Arreglo = [];
+                for (let i = 0; i < page.length; i++) {
+                    Arreglo.push(page[i].str)
+                }
+                let curpIndex = Arreglo.findIndex(function finder(data){ return data === 'CURP:' });
+                const curp = Arreglo[curpIndex+2];
+                let nombreIndex = Arreglo.findIndex(function finder(data){ return data === 'Nombre (s):' });
+                let matIndex = Arreglo.findIndex(function finder(data){ return data === 'Primer Apellido:' });
+                let patIndex = Arreglo.findIndex(function finder(data){ return data === 'Segundo Apellido:' });
+                const nombre = `${Arreglo[nombreIndex+2]} ${Arreglo[matIndex+2]} ${Arreglo[patIndex+2]}`;
+                let estadoIndex = Arreglo.findIndex(function finder(data){ return data === 'Nombre de la Entidad Federativa:' });
+                const estado = Arreglo[estadoIndex+2];
+                data = {tipo: page[5].str, curp, estado, nombre};
                 res.json(data);
             }
             else {
                 res.status(406).send({ message: 'Actas/NSS Only!' });
-             }
+            }
 
         }).catch(err => {
-            res.status(500).json({ err })
+            res.status(500).json(err);
         });
     }
 }
