@@ -64,7 +64,9 @@ exports.getAll = async (req, res) => {
 exports.getMyClients = async (req, res) => {
     const id = req.params.id;
 
-    const users = await Users.findAll({ where: { idSuper: id } });
+    const users = await Users.findAll({ where: { idSuper: id }, order: [
+        ['id', 'ASC']
+    ] });
 
     if (!users) {
         return res.status(500).json({
@@ -99,16 +101,16 @@ exports.getMyProvider = async (req, res) => {
     var users;
     switch (rol) {
         case "Asesor":
-            users = await Users.findAll({where: { rol: ['Supervisor', 'Admin' ]} });
+            users = await Users.findAll({where: { rol: ['Supervisor', 'Admin' ]}, order: [['id', 'ASC']] });
             break;
         case "Cliente":
-            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Admin'] } });
+            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Admin'], order: [['id', 'ASC']] } });
             break;
         case "Sucursal":
-            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Admin'] } });
+            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Admin'], order: [['id', 'ASC']] } });
             break;
         case "Empleado":
-            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Sucursal', 'Admin'] } });
+            users = await Users.findAll({ where: { rol: ['Supervisor', 'Asesor', 'Cliente', 'Sucursal', 'Admin'], order: [['id', 'ASC']] } });
             break;
         default:
             users = [];
