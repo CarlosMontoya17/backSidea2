@@ -150,8 +150,8 @@ exports.loadActa = async (req, res) => {
 
 
 exports.getMyCorte = async (req, res) => {
-    const { id } = req.params;
-    await Actas.findAll({where: { idcreated: id }}).then(data => {
+    const { username } = req.params;
+    await Actas.findAll({where: { provider: username }}).then(data => {
         res.status(200).send(data);
     }).catch(err => {
         res.status(500).send(err);

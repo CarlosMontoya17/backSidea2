@@ -97,7 +97,6 @@ exports.editPrecios = async (req, res) => {
 
 exports.getMyProvider = async (req, res) => {
     const { rol } = req.params;
-    console.log(rol);
     var users;
     switch (rol) {
         case "Asesor":
