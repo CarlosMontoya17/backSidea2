@@ -193,7 +193,7 @@ exports.create = async (req, res) => {
 
 exports.deleteUser = async (req, res, next) => {
     const rol = req.usuarioRol;
-    if (rol != "Admin") {
+    if (rol == "") {
         res.status(401).json({
             message: "Don't have auth"
         });
