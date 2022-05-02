@@ -1,5 +1,6 @@
 const database = require("../models");
 const Actas = database.Actas;
+const Users = database.Users;
 const path = require("path");
 const PDFExtract = require('pdf.js-extract').PDFExtract;
 const pdfExtract = new PDFExtract();
@@ -151,17 +152,32 @@ exports.loadActa = async (req, res) => {
 
 exports.getMyCorte = async (req, res) => {
     const { username } = req.params;
-    await Actas.findAll({where: { provider: username }}).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send(err);
-    });
+    if(username == 'Edwin Poot'){
+        await Actas.findAll().then(data => {
+            return res.status(200).send(data);
+        }).catch(err => {
+            return res.status(500).send(err);
+        });
+    }
+    else{
+        await Actas.findAll({where: { provider: username }}).then(data => {
+            return res.status(200).send(data);
+        }).catch(err => {
+            return res.status(500).send(err);
+        });
+    }
+    
 }
 
 exports.getMyDates = async (req, res) => {
-    const { username } = req.params;
-    const dates = Actas.findAll({where: {provider: username}});
-    if(dates){
-        
+    const id  = req.usuarioID;
+    const { username } = await Users.findOne({where: { id }, attributes: ['username'] });
+    const dates = await Actas.findAll({where: {provider: username}, attributes: ['enterprise','corte']});
+    console.log(dates)
+    if(dates.length != 0){
+        res.status(200).json(dates);
+    }
+    else{
+        res.status(404).json({message: 'Actas empty'});
     }
 }
