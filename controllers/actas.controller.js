@@ -156,6 +156,12 @@ exports.getMyCorte = async (req, res) => {
     }).catch(err => {
         res.status(500).send(err);
     });
+}
 
-
+exports.getMyDates = async (req, res) => {
+    const { username } = req.params;
+    const dates = Actas.findAll({where: {provider: username}});
+    if(dates){
+        
+    }
 }

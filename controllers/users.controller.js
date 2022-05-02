@@ -157,7 +157,12 @@ exports.create = async (req, res) => {
     const { username, password, rol, type, idSuper, precios, status, nombre } = req.body;
     try {
         let userExist = await Users.findOne({ where: { username } });
-        if (!userExist) {
+        if(userExist != null){
+            return res.status(304).json({
+                message: 'User already exist'
+            });
+        }
+        else{
             const salt = await bcrypt.genSalt(10);
             const hasedPs = await bcrypt.hash(password, salt)
             let newUser = await Users.create({
@@ -178,16 +183,11 @@ exports.create = async (req, res) => {
                     data: newUser
                 });
             }
-        }
-        res.status(200).json({
-            message: 'User already exist'
-        });
+        }        
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({
-            message: 'User dont created'
-        });
+        res.status(500).json(err);
     }
 }
 

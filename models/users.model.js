@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.TEXT
         },
         idSuper: {
-            type: Sequelize.INTEGER
+            type: Sequelize.DOUBLE
         },
         createdAt: {
             type: Sequelize.DATE
