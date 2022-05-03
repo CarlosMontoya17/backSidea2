@@ -98,16 +98,34 @@ exports.getMyClients = async (req, res) => {
 
 exports.editPrecios = async (req, res) => {
     const { id } = req.params;
-    const { precios } = req.body;
-    await Users.update({ precios }, {where: { id }}).then(data => {
-        if(data == 1){
-            res.status(200).json({
-                message: 'User updated!'
-            });
-        }
-    }).catch(err => { 
-        res.status(500).send(err);
-    });
+    const { precios, username, password, nombre, type } = req.body;
+
+    const salt = await bcrypt.genSalt(10);
+    const hasedPs = await bcrypt.hash(password, salt);
+
+    if(password.length != 0){
+        await Users.update({ precios,username, password: hasedPs, nombre, type }, {where: { id }}).then(data => {
+            if(data == 1){
+                return res.status(200).json({
+                    message: 'User updated!'
+                });
+            }
+        }).catch(err => { 
+            return res.status(500).send(err);
+        });
+    }
+    else{
+        await Users.update({ precios,username, nombre, type }, {where: { id }}).then(data => {
+            if(data == 1){
+                return res.status(200).json({
+                    message: 'User updated!'
+                });
+            }
+        }).catch(err => { 
+            return res.status(500).send(err);
+        });
+    }
+    
 
 }
 
