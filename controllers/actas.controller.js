@@ -189,3 +189,36 @@ exports.getMyDocumentsUploaded = async (req, res) => {
     }
 
 }
+
+
+exports.deleteActa = async (req, res) => {
+    const rol = req.usuarioRol;
+    if (rol == "") {
+        res.status(401).json({
+            message: "Don't have auth"
+        });
+    }
+    else {
+        const { id } = req.params;
+        await Actas.destroy({
+            where: { id }
+        }).then(data => {
+            if (data == 0) {
+                return res.status(404).json({
+                    message: 'Acta dont found'
+                });
+            }
+            else {
+                return res.status(200).json({
+                    message: 'Acta deleted'
+                });
+            }
+
+        }).catch(err => {
+            console.log(err);
+            return res.status(500).json({
+                message: 'Internal Error'
+            });
+        });
+    }
+}

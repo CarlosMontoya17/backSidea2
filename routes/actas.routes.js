@@ -11,4 +11,5 @@ module.exports = (app) => {
     app.get("/api/getMyCorteId/:id", controller.getMyCorte);
     app.get("/api/actas/getMyDocuments/:id", controller.getMyDocumentsUploaded);
     app.get("/api/actas/CorteFor/:enterprise", verifyAuth, controller.getMyDates);
+    app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 };
