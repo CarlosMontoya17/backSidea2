@@ -333,8 +333,8 @@ exports.getMyData = async (req, res) => {
         else {
             datos.precio = precios[tipo];
         }
-        const { username } = await Users.findOne({ where: { id: idSuper }, attributes: ['username'] });
-        datos.superviser = username;
+        const { username, id } = await Users.findOne({ where: { id: idSuper }, attributes: ['username', 'id'] });
+        datos.superviser = id;
         return res.send(datos);
     }
     else {
