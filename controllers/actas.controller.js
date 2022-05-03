@@ -175,3 +175,17 @@ exports.getMyDates = async (req, res) => {
 
 
 }
+
+exports.getMyDocumentsUploaded = async (req, res) => {
+    const { id } = req.params;
+    const actas = await Actas.findAll({where: {idcreated: id}});
+    if(actas.length != 0){
+        return res.status(200).json(actas);
+    }
+    else{
+        return res.status(404).json({
+            message: 'Actas no found!'
+        })
+    }
+
+}
