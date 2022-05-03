@@ -170,14 +170,8 @@ exports.getMyCorte = async (req, res) => {
 }
 
 exports.getMyDates = async (req, res) => {
-    const id  = req.usuarioID;
-    const { username } = await Users.findOne({where: { id }, attributes: ['username'] });
-    const dates = await Actas.findAll({where: {provider: username}, attributes: ['enterprise','corte']});
-    console.log(dates)
-    if(dates.length != 0){
-        res.status(200).json(dates);
-    }
-    else{
-        res.status(404).json({message: 'Actas empty'});
-    }
+        
+
+
+
 }
