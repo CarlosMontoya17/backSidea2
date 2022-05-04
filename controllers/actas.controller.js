@@ -151,8 +151,8 @@ exports.loadActa = async (req, res) => {
 
 
 exports.getMyCorte = async (req, res) => {
-    const { username } = req.params;
-    if(username == 'Edwin Poot'){
+    const { id } = JSON.stringify(req.params);
+    if(id == "1"){
         await Actas.findAll().then(data => {
             return res.status(200).send(data);
         }).catch(err => {
@@ -160,7 +160,7 @@ exports.getMyCorte = async (req, res) => {
         });
     }
     else{
-        await Actas.findAll({where: { provider: username }}).then(data => {
+        await Actas.findAll({where: { provider: id }}).then(data => {
             return res.status(200).send(data);
         }).catch(err => {
             return res.status(500).send(err);
