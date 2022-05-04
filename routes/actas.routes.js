@@ -7,7 +7,7 @@ const verifyAuth = require("../middlewares/verifyAuth");
 module.exports = (app) => {
     app.post("/api/actas/load", verifyAuth ,uploaderDoc.upload.single('doc'), controller.upPDF);
     app.post("/api/actas/up", verifyAuth ,controller.loadActa);
-    
+
     //app.get("/api/getMyCorte/:username", controller.getMyCorte);
     app.get("/api/getMyCorteId/:id", controller.getMyCorte);
     app.get("/api/actas/getMyDocuments/:id", controller.getMyDocumentsUploaded);
@@ -15,6 +15,8 @@ module.exports = (app) => {
     app.get("/api/actas/CountForProvider/:id", controller.countMyActasProvider);
     app.get("/api/actas/ClientsActuals/", verifyAuth, controller.clientsCurrent);
     app.get("/api/actas/CorteForSomeone/:id", controller.getCorteForOne);
+
+    app.get("/api/actas/getMyDateCuts/:id", controller.getMyDatesCuts);
 
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 

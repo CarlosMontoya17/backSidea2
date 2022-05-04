@@ -149,6 +149,22 @@ exports.loadActa = async (req, res) => {
 }
 
 
+exports.getMyDatesCuts = async (req, res) => {
+    const {id} = req.params;
+    const data = await Actas.findAll({where: { enterprise: id }, group: ['corte'], attributes: ['corte']});
+    if(data.length != 0){
+        return res.status(200).json(data);
+    }
+    else{
+        return res.status(404).json({
+            message: 'No found'
+        })
+    }
+
+
+}
+
+
 
 exports.getMyCorte = async (req, res) => {
     const { id } = req.params;
