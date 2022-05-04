@@ -151,7 +151,7 @@ exports.loadActa = async (req, res) => {
 
 
 exports.getMyCorte = async (req, res) => {
-    const { id } = JSON.stringify(req.params);
+    const { id } = req.params;
     if(id == "1"){
         await Actas.findAll().then(data => {
             return res.status(200).send(data);
