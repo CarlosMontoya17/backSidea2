@@ -153,14 +153,14 @@ exports.loadActa = async (req, res) => {
 exports.getMyCorte = async (req, res) => {
     const { id } = req.params;
     if(id == "1"){
-        await Actas.findAll().then(data => {
+        await Actas.findAll({order:[['id', 'ASC']]}).then(data => {
             return res.status(200).send(data);
         }).catch(err => {
             return res.status(500).send(err);
         });
     }
     else{
-        await Actas.findAll({where: { provider: id }}).then(data => {
+        await Actas.findAll({where: { provider: id }, order:[['id', 'ASC']]}).then(data => {
             return res.status(200).send(data);
         }).catch(err => {
             return res.status(500).send(err);
