@@ -169,11 +169,72 @@ exports.getMyCorte = async (req, res) => {
     
 }
 
-exports.getMyDates = async (req, res) => {
-        
+exports.countMyActasEnterprise = async (req, res) => {
+        const { id } = req.params;
+        data = {};
+        //Nac
+        const nac = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Nacimiento'}});
+        data.nac = nac['count'];
+        //Mat
+        const mat = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Matrimonio'}});
+        data.mat = mat['count'];
+        //Div
+        const div = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Divorcio'}});
+        data.div = div['count'];
+        //Def
+        const def = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Defunción'}});
+        data.def = def['count'];
+        //RFC
+        const rfc = await Actas.findAndCountAll({where: {enterprise: id, document: 'Registro Federal de Contribuyentes'}});
+        data.rfc = rfc['count'];
+        //Cot
+        const cot = await Actas.findAndCountAll({where: {enterprise: id, document: 'Constancia de Semanas Cotizadas en el IMSS'}});
+        data.cot = cot['count'];
+        //Der
+        const der = await Actas.findAndCountAll({where: {enterprise: id, document: 'Constancia de Vigencia de Derechos'}});
+        data.der = der['count'];
+        //INH
+        const inh = await Actas.findAndCountAll({where: {enterprise: id, document: 'CONSTANCIA DE NO INHABILITACIÓN'}});
+        data.inh = inh['count'];
+        //NSS
+        const nss = await Actas.findAndCountAll({where: {enterprise: id, document: 'Asignación de Número de Seguridad Social'}});
+        data.nss = nss['count'];
+        data.total = data.nac+data.mat+data.div+data.def+data.rfc+data.cot+data.der+data.inh+data.nss;
+        res.json(data);
+}
 
-
-
+exports.countMyActasProvider = async (req, res) => {
+    const { id } = req.params;
+    data = {};
+    //Nac
+    const nac = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Nacimiento'}});
+    data.nac = nac['count'];
+    //Mat
+    const mat = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Matrimonio'}});
+    data.mat = mat['count'];
+    //Div
+    const div = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Divorcio'}});
+    data.div = div['count'];
+    //Def
+    const def = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Defunción'}});
+    data.def = def['count'];
+    //RFC
+    const rfc = await Actas.findAndCountAll({where: {provider: id, document: 'Registro Federal de Contribuyentes'}});
+    data.rfc = rfc['count'];
+    //Cot
+    const cot = await Actas.findAndCountAll({where: {provider: id, document: 'Constancia de Semanas Cotizadas en el IMSS'}});
+    data.cot = cot['count'];
+    //Der
+    const der = await Actas.findAndCountAll({where: {provider: id, document: 'Constancia de Vigencia de Derechos'}});
+    data.der = der['count'];
+    //INH
+    const inh = await Actas.findAndCountAll({where: {provider: id, document: 'CONSTANCIA DE NO INHABILITACIÓN'}});
+    data.inh = inh['count'];
+    //NSS
+    const nss = await Actas.findAndCountAll({where: {provider: id, document: 'Asignación de Número de Seguridad Social'}});
+    data.nss = nss['count'];
+    data.total = data.nac+data.mat+data.div+data.def+data.rfc+data.cot+data.der+data.inh+data.nss;
+    res.json(data);
 }
 
 exports.getMyDocumentsUploaded = async (req, res) => {
