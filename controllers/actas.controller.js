@@ -169,6 +169,22 @@ exports.getMyCorte = async (req, res) => {
     
 }
 
+exports.getCorteForOne = async (req, res) => {
+    const { id } = req.params;
+    await Actas.findAll({where: { enterprise: id }, order: [['id', 'ASC']]}).then(data => {
+        if(data.length != 0){
+            res.status(200).json(data);
+        }
+        else{
+            res.status(404).json({message: "No found"});
+        }
+    }).catch(err => {
+        res.status(500).json({message: "Internal error!"});
+    });
+
+
+}
+
 exports.countMyActasEnterprise = async (req, res) => {
         const { id } = req.params;
         data = {};

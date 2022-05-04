@@ -13,7 +13,8 @@ module.exports = (app) => {
     app.get("/api/actas/CountForEnterprise/:id", controller.countMyActasEnterprise);
     app.get("/api/actas/CountForProvider/:id", controller.countMyActasProvider);
     app.get("/api/actas/ClientsActuals/", verifyAuth, controller.clientsCurrent);
-    
+    app.get("/api/actas/CorteForSomeone/:id", controller.getCorteForOne);
+
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 
 
