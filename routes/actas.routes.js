@@ -17,6 +17,7 @@ module.exports = (app) => {
     app.get("/api/actas/CorteForSomeone/:id", controller.getCorteForOne);
 
     app.get("/api/actas/getMyDateCuts/:id", controller.getMyDatesCuts);
+    app.get("/api/actas/getCutByDate/:id/:date", controller.getCorteDate);
 
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 

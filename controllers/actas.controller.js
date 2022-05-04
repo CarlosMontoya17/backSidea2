@@ -1,6 +1,7 @@
 const database = require("../models");
 const Actas = database.Actas;
 const Users = database.Users;
+const Op = database.Sequelize.Op;
 const path = require("path");
 const PDFExtract = require('pdf.js-extract').PDFExtract;
 const pdfExtract = new PDFExtract();
@@ -160,6 +161,25 @@ exports.getMyDatesCuts = async (req, res) => {
             message: 'No found'
         })
     }
+}
+
+exports.getCorteDate = async (req, res) => {
+    const { id, date } = req.params;
+    if(date == "null"){
+        await Actas.findAll({where: {enterprise: id, corte: {[Op.is]: null}}, order: [['id', 'ASC']]}).then(data => {
+            return res.status(200).json(data);
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+    }
+    else{
+        await Actas.findAll({where: {enterprise: id, corte: date}, order: [['id', 'ASC']]}).then(data => {
+            return res.status(200).json(data);
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+    }
+
 
 
 }
