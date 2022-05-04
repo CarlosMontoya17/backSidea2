@@ -41,6 +41,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         corte: {
             type: Sequelize.TEXT
+        },
+        hidden: {
+            type: Sequelize.BOOLEAN
         }
     }, {freezeTableName:true});
     return actas;

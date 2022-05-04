@@ -136,8 +136,8 @@ exports.loadActa = async (req, res) => {
         const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
         try {
             
-            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price },
-                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price'] });
+            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price, hidden: false },
+                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden'] });
             if (newActa) {
                 res.status(201).json({message: 'Acta Added!'});
             }
