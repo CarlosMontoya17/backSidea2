@@ -341,3 +341,19 @@ exports.getMyData = async (req, res) => {
         return res.status(404).json({ message: 'without a Superviser' })
     }
 }
+
+
+exports.allLower = async (req, res) => {
+    const id = req.usuarioID;
+    Users.findAll({where: { idSuper: id }}).then(data => {
+        if(data.length != 0){
+            res.status(200).json(data);
+        }
+        else{
+            res.status(404).json({message: 'No found'});
+        }
+    }).catch(err => {
+        res.status(500).json({ message: 'Internal error!' });
+    });
+}
+

@@ -19,6 +19,8 @@ module.exports = (app) => {
     app.get("/api/actas/getMyDateCuts/:id", controller.getMyDatesCuts);
     app.get("/api/actas/getCutByDate/:id/:date", controller.getCorteDate);
 
+    app.get("/api/actas/getMyClientsLevel/:level", verifyAuth, controller.documentsLevel);
+
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 
 

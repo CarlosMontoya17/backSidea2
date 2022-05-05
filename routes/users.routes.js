@@ -20,6 +20,8 @@ module.exports = (app) => {
 
     app.get("/api/user/getMySuperviser/:rol", controller.getMyProvider);
 
+    app.get("/api/user/Lower/", verifyAuth, controller.allLower);
+
     app.put("/api/user/editPrice/:id", controller.editPrecios);
 
     app.put("/api/clients/getMyData/:id", controller.getMyData);
@@ -27,5 +29,6 @@ module.exports = (app) => {
     app.post("/api/user/signin/", controller.signIn);
 
     app.post("/api/hash/", controller.hasheo);
+
     
 }

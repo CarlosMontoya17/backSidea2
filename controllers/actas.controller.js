@@ -179,9 +179,6 @@ exports.getCorteDate = async (req, res) => {
             return res.status(500).json(err);
         });
     }
-
-
-
 }
 
 
@@ -289,6 +286,8 @@ exports.countMyActasProvider = async (req, res) => {
     res.json(data);
 }
 
+
+
 exports.clientsCurrent = async (req, res) => {
     const  id  = JSON.stringify(req.usuarioID);
     
@@ -356,4 +355,64 @@ exports.deleteActa = async (req, res) => {
             });
         });
     }
+}
+
+
+exports.documentsLevel = async (req, res) => {
+    const id = JSON.stringify(req.usuarioID);
+    const { level } = req.params;
+    const data = [];
+
+    if(level == "0"){
+        const enterprisesId = await Actas.findAll({where: { provider: id }, attributes: ['enterprise'], group: ['enterprise']});
+
+        for (let i = 0; i < enterprisesId.length; i++) {
+            var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
+            data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
+        }
+    
+        if(data.length != 0){
+            return res.status(200).json(data);
+        }
+        else{
+            return res.status(404).json({message: "No found!"})
+        }   
+    }
+
+    else if(level == "1"){
+        const enterprisesId = await Actas.findAll({where: { idsup1: id }, attributes: ['enterprise'], group: ['enterprise'],});
+
+        for (let i = 0; i < enterprisesId.length; i++) {
+            var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
+            data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
+        }
+    
+        if(data.length != 0){
+            return res.status(200).json(data);
+        }
+        else{
+            return res.status(404).json({message: "No found!"})
+        }   
+    }
+    else if(level == "2"){
+        const enterprisesId = await Actas.findAll({where: { idsup2: id }, attributes: ['enterprise'], group: ['enterprise'],});
+
+        for (let i = 0; i < enterprisesId.length; i++) {
+            var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
+            data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
+        }
+    
+        if(data.length != 0){
+            return res.status(200).json(data);
+        }
+        else{
+            return res.status(404).json({message: "No found!"})
+        }   
+    }
+    else{
+        res.status(404).json({
+            message: 'No found'
+        })
+    }
+
 }

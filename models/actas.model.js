@@ -44,6 +44,18 @@ module.exports = (sequelize, Sequelize) => {
         },
         hidden: {
             type: Sequelize.BOOLEAN
+        },
+        idsup1: {
+            type: Sequelize.INTEGER
+        },
+        preciosup1:{
+            type: Sequelize.DOUBLE
+        },
+        idsup2: {
+            type: Sequelize.INTEGER
+        },
+        preciosup2: {
+            type: Sequelize.DOUBLE
         }
     }, {freezeTableName:true});
     return actas;
