@@ -21,6 +21,10 @@ module.exports = (app) => {
 
     app.get("/api/actas/getMyClientsLevel/:level", verifyAuth, controller.documentsLevel);
 
+
+    app.get("/api/actas/lowerToCut/", verifyAuth, controller.lowerToCut)
+
+
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 
 
