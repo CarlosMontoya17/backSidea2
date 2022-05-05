@@ -473,7 +473,7 @@ exports.documentsLevel = async (req, res) => {
 
 exports.lowerToCut = async (req, res) => {
     const  id  = req.usuarioID;
-    const idLower = await Users.findAll({where: {idSuper: id}, attributes:['id', 'nombre'], group:['id']});
+    const idLower = await Users.findAll({where: {[Op.or]:[{idSuper: id}, {id}]}, attributes:['id', 'nombre'], group:['id']});
     if(idLower.length != 0){
         const data = [];
         for (let i = 0; i < idLower.length; i++) {
