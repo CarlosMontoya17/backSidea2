@@ -184,7 +184,7 @@ exports.getCorteDate = async (req, res) => {
 
 
 exports.getMyCorte = async (req, res) => {
-    const { id } = req.params;
+    const id  = req.params.id;
     if(id == "1"){
         await Actas.findAll({order:[['id', 'ASC']]}).then(data => {
             return res.status(200).send(data);
@@ -192,8 +192,9 @@ exports.getMyCorte = async (req, res) => {
             return res.status(500).send(err);
         });
     }
+    
     else{
-        await Actas.findAll({where: { provider: id, [Op.or]: [{idcreated: id}] }, order:[['id', 'ASC']]}).then(data => {
+        await Actas.findAll({where: { [Op.or]: [{idcreated: id},{provider: id}] }, order:[['id', 'ASC']]}).then(data => {
             return res.status(200).send(data);
         }).catch(err => {
             return res.status(500).send(err);
