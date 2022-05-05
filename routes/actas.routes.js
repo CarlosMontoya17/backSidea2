@@ -10,6 +10,7 @@ module.exports = (app) => {
 
     //app.get("/api/getMyCorte/:username", controller.getMyCorte);
     app.get("/api/getMyCorteId/:id", controller.getMyCorte);
+
     app.get("/api/actas/getMyDocuments/:id", controller.getMyDocumentsUploaded);
     app.get("/api/actas/CountForEnterprise/:id", controller.countMyActasEnterprise);
     app.get("/api/actas/CountForProvider/:id", controller.countMyActasProvider);
@@ -17,12 +18,14 @@ module.exports = (app) => {
     app.get("/api/actas/CorteForSomeone/:id", controller.getCorteForOne);
 
     app.get("/api/actas/getMyDateCuts/:id", controller.getMyDatesCuts);
+
     app.get("/api/actas/getCutByDate/:id/:date", controller.getCorteDate);
 
     app.get("/api/actas/getMyClientsLevel/:level", verifyAuth, controller.documentsLevel);
 
 
     app.get("/api/actas/lowerToCut/", verifyAuth, controller.lowerToCut)
+    app.get("/api/actas/getDatesCut/:id", controller.historialDate)
 
 
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);

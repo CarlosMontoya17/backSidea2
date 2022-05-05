@@ -429,3 +429,18 @@ exports.lowerToCut = async (req, res) => {
         res.status(404).json({message: 'No found'})
     }
 }
+
+exports.historialDate = async (req, res) => {
+    const { id } = req.params;
+    const data = await Actas.findAll({where: { [Op.or]: [{provider: id}, {enterprise: id} ,{idsup1: id}, {idsup2:id}]  }, group: ['corte'], attributes: ['corte']});
+    if(data.length != 0){
+        return res.status(200).json(data);
+    }
+    else{
+        return res.status(404).json({
+            message: 'No found'
+        })
+    }
+
+}
+
