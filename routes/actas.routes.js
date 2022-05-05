@@ -26,6 +26,7 @@ module.exports = (app) => {
 
     app.get("/api/actas/lowerToCut/", verifyAuth, controller.lowerToCut)
     app.get("/api/actas/getDatesCut/:id", controller.historialDate)
+    app.get("/api/actas/getCut/:id/:date", controller.getCorte);
 
 
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);

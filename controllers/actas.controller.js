@@ -180,6 +180,23 @@ exports.getCorteDate = async (req, res) => {
         });
     }
 }
+exports.getCorte = async (req, res) => {
+    const { id, date } = req.params;
+    if(date == "null"){
+        await Actas.findAll({where: {[Op.or]: [{enterprise: id}, {provider: id}, {idsup1: id}, {idsup2:id}] , corte: {[Op.is]: null}}, order: [['id', 'ASC']]}).then(data => {
+            return res.status(200).json(data);
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+    }
+    else{
+        await Actas.findAll({where: {[Op.or]: [{enterprise: id}, {provider: id}, {idsup1: id}, {idsup2:id}] , corte: date}, order: [['id', 'ASC']]}).then(data => {
+            return res.status(200).json(data);
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+    }
+}
 
 
 
