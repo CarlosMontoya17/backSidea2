@@ -193,7 +193,7 @@ exports.getMyCorte = async (req, res) => {
         });
     }
     else{
-        await Actas.findAll({where: { provider: id }, order:[['id', 'ASC']]}).then(data => {
+        await Actas.findAll({where: { provider: id, [Op.or]: [{idcreated: id}] }, order:[['id', 'ASC']]}).then(data => {
             return res.status(200).send(data);
         }).catch(err => {
             return res.status(500).send(err);
