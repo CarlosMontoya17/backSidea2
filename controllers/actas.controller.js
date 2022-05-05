@@ -182,16 +182,51 @@ exports.getCorteDate = async (req, res) => {
 }
 exports.getCorte = async (req, res) => {
     const { id, date } = req.params;
+    const idToken = req.usuarioID;
+    const myData = await Users.findOne({where: {id }, attributes: ["rol"]});
+
+
     if(date == "null"){
         await Actas.findAll({where: {[Op.or]: [{enterprise: id}, {provider: id}, {idsup1: id}, {idsup2:id}] , corte: {[Op.is]: null}}, order: [['id', 'ASC']]}).then(data => {
-            return res.status(200).json(data);
+            let dataFull = []
+            for (let i = 0; i < data.length; i++) {
+                let precio;
+                if(idToken == data[i].provider){
+                    precio = data[i].price
+                }
+                else if(idToken == data[i].idsup1){
+                    precio = data[i].preciosup1
+                }
+                else if(idToken == data[i].idsup2){
+                    precio = data[i].preciosup2
+                }
+                arreglo = {"document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta":data[i].nombreacta, "curp": data[i].curp, "price": precio }
+                dataFull.push(arreglo);
+            }
+            return res.status(200).json(dataFull);
         }).catch(err => {
             return res.status(500).json(err);
         });
     }
     else{
+        
         await Actas.findAll({where: {[Op.or]: [{enterprise: id}, {provider: id}, {idsup1: id}, {idsup2:id}] , corte: date}, order: [['id', 'ASC']]}).then(data => {
-            return res.status(200).json(data);
+            let dataFull = []
+            for (let i = 0; i < data.length; i++) {
+                let precio;
+                if(id == data[i].provider){
+                    precio = data[i].price
+                }
+                else if(id == data[i].idsup1){
+                    precio = data[i].preciosup1
+                }
+                else if(id == data[i].idsup2){
+                    precio = data[i].preciosup2
+                }
+                arreglo = {"document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta":data[i].nombreacta, "curp": data[i].curp, "price": precio }
+                dataFull.push(arreglo);
+            }
+            return res.status(200).json(dataFull);
         }).catch(err => {
             return res.status(500).json(err);
         });
