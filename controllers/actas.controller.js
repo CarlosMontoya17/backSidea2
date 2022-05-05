@@ -473,17 +473,17 @@ exports.documentsLevel = async (req, res) => {
 
 exports.lowerToCut = async (req, res) => {
     const  id  = req.usuarioID;
-    const idLower = await Users.findAll({where: {[Op.or]:[{idSuper: id}, {id}]}, attributes:['id', 'nombre'], group:['id']});
+    const idLower = await Users.findAll({where: {idSuper: id}, attributes:['id', 'nombre'], group:['id']});
     if(idLower.length != 0){
         const data = [];
         for (let i = 0; i < idLower.length; i++) {
             const idCurrent = JSON.stringify(idLower[i].id)
-            var profile = await Actas.findOne({where : {[Op.or]: [{idsup2: idCurrent},{idsup1: idCurrent},{provider: idCurrent}]}})
+            var profile = await Actas.findOne({where : {[Op.or]: [{idsup2: idCurrent},{idsup1: idCurrent},{provider: idCurrent},{enterprise: idCurrent}]}})
             if(profile != null){
                 data.push({"id": idCurrent, "nombre": idLower[i].nombre})
             }
         }
-        if(data != []){
+        if(data){
             res.status(200).json(data);
         }
     }   
