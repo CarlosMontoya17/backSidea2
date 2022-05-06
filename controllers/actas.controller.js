@@ -214,13 +214,13 @@ exports.getCorte = async (req, res) => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
-                if(id == data[i].provider){
+                if(idToken == data[i].provider){
                     precio = data[i].price
                 }
-                else if(id == data[i].idsup1){
+                else if(idToken == data[i].idsup1){
                     precio = data[i].preciosup1
                 }
-                else if(id == data[i].idsup2){
+                else if(idToken == data[i].idsup2){
                     precio = data[i].preciosup2
                 }
                 arreglo = {"document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta":data[i].nombreacta, "curp": data[i].curp, "price": precio }
@@ -238,19 +238,60 @@ exports.getCorte = async (req, res) => {
 exports.getMyCorte = async (req, res) => {
     const id  = req.params.id;
     if(id == "1"){
-        await Actas.findAll({order:[['id', 'ASC']]}).then(data => {
-            return res.status(200).send(data);
-        }).catch(err => {
-            return res.status(500).send(err);
-        });
+        const actas = await Actas.findAll({order:[['id', 'ASC']]});
+        const usuarios = await Users.findAll({attributes : ['id', 'nombre']});
+        let data = []
+        for (let i = 0; i < actas.length; i++) {
+
+            var currentUser = usuarios.find(element => { 
+                return element["id"] == Number(actas[i].provider); 
+            });
+            var currentProvider = usuarios.find(element => { 
+                return element["id"] == Number(actas[i].enterprise); 
+            });
+            
+            data.push({
+                        "id": actas[i].id, 
+                        "document": actas[i].document, 
+                        "curp": actas[i].curp, 
+                        "states": actas[i].states,
+                        "nombreacta": actas[i].nombreacta,
+                        "provider": currentProvider.nombre,
+                        "enterprise": currentUser.nombre,
+                        "createdAt": actas[i].createdAt,
+                        "price": actas[i].price
+                    });
+        }
+        res.status(200).json(data);
+                
     }
     
     else{
-        await Actas.findAll({where: { [Op.or]: [{idcreated: id},{provider: id}] }, order:[['id', 'ASC']]}).then(data => {
-            return res.status(200).send(data);
-        }).catch(err => {
-            return res.status(500).send(err);
-        });
+        const actas = await Actas.findAll({where: { [Op.or]: [{idcreated: id},{provider: id}] }, order:[['id', 'ASC']]});
+        const usuarios = await Users.findAll({attributes : ['id', 'nombre']});
+        let data = []
+        for (let i = 0; i < actas.length; i++) {
+
+            var currentUser = usuarios.find(element => { 
+                return element["id"] == Number(actas[i].provider); 
+            });
+            var currentProvider = usuarios.find(element => { 
+                return element["id"] == Number(actas[i].enterprise); 
+            });
+            
+            data.push({
+                        "id": actas[i].id, 
+                        "document": actas[i].document, 
+                        "curp": actas[i].curp, 
+                        "states": actas[i].states,
+                        "nombreacta": actas[i].nombreacta,
+                        "provider": currentProvider.nombre,
+                        "enterprise": currentUser.nombre,
+                        "createdAt": actas[i].createdAt,
+                        "price": actas[i].price
+                    });
+        }
+        res.status(200).json(data);
     }
     
 }
