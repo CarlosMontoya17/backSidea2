@@ -240,7 +240,8 @@ exports.getMyCorte = async (req, res) => {
     if(id == "1"){
         const actas = await Actas.findAll({order:[['id', 'ASC']]});
         const usuarios = await Users.findAll({attributes : ['id', 'nombre']});
-        let data = []
+        let data = [];
+        let current = 0;
         for (let i = 0; i < actas.length; i++) {
 
             var currentUser = usuarios.find(element => { 
@@ -249,8 +250,9 @@ exports.getMyCorte = async (req, res) => {
             var currentProvider = usuarios.find(element => { 
                 return element["id"] == Number(actas[i].enterprise); 
             });
-            
+            current++;
             data.push({
+                        "i": current,
                         "id": actas[i].id, 
                         "document": actas[i].document, 
                         "curp": actas[i].curp, 
@@ -270,6 +272,7 @@ exports.getMyCorte = async (req, res) => {
         const actas = await Actas.findAll({where: { [Op.or]: [{idcreated: id},{provider: id}] }, order:[['id', 'ASC']]});
         const usuarios = await Users.findAll({attributes : ['id', 'nombre']});
         let data = []
+        let current = 0;
         for (let i = 0; i < actas.length; i++) {
 
             var currentUser = usuarios.find(element => { 
@@ -278,8 +281,9 @@ exports.getMyCorte = async (req, res) => {
             var currentProvider = usuarios.find(element => { 
                 return element["id"] == Number(actas[i].enterprise); 
             });
-            
+            current++;
             data.push({
+                        "i": current,
                         "id": actas[i].id, 
                         "document": actas[i].document, 
                         "curp": actas[i].curp, 
