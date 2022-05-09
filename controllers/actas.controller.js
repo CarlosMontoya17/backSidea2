@@ -349,7 +349,7 @@ exports.getCorte = async (req, res) => {
 
 
     if (date == "null") {
-        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['id', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -372,7 +372,7 @@ exports.getCorte = async (req, res) => {
     }
     else {
 
-        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['id', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -425,6 +425,7 @@ exports.getMyCorte = async (req, res) => {
                 "createdAt": actas[i].createdAt,
                 "price": actas[i].price
             });
+            
         }
         res.status(200).json(data);
 
@@ -443,6 +444,10 @@ exports.getMyCorte = async (req, res) => {
             var currentProvider = usuarios.find(element => {
                 return element["id"] == Number(actas[i].enterprise);
             });
+
+            var superVisor = usuarios.find(element => {
+                return element["id"] == Number(actas[i].idsup1);
+            })
             current++;
             data.push({
                 "i": current,
@@ -454,7 +459,9 @@ exports.getMyCorte = async (req, res) => {
                 "provider": currentProvider.nombre,
                 "enterprise": currentUser.nombre,
                 "createdAt": actas[i].createdAt,
-                "price": actas[i].price
+                "price": actas[i].price,
+                "pay2": superVisor.nombre,
+                "buy": actas[i].preciosup1
             });
         }
         res.status(200).json(data);
