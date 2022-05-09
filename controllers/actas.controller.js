@@ -96,27 +96,27 @@ exports.upPDF = (req, res) => {
                 data = { tipo: page[60].str, curp, estado, nombre }
                 res.send(data);
             }
-            else if(page[71].str == "CONSTANCIA DE NO INHABILITACIÓN"){
+            else if (page[71].str == "CONSTANCIA DE NO INHABILITACIÓN") {
                 estado = "CHIAPAS";
                 nombre = page[88].str;
                 curp = page[90].str;
                 data = { tipo: page[71].str, curp, estado, nombre }
                 res.json(data);
             }
-            else if(page[5].str == "Registro Federal de Contribuyentes"){
+            else if (page[5].str == "Registro Federal de Contribuyentes") {
                 let Arreglo = [];
                 for (let i = 0; i < page.length; i++) {
                     Arreglo.push(page[i].str)
                 }
-                let curpIndex = Arreglo.findIndex(function finder(data){ return data === 'CURP:' });
-                const curp = Arreglo[curpIndex+2];
-                let nombreIndex = Arreglo.findIndex(function finder(data){ return data === 'Nombre (s):' });
-                let matIndex = Arreglo.findIndex(function finder(data){ return data === 'Primer Apellido:' });
-                let patIndex = Arreglo.findIndex(function finder(data){ return data === 'Segundo Apellido:' });
-                const nombre = `${Arreglo[nombreIndex+2]} ${Arreglo[matIndex+2]} ${Arreglo[patIndex+2]}`;
-                let estadoIndex = Arreglo.findIndex(function finder(data){ return data === 'Nombre de la Entidad Federativa:' });
-                const estado = Arreglo[estadoIndex+2];
-                data = {tipo: page[5].str, curp, estado, nombre};
+                let curpIndex = Arreglo.findIndex(function finder(data) { return data === 'CURP:' });
+                const curp = Arreglo[curpIndex + 2];
+                let nombreIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre (s):' });
+                let matIndex = Arreglo.findIndex(function finder(data) { return data === 'Primer Apellido:' });
+                let patIndex = Arreglo.findIndex(function finder(data) { return data === 'Segundo Apellido:' });
+                const nombre = `${Arreglo[nombreIndex + 2]} ${Arreglo[matIndex + 2]} ${Arreglo[patIndex + 2]}`;
+                let estadoIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre de la Entidad Federativa:' });
+                const estado = Arreglo[estadoIndex + 2];
+                data = { tipo: page[5].str, curp, estado, nombre };
                 res.json(data);
             }
             else {
@@ -130,15 +130,177 @@ exports.upPDF = (req, res) => {
 }
 
 exports.loadActa = async (req, res) => {
-    if(!req.body.price){
-        return res.status(500).send({message: 'No data recived!'})
+    if (!req.body.price) {
+        return res.status(500).send({ message: 'No data recived!' })
     }
-    else{
+    else {
         const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
         try {
-            
-            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price, hidden: false },
-                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden'] });
+            const users = await Users.findOne({ where: { id: provider }, attributes: ['idSuper', 'precios'] });
+            const super1 = await Users.findOne({ where: { id: users.idSuper }, attributes: ['idSuper', 'precios'] });
+
+            let documento;
+            switch (document) {
+                case "Asignación de Número de Seguridad Social":
+                    documento = "nss";
+                    break;
+                case "Acta de Defunción":
+                    documento = "def";
+                    break;
+                case "Acta de Nacimiento":
+                    documento = "nac";
+                    break;
+                case "Acta de Matrimonio":
+                    documento = "mat";
+                    break;
+                case "Acta de Divorcio":
+                    documento = "div";
+                    break;
+                case "Constancia de Vigencia de Derechos":
+                    documento = "der";
+                    break;
+                case "Constancia de Semanas Cotizadas en el IMSS":
+                    documento = "cot";
+                    break;
+                case "Registro Federal de Contribuyentes":
+                    documento = "rfc";
+                    break;
+                case "CONSTANCIA DE NO INHABILITACIÓN":
+                    documento = "inh";
+                    break;
+                default:
+                    documento = "";
+                    break;
+            }
+            let state;
+            switch (states) {
+                case "CHIAPAS":
+                    state = "chia";
+                    break;
+                case "BAJA CALIFORNIA SUR":
+                    state = "bcs";
+                    break;
+                case "BAJA CALIFORNIA":
+                    state = "bcn";
+                    break;
+                case "YUCATAN":
+                    state = "yuca";
+                    break;
+                case "VERACRUZ":
+                    state = "vera";
+                    break;
+                case "COAHUILA":
+                    state = "coah";
+                    break;
+                case "COAHUILA DE ZARAGOZA":
+                    state = "coah";
+                    break;
+                case "MICHOACAN":
+                    state = "mich";
+                    break;
+                case "MICHOACAN DE OCAMPO":
+                    state = "mich";
+                    break;
+                case "TLAXCALA":
+                    state = "tlax";
+                    break;
+                case "DURANGO":
+                    state = "dura";
+                    break;
+                case "AGUASCALIENTES":
+                    state = "agua";
+                    break;
+                case "HIDALGO":
+                    state = "hida";
+                    break;
+                case "PUEBLA":
+                    state = "pueb";
+                    break;
+                case "QUERETARO":
+                    state = "quer";
+                    break;
+                case "CHIHUAHUA":
+                    state = "chih";
+                    break;
+                case "OAXACA":
+                    state = "oaxa";
+                    break;
+                case "SONORA":
+                    state = "sono";
+                    break;
+                case "SAN LUIS POTOSI":
+                    state = "slp";
+                    break;
+                case "SINALOA":
+                    state = "sina";
+                    break;
+                case "GUERRERO":
+                    state = "guer";
+                    break;
+                case "ZACATECAS":
+                    state = "zaca";
+                    break;
+                case "TAMAUILIPAS":
+                    state = "tama";
+                    break;
+                case "MORELOS":
+                    state = "more";
+                    break;
+                case "TABASCO":
+                    state = "taba";
+                    break;
+                case "GUANAJUATO":
+                    state = "guan";
+                    break;
+                case "COLIMA":
+                    state = "coli";
+                    break;
+                case "JALISCO":
+                    state = "jali";
+                    break;
+                case "CDMX":
+                    state = "cdmx";
+                    break;
+                case "CAMPECHE":
+                    state = "camp";
+                    break;
+                case "NUEVO LEON":
+                    state = "nl";
+                    break;
+                case "MEXICO":
+                    state = "mex";
+                    break;
+                case "QUINTANA ROO":
+                    state = "qroo";
+                    break;
+                case "NAYARIT":
+                    state = "naya";
+                    break;
+                default:
+                    state = "";
+                    break;
+            }
+            let precioSu1Flat;
+            try {
+                precioSu1Flat = users.precios[documento]
+                if (JSON.stringify(precioSu1Flat).length > 1) {
+                    precioSu1Flat = precioSu1Flat[state]
+                }
+            } catch {
+                precioSu1Flat = 0
+            }
+
+            let precioSu2Flat = 0;
+            try {
+                precioSu2Flat = super1.precios[documento]
+                if (JSON.stringify(precioSu2Flat).length > 1) {
+                    precioSu2Flat = precioSu2Flat[state]
+                }
+            } catch {
+                precioSu2Flat = 0
+            }
+            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price, hidden: false, idsup1:users.idSuper, preciosup1:precioSu1Flat, idsup2:super1.idSuper, preciosup2: precioSu2Flat},
+                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden', 'idsup1','preciosup1', 'idsup2', 'preciosup2'] });
             if (newActa) {
                 res.status(201).json({message: 'Acta Added!'});
             }
@@ -146,17 +308,17 @@ exports.loadActa = async (req, res) => {
             res.status(500).json(error);
         }
     }
-    
+
 }
 
 
 exports.getMyDatesCuts = async (req, res) => {
-    const {id} = req.params;
-    const data = await Actas.findAll({where: { enterprise: id }, group: ['corte'], attributes: ['corte']});
-    if(data.length != 0){
+    const { id } = req.params;
+    const data = await Actas.findAll({ where: { enterprise: id }, group: ['corte'], attributes: ['corte'] });
+    if (data.length != 0) {
         return res.status(200).json(data);
     }
-    else{
+    else {
         return res.status(404).json({
             message: 'No found'
         })
@@ -165,15 +327,15 @@ exports.getMyDatesCuts = async (req, res) => {
 
 exports.getCorteDate = async (req, res) => {
     const { id, date } = req.params;
-    if(date == "null"){
-        await Actas.findAll({where: {enterprise: id, corte: {[Op.is]: null}}, order: [['id', 'ASC']]}).then(data => {
+    if (date == "null") {
+        await Actas.findAll({ where: { enterprise: id, corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             return res.status(200).json(data);
         }).catch(err => {
             return res.status(500).json(err);
         });
     }
-    else{
-        await Actas.findAll({where: {enterprise: id, corte: date}, order: [['id', 'ASC']]}).then(data => {
+    else {
+        await Actas.findAll({ where: { enterprise: id, corte: date }, order: [['cratedAt', 'ASC']] }).then(data => {
             return res.status(200).json(data);
         }).catch(err => {
             return res.status(500).json(err);
@@ -183,24 +345,24 @@ exports.getCorteDate = async (req, res) => {
 exports.getCorte = async (req, res) => {
     const { id, date } = req.params;
     const idToken = req.usuarioID;
-    const myData = await Users.findOne({where: {id }, attributes: ["rol"]});
+    const myData = await Users.findOne({ where: { id }, attributes: ["rol"] });
 
 
-    if(date == "null"){
-        await Actas.findAll({where: {[Op.or]: [{enterprise: id}, {provider: id}, {idsup1: id}, {idsup2:id}] , corte: {[Op.is]: null}}, order: [['id', 'ASC']]}).then(data => {
+    if (date == "null") {
+        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['id', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
-                if(idToken == data[i].provider){
+                if (idToken == data[i].provider) {
                     precio = data[i].price
                 }
-                else if(idToken == data[i].idsup1){
+                else if (idToken == data[i].idsup1) {
                     precio = data[i].preciosup1
                 }
-                else if(idToken == data[i].idsup2){
+                else if (idToken == data[i].idsup2) {
                     precio = data[i].preciosup2
                 }
-                arreglo = {"document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta":data[i].nombreacta, "curp": data[i].curp, "price": precio }
+                arreglo = { "document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta": data[i].nombreacta, "curp": data[i].curp, "price": precio }
                 dataFull.push(arreglo);
             }
             return res.status(200).json(dataFull);
@@ -208,22 +370,22 @@ exports.getCorte = async (req, res) => {
             return res.status(500).json(err);
         });
     }
-    else{
-        
-        await Actas.findAll({where: {[Op.or]: [{enterprise: id}, {provider: id}, {idsup1: id}, {idsup2:id}] , corte: date}, order: [['id', 'ASC']]}).then(data => {
+    else {
+
+        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['id', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
-                if(idToken == data[i].provider){
+                if (idToken == data[i].provider) {
                     precio = data[i].price
                 }
-                else if(idToken == data[i].idsup1){
+                else if (idToken == data[i].idsup1) {
                     precio = data[i].preciosup1
                 }
-                else if(idToken == data[i].idsup2){
+                else if (idToken == data[i].idsup2) {
                     precio = data[i].preciosup2
                 }
-                arreglo = {"document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta":data[i].nombreacta, "curp": data[i].curp, "price": precio }
+                arreglo = { "document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta": data[i].nombreacta, "curp": data[i].curp, "price": precio }
                 dataFull.push(arreglo);
             }
             return res.status(200).json(dataFull);
@@ -236,185 +398,185 @@ exports.getCorte = async (req, res) => {
 
 
 exports.getMyCorte = async (req, res) => {
-    const id  = req.params.id;
-    if(id == "1"){
-        const actas = await Actas.findAll({order:[['id', 'ASC']]});
-        const usuarios = await Users.findAll({attributes : ['id', 'nombre']});
+    const id = req.params.id;
+    if (id == "1") {
+        const actas = await Actas.findAll({ order: [['id', 'ASC']] });
+        const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = [];
         let current = 0;
         for (let i = 0; i < actas.length; i++) {
 
-            var currentUser = usuarios.find(element => { 
-                return element["id"] == Number(actas[i].provider); 
+            var currentUser = usuarios.find(element => {
+                return element["id"] == Number(actas[i].provider);
             });
-            var currentProvider = usuarios.find(element => { 
-                return element["id"] == Number(actas[i].enterprise); 
+            var currentProvider = usuarios.find(element => {
+                return element["id"] == Number(actas[i].enterprise);
             });
             current++;
             data.push({
-                        "i": current,
-                        "id": actas[i].id, 
-                        "document": actas[i].document, 
-                        "curp": actas[i].curp, 
-                        "states": actas[i].states,
-                        "nombreacta": actas[i].nombreacta,
-                        "provider": currentProvider.nombre,
-                        "enterprise": currentUser.nombre,
-                        "createdAt": actas[i].createdAt,
-                        "price": actas[i].price
-                    });
+                "i": current,
+                "id": actas[i].id,
+                "document": actas[i].document,
+                "curp": actas[i].curp,
+                "states": actas[i].states,
+                "nombreacta": actas[i].nombreacta,
+                "provider": currentProvider.nombre,
+                "enterprise": currentUser.nombre,
+                "createdAt": actas[i].createdAt,
+                "price": actas[i].price
+            });
         }
         res.status(200).json(data);
-                
+
     }
-    
-    else{
-        const actas = await Actas.findAll({where: { [Op.or]: [{idcreated: id},{provider: id}] }, order:[['id', 'ASC']]});
-        const usuarios = await Users.findAll({attributes : ['id', 'nombre']});
+
+    else {
+        const actas = await Actas.findAll({ where: { [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
+        const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = []
         let current = 0;
         for (let i = 0; i < actas.length; i++) {
 
-            var currentUser = usuarios.find(element => { 
-                return element["id"] == Number(actas[i].provider); 
+            var currentUser = usuarios.find(element => {
+                return element["id"] == Number(actas[i].provider);
             });
-            var currentProvider = usuarios.find(element => { 
-                return element["id"] == Number(actas[i].enterprise); 
+            var currentProvider = usuarios.find(element => {
+                return element["id"] == Number(actas[i].enterprise);
             });
             current++;
             data.push({
-                        "i": current,
-                        "id": actas[i].id, 
-                        "document": actas[i].document, 
-                        "curp": actas[i].curp, 
-                        "states": actas[i].states,
-                        "nombreacta": actas[i].nombreacta,
-                        "provider": currentProvider.nombre,
-                        "enterprise": currentUser.nombre,
-                        "createdAt": actas[i].createdAt,
-                        "price": actas[i].price
-                    });
+                "i": current,
+                "id": actas[i].id,
+                "document": actas[i].document,
+                "curp": actas[i].curp,
+                "states": actas[i].states,
+                "nombreacta": actas[i].nombreacta,
+                "provider": currentProvider.nombre,
+                "enterprise": currentUser.nombre,
+                "createdAt": actas[i].createdAt,
+                "price": actas[i].price
+            });
         }
         res.status(200).json(data);
     }
-    
+
 }
 
 exports.getCorteForOne = async (req, res) => {
     const { id } = req.params;
-    await Actas.findAll({where: { enterprise: id }, order: [['id', 'ASC']]}).then(data => {
-        if(data.length != 0){
+    await Actas.findAll({ where: { enterprise: id }, order: [['id', 'ASC']] }).then(data => {
+        if (data.length != 0) {
             res.status(200).json(data);
         }
-        else{
-            res.status(404).json({message: "No found"});
+        else {
+            res.status(404).json({ message: "No found" });
         }
     }).catch(err => {
-        res.status(500).json({message: "Internal error!"});
+        res.status(500).json({ message: "Internal error!" });
     });
 
 
 }
 
 exports.countMyActasEnterprise = async (req, res) => {
-        const { id } = req.params;
-        data = {};
-        //Nac
-        const nac = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Nacimiento'}});
-        data.nac = nac['count'];
-        //Mat
-        const mat = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Matrimonio'}});
-        data.mat = mat['count'];
-        //Div
-        const div = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Divorcio'}});
-        data.div = div['count'];
-        //Def
-        const def = await Actas.findAndCountAll({where: {enterprise: id, document: 'Acta de Defunción'}});
-        data.def = def['count'];
-        //RFC
-        const rfc = await Actas.findAndCountAll({where: {enterprise: id, document: 'Registro Federal de Contribuyentes'}});
-        data.rfc = rfc['count'];
-        //Cot
-        const cot = await Actas.findAndCountAll({where: {enterprise: id, document: 'Constancia de Semanas Cotizadas en el IMSS'}});
-        data.cot = cot['count'];
-        //Der
-        const der = await Actas.findAndCountAll({where: {enterprise: id, document: 'Constancia de Vigencia de Derechos'}});
-        data.der = der['count'];
-        //INH
-        const inh = await Actas.findAndCountAll({where: {enterprise: id, document: 'CONSTANCIA DE NO INHABILITACIÓN'}});
-        data.inh = inh['count'];
-        //NSS
-        const nss = await Actas.findAndCountAll({where: {enterprise: id, document: 'Asignación de Número de Seguridad Social'}});
-        data.nss = nss['count'];
-        data.total = data.nac+data.mat+data.div+data.def+data.rfc+data.cot+data.der+data.inh+data.nss;
-        res.json(data);
+    const { id } = req.params;
+    data = {};
+    //Nac
+    const nac = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Acta de Nacimiento' } });
+    data.nac = nac['count'];
+    //Mat
+    const mat = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Acta de Matrimonio' } });
+    data.mat = mat['count'];
+    //Div
+    const div = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Acta de Divorcio' } });
+    data.div = div['count'];
+    //Def
+    const def = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Acta de Defunción' } });
+    data.def = def['count'];
+    //RFC
+    const rfc = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Registro Federal de Contribuyentes' } });
+    data.rfc = rfc['count'];
+    //Cot
+    const cot = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Constancia de Semanas Cotizadas en el IMSS' } });
+    data.cot = cot['count'];
+    //Der
+    const der = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Constancia de Vigencia de Derechos' } });
+    data.der = der['count'];
+    //INH
+    const inh = await Actas.findAndCountAll({ where: { enterprise: id, document: 'CONSTANCIA DE NO INHABILITACIÓN' } });
+    data.inh = inh['count'];
+    //NSS
+    const nss = await Actas.findAndCountAll({ where: { enterprise: id, document: 'Asignación de Número de Seguridad Social' } });
+    data.nss = nss['count'];
+    data.total = data.nac + data.mat + data.div + data.def + data.rfc + data.cot + data.der + data.inh + data.nss;
+    res.json(data);
 }
 
 exports.countMyActasProvider = async (req, res) => {
     const { id } = req.params;
     data = {};
     //Nac
-    const nac = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Nacimiento'}});
+    const nac = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Nacimiento' } });
     data.nac = nac['count'];
     //Mat
-    const mat = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Matrimonio'}});
+    const mat = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Matrimonio' } });
     data.mat = mat['count'];
     //Div
-    const div = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Divorcio'}});
+    const div = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Divorcio' } });
     data.div = div['count'];
     //Def
-    const def = await Actas.findAndCountAll({where: {provider: id, document: 'Acta de Defunción'}});
+    const def = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Defunción' } });
     data.def = def['count'];
     //RFC
-    const rfc = await Actas.findAndCountAll({where: {provider: id, document: 'Registro Federal de Contribuyentes'}});
+    const rfc = await Actas.findAndCountAll({ where: { provider: id, document: 'Registro Federal de Contribuyentes' } });
     data.rfc = rfc['count'];
     //Cot
-    const cot = await Actas.findAndCountAll({where: {provider: id, document: 'Constancia de Semanas Cotizadas en el IMSS'}});
+    const cot = await Actas.findAndCountAll({ where: { provider: id, document: 'Constancia de Semanas Cotizadas en el IMSS' } });
     data.cot = cot['count'];
     //Der
-    const der = await Actas.findAndCountAll({where: {provider: id, document: 'Constancia de Vigencia de Derechos'}});
+    const der = await Actas.findAndCountAll({ where: { provider: id, document: 'Constancia de Vigencia de Derechos' } });
     data.der = der['count'];
     //INH
-    const inh = await Actas.findAndCountAll({where: {provider: id, document: 'CONSTANCIA DE NO INHABILITACIÓN'}});
+    const inh = await Actas.findAndCountAll({ where: { provider: id, document: 'CONSTANCIA DE NO INHABILITACIÓN' } });
     data.inh = inh['count'];
     //NSS
-    const nss = await Actas.findAndCountAll({where: {provider: id, document: 'Asignación de Número de Seguridad Social'}});
+    const nss = await Actas.findAndCountAll({ where: { provider: id, document: 'Asignación de Número de Seguridad Social' } });
     data.nss = nss['count'];
-    data.total = data.nac+data.mat+data.div+data.def+data.rfc+data.cot+data.der+data.inh+data.nss;
+    data.total = data.nac + data.mat + data.div + data.def + data.rfc + data.cot + data.der + data.inh + data.nss;
     res.json(data);
 }
 
 
 
 exports.clientsCurrent = async (req, res) => {
-    const  id  = JSON.stringify(req.usuarioID);
-    
+    const id = JSON.stringify(req.usuarioID);
+
     const data = [];
-    const enterprisesId = await Actas.findAll({where: { provider: id }, attributes: ['enterprise'], group: ['enterprise']});
+    const enterprisesId = await Actas.findAll({ where: { provider: id }, attributes: ['enterprise'], group: ['enterprise'] });
 
     for (let i = 0; i < enterprisesId.length; i++) {
-        var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
-        data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
+        var enterprisesName = await Users.findOne({ where: { id: enterprisesId[i]["enterprise"] }, attributes: ['nombre'] });
+        data.push({ "id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"] })
     }
 
-    if(data.length != 0){
+    if (data.length != 0) {
         res.status(200).json(data);
     }
-    else{
-        res.status(404).json({message: "No found!"})
-    }   
-    
+    else {
+        res.status(404).json({ message: "No found!" })
+    }
+
 
 
 }
 
 exports.getMyDocumentsUploaded = async (req, res) => {
     const { id } = req.params;
-    const actas = await Actas.findAll({where: {idcreated: id}});
-    if(actas.length != 0){
+    const actas = await Actas.findAll({ where: { idcreated: id } });
+    if (actas.length != 0) {
         return res.status(200).json(actas);
     }
-    else{
+    else {
         return res.status(404).json({
             message: 'Actas no found!'
         })
@@ -461,53 +623,53 @@ exports.documentsLevel = async (req, res) => {
     const { level } = req.params;
     const data = [];
 
-    if(level == "0"){
-        const enterprisesId = await Actas.findAll({where: { provider: id }, attributes: ['enterprise'], group: ['enterprise']});
+    if (level == "0") {
+        const enterprisesId = await Actas.findAll({ where: { provider: id }, attributes: ['enterprise'], group: ['enterprise'] });
 
         for (let i = 0; i < enterprisesId.length; i++) {
-            var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
-            data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
+            var enterprisesName = await Users.findOne({ where: { id: enterprisesId[i]["enterprise"] }, attributes: ['nombre'] });
+            data.push({ "id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"] })
         }
-    
-        if(data.length != 0){
+
+        if (data.length != 0) {
             return res.status(200).json(data);
         }
-        else{
-            return res.status(404).json({message: "No found!"})
-        }   
+        else {
+            return res.status(404).json({ message: "No found!" })
+        }
     }
 
-    else if(level == "1"){
-        const enterprisesId = await Actas.findAll({where: { idsup1: id }, attributes: ['enterprise'], group: ['enterprise'],});
-
-        for (let i = 0; i < enterprisesId.length; i++) {
-            var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
-            data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
-        }
-    
-        if(data.length != 0){
-            return res.status(200).json(data);
-        }
-        else{
-            return res.status(404).json({message: "No found!"})
-        }   
-    }
-    else if(level == "2"){
-        const enterprisesId = await Actas.findAll({where: { idsup2: id }, attributes: ['enterprise'], group: ['enterprise'],});
+    else if (level == "1") {
+        const enterprisesId = await Actas.findAll({ where: { idsup1: id }, attributes: ['enterprise'], group: ['enterprise'], });
 
         for (let i = 0; i < enterprisesId.length; i++) {
-            var enterprisesName = await Users.findOne({where: { id:enterprisesId[i]["enterprise"] }, attributes: ['nombre']});
-            data.push({"id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"]})
+            var enterprisesName = await Users.findOne({ where: { id: enterprisesId[i]["enterprise"] }, attributes: ['nombre'] });
+            data.push({ "id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"] })
         }
-    
-        if(data.length != 0){
+
+        if (data.length != 0) {
             return res.status(200).json(data);
         }
-        else{
-            return res.status(404).json({message: "No found!"})
-        }   
+        else {
+            return res.status(404).json({ message: "No found!" })
+        }
     }
-    else{
+    else if (level == "2") {
+        const enterprisesId = await Actas.findAll({ where: { idsup2: id }, attributes: ['enterprise'], group: ['enterprise'], });
+
+        for (let i = 0; i < enterprisesId.length; i++) {
+            var enterprisesName = await Users.findOne({ where: { id: enterprisesId[i]["enterprise"] }, attributes: ['nombre'] });
+            data.push({ "id": enterprisesId[i]["enterprise"], "nombre": enterprisesName["nombre"] })
+        }
+
+        if (data.length != 0) {
+            return res.status(200).json(data);
+        }
+        else {
+            return res.status(404).json({ message: "No found!" })
+        }
+    }
+    else {
         res.status(404).json({
             message: 'No found'
         })
@@ -517,33 +679,33 @@ exports.documentsLevel = async (req, res) => {
 
 
 exports.lowerToCut = async (req, res) => {
-    const  id  = req.usuarioID;
-    const idLower = await Users.findAll({where: {idSuper: id}, attributes:['id', 'nombre'], group:['id']});
-    if(idLower.length != 0){
+    const id = req.usuarioID;
+    const idLower = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'nombre'], group: ['id'] });
+    if (idLower.length != 0) {
         const data = [];
         for (let i = 0; i < idLower.length; i++) {
             const idCurrent = JSON.stringify(idLower[i].id)
-            var profile = await Actas.findOne({where : {[Op.or]: [{idsup2: idCurrent},{idsup1: idCurrent},{provider: idCurrent},{enterprise: idCurrent}]}})
-            if(profile != null){
-                data.push({"id": idCurrent, "nombre": idLower[i].nombre})
+            var profile = await Actas.findOne({ where: { [Op.or]: [{ idsup2: idCurrent }, { idsup1: idCurrent }, { provider: idCurrent }, { enterprise: idCurrent }] } })
+            if (profile != null) {
+                data.push({ "id": idCurrent, "nombre": idLower[i].nombre })
             }
         }
-        if(data){
+        if (data) {
             res.status(200).json(data);
         }
-    }   
-    else{
-        res.status(404).json({message: 'No found'})
+    }
+    else {
+        res.status(404).json({ message: 'No found' })
     }
 }
 
 exports.historialDate = async (req, res) => {
     const { id } = req.params;
-    const data = await Actas.findAll({where: { [Op.or]: [{provider: id}, {enterprise: id} ,{idsup1: id}, {idsup2:id}]  }, group: ['corte'], attributes: ['corte']});
-    if(data.length != 0){
+    const data = await Actas.findAll({ where: { [Op.or]: [{ provider: id }, { enterprise: id }, { idsup1: id }, { idsup2: id }] }, group: ['corte'], attributes: ['corte'] });
+    if (data.length != 0) {
         return res.status(200).json(data);
     }
-    else{
+    else {
         return res.status(404).json({
             message: 'No found'
         })
