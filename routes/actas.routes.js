@@ -13,7 +13,7 @@ module.exports = (app) => {
 
     app.get("/api/actas/getMyDocuments/:id", controller.getMyDocumentsUploaded);
     app.get("/api/actas/CountForEnterprise/:id", controller.countMyActasEnterprise);
-    app.get("/api/actas/CountForProvider/:id", controller.countMyActasProvider);
+
     app.get("/api/actas/ClientsActuals/", verifyAuth, controller.clientsCurrent);
     app.get("/api/actas/CorteForSomeone/:id", controller.getCorteForOne);
 
@@ -22,8 +22,12 @@ module.exports = (app) => {
     app.get("/api/actas/getMyClientsLevel/:level", verifyAuth, controller.documentsLevel);
 
 
-    app.get("/api/actas/lowerToCut/", verifyAuth, controller.lowerToCut)
-    app.get("/api/actas/getDatesCut/:id", controller.historialDate)
+    app.get("/api/actas/lowerToCut/", verifyAuth, controller.lowerToCut);
+
+    app.get("/api/actas/ReadySend/", verifyAuth, controller.getReadySend);
+    app.get("/api/actas/DontSend/", verifyAuth, controller.getDontSend);
+
+    app.get("/api/actas/getDatesCut/:id", controller.historialDate);
     app.get("/api/actas/getCut/:id/:date", verifyAuth, controller.getCorte);
 
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);

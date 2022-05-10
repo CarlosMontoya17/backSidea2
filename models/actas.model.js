@@ -59,6 +59,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         namefile: {
             type: Sequelize.TEXT
+        },
+        send: {
+            type: Sequelize.BOOLEAN
         }
     }, {freezeTableName:true});
     return actas;

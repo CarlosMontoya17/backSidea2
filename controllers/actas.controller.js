@@ -519,41 +519,6 @@ exports.countMyActasEnterprise = async (req, res) => {
     res.json(data);
 }
 
-exports.countMyActasProvider = async (req, res) => {
-    const { id } = req.params;
-    data = {};
-    //Nac
-    const nac = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Nacimiento' } });
-    data.nac = nac['count'];
-    //Mat
-    const mat = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Matrimonio' } });
-    data.mat = mat['count'];
-    //Div
-    const div = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Divorcio' } });
-    data.div = div['count'];
-    //Def
-    const def = await Actas.findAndCountAll({ where: { provider: id, document: 'Acta de Defunción' } });
-    data.def = def['count'];
-    //RFC
-    const rfc = await Actas.findAndCountAll({ where: { provider: id, document: 'Registro Federal de Contribuyentes' } });
-    data.rfc = rfc['count'];
-    //Cot
-    const cot = await Actas.findAndCountAll({ where: { provider: id, document: 'Constancia de Semanas Cotizadas en el IMSS' } });
-    data.cot = cot['count'];
-    //Der
-    const der = await Actas.findAndCountAll({ where: { provider: id, document: 'Constancia de Vigencia de Derechos' } });
-    data.der = der['count'];
-    //INH
-    const inh = await Actas.findAndCountAll({ where: { provider: id, document: 'CONSTANCIA DE NO INHABILITACIÓN' } });
-    data.inh = inh['count'];
-    //NSS
-    const nss = await Actas.findAndCountAll({ where: { provider: id, document: 'Asignación de Número de Seguridad Social' } });
-    data.nss = nss['count'];
-    data.total = data.nac + data.mat + data.div + data.def + data.rfc + data.cot + data.der + data.inh + data.nss;
-    res.json(data);
-}
-
-
 
 exports.clientsCurrent = async (req, res) => {
     const id = JSON.stringify(req.usuarioID);
@@ -720,3 +685,45 @@ exports.historialDate = async (req, res) => {
 
 }
 
+exports.getDontSend = async (req, res) => {
+    const id = req.usuarioID;
+    const idLower = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'nombre'], group: ['id'] });
+    if (idLower.length != 0) {
+        const data = [];
+        for (let i = 0; i < idLower.length; i++) {
+            const idCurrent = JSON.stringify(idLower[i].id)
+            var profile = await Actas.findOne({ where: { [Op.or]: [{ idsup2: idCurrent }, { idsup1: idCurrent }, { provider: idCurrent }, { enterprise: idCurrent }], send: false } })
+            if (profile != null) {
+                data.push({ "id": idCurrent, "nombre": idLower[i].nombre })
+            }
+        }
+        if (data) {
+            res.status(200).json(data);
+        }
+    }
+    else {
+        res.status(404).json({ message: 'No found' });
+    }
+}
+
+
+exports.getReadySend = async (req, res) => {
+    const id = req.usuarioID;
+    const idLower = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'nombre'], group: ['id'] });
+    if (idLower.length != 0) {
+        const data = [];
+        for (let i = 0; i < idLower.length; i++) {
+            const idCurrent = JSON.stringify(idLower[i].id)
+            var profile = await Actas.findOne({ where: { [Op.or]: [{ idsup2: idCurrent }, { idsup1: idCurrent }, { provider: idCurrent }, { enterprise: idCurrent }], send: true } })
+            if (profile != null) {
+                data.push({ "id": idCurrent, "nombre": idLower[i].nombre })
+            }
+        }
+        if (data) {
+            res.status(200).json(data);
+        }
+    }
+    else {
+        res.status(404).json({ message: 'No found' });
+    }
+}
