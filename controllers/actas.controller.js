@@ -730,7 +730,8 @@ exports.getReadySend = async (req, res) => {
 
 
 exports.setSend = async (req, res) => {
-    const { id, date, send } = req.body;
+    const { id }  = req.params; 
+    const { date, send } = req.body;
     await Actas.update({ send }, {where: { corte:date, [Op.or]:[{ provider: id}, {enterprise: id}, {idsup1: id}, {idsup2:id}] }}).then(data => {
         if(data != 0){
             return res.status(200).json({message: 'Updated!'});
