@@ -56,6 +56,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         preciosup2: {
             type: Sequelize.DOUBLE
+        },
+        namefile: {
+            type: Sequelize.TEXT
         }
     }, {freezeTableName:true});
     return actas;

@@ -134,7 +134,7 @@ exports.loadActa = async (req, res) => {
         return res.status(500).send({ message: 'No data recived!' })
     }
     else {
-        const { enterprise, provider, document, states, curp, nombreacta, requested, price } = req.body;
+        const { enterprise, provider, document, states, curp, nombreacta, requested, price, namefile } = req.body;
         try {
             const users = await Users.findOne({ where: { id: provider }, attributes: ['idSuper', 'precios'] });
             const super1 = await Users.findOne({ where: { id: users.idSuper }, attributes: ['idSuper', 'precios'] });
@@ -299,8 +299,8 @@ exports.loadActa = async (req, res) => {
             } catch {
                 precioSu2Flat = 0
             }
-            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price, hidden: false, idsup1:users.idSuper, preciosup1:precioSu1Flat, idsup2:super1.idSuper, preciosup2: precioSu2Flat},
-                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden', 'idsup1','preciosup1', 'idsup2', 'preciosup2'] });
+            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price, hidden: false, idsup1:users.idSuper, preciosup1:precioSu1Flat, idsup2:super1.idSuper, preciosup2: precioSu2Flat, namefile},
+                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden', 'idsup1','preciosup1', 'idsup2', 'preciosup2', 'namefile'] });
             if (newActa) {
                 res.status(201).json({message: 'Acta Added!'});
             }
