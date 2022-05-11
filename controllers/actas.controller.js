@@ -416,7 +416,7 @@ exports.getCorte = async (req, res) => {
 exports.getMyCorte = async (req, res) => {
     const id = req.params.id;
     if (id == "1") {
-        const actas = await Actas.findAll({ order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden:false }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = [];
         let current = 0;
@@ -448,7 +448,7 @@ exports.getMyCorte = async (req, res) => {
     }
 
     else {
-        const actas = await Actas.findAll({ where: { [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden:false, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = []
         let current = 0;
