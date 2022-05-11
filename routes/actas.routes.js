@@ -24,6 +24,7 @@ module.exports = (app) => {
     app.get("/api/actas/DontSend/", verifyAuth, controller.getDontSend);
     app.put("/api/actas/Send/:id", verifyAuth, controller.setSend);
     app.put("/api/actas/moveToTrash/", verifyAuth, controller.moveToTrash);
+    app.get("/api/actas/Trash", verifyAuth, controller.getTrash);
 
     app.get("/api/actas/getDatesCut/:id", controller.historialDate);
     app.get("/api/actas/getCut/:id/:date", verifyAuth, controller.getCorte);

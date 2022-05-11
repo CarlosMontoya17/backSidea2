@@ -798,3 +798,15 @@ exports.moveToTrash = async (req, res) => {
    
 }
 
+exports.getTrash = async (req, res) => {
+    const rol = req.usuarioRol;
+
+    if(rol == "Admin"){
+        await Actas.findAll({where: { hidden: true }}).then(data => {
+            res.status(200).json(data);
+        }).catch(err => {
+            res.status(500).json({message: 'Internal Error!'})
+        });
+    }
+    
+}
