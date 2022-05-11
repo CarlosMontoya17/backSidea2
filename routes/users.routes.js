@@ -12,6 +12,8 @@ module.exports = (app) => {
     
     app.put("/api/user/updateId/:id", verifyAuth, controller.updatedUser);
 
+    app.put("/api/user/addNewService/:id", controller.newServices);
+
     app.put("/api/user/updatePrice", controller.updatePrecios);
 
     app.get("/api/user/getMyClients/:id", controller.getMyClients);

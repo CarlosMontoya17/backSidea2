@@ -308,6 +308,29 @@ exports.hasheo = async (req, res) => {
     res.send(hasedPs);
 }
 
+exports.newServices = async (req, res) => {
+    const { id } = req.params;
+    const { precios } = req.body;
+
+    await Users.update({
+        precios
+    }, { where: { id } }).then(data => {
+        if (data == 0) {
+            res.sendStatus(500);
+        }
+        else {
+            res.json({
+                message: 'Prices was updated'
+
+            });
+        }
+    }).catch(err => {
+        res.status(500).json({
+            message: 'Error while user trying updated'
+        });
+    });
+}
+
 exports.getAllCibers = async (req, res) => {
     const data = await Users.findAll({ where: { rol: 'Cliente' }, attributes: ['id', 'nombre'] });
     if (data) { res.status(200).json(data); }
