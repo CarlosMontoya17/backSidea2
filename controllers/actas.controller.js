@@ -815,6 +815,10 @@ exports.getTrash = async (req, res) => {
             var currentProvider = usuarios.find(element => {
                 return element["id"] == Number(actas[i].enterprise);
             });
+            var nombreCulpable = usuarios.find(element => {
+                return element["id"] == Number(actas[i].idhidden);
+            });
+
             current++;
             data.push({
                 "i": current,
@@ -827,7 +831,7 @@ exports.getTrash = async (req, res) => {
                 "enterprise": currentUser.nombre,
                 "createdAt": actas[i].createdAt,
                 "price": actas[i].price,
-                "culpable": actas[i].idhidden
+                "culpable": nombreCulpable
             });
 
         }
