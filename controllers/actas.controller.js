@@ -781,4 +781,20 @@ exports.changeDate = async (req, res) => {
     
 }
 
+exports.moveToTrash = async (req, res) => {
+    const Userid = req.usuarioID;
+    const { id, hidden } = req.body;
+
+    await Actas.update({ hidden, idhidden:Userid }, {where: { id }}).then(data => {
+        if(data != 0){
+            return res.status(200).json({message: 'Updated!'});
+        }
+        else{
+            return res.status(404).json({message: 'No found!'});
+        }
+    }).catch(err => {
+        return res.status(500).json(err);
+    });
+   
+}
 

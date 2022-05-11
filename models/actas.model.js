@@ -62,6 +62,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         send: {
             type: Sequelize.BOOLEAN
+        },
+        idhidden: {
+            type: Sequelize.DOUBLE
         }
     }, {freezeTableName:true});
     return actas;
