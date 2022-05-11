@@ -387,7 +387,7 @@ exports.getCorte = async (req, res) => {
     }
     else {
 
-        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date, [Op.or]:[{hidden: false}, {hidden:null}] }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
