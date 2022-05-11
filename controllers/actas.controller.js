@@ -299,7 +299,23 @@ exports.loadActa = async (req, res) => {
             } catch {
                 precioSu2Flat = 0
             }
-            let newActa = await Actas.create({ enterprise, provider, document, states, curp, nombreacta, requested, idcreated: req.usuarioID, price, hidden: false, idsup1:users.idSuper, preciosup1:precioSu1Flat, idsup2:super1.idSuper, preciosup2: precioSu2Flat, namefile},
+            let newActa = await Actas.create({
+                 enterprise, 
+                 provider, 
+                 document, 
+                 states, 
+                 curp, 
+                 nombreacta, 
+                 requested, 
+                 idcreated: req.usuarioID, 
+                 price, 
+                 hidden: false, 
+                 idsup1:users.idSuper, 
+                 preciosup1:precioSu1Flat, 
+                 idsup2:super1.idSuper, 
+                 preciosup2: precioSu2Flat, 
+                 namefile
+                },
                 { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden', 'idsup1','preciosup1', 'idsup2', 'preciosup2', 'namefile'] });
             if (newActa) {
                 res.status(201).json({message: 'Acta Added!'});
@@ -744,6 +760,25 @@ exports.setSend = async (req, res) => {
     }); 
 }
 
-
+exports.changeDate = async (req, res) => {
+    const { id } = req.params;
+    const { date } = req.body;
+    if(req.usuarioRol != "Cliente" && req.usuarioRol != "Capturista"){
+        await Actas.update({ createdAt: date }, { where: {id} }).then(data => {
+            if(data != 0){
+                return res.status(200).json({message: 'Updated!'});
+            }
+            else{
+                return res.status(404).json({message: 'No found!'});
+            }
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+    }
+    else{
+        return res.status(500).json({message: 'Dont have auth!'})
+    }
+    
+}
 
 

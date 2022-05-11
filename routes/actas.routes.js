@@ -30,6 +30,7 @@ module.exports = (app) => {
 
     app.get("/api/actas/getDatesCut/:id", controller.historialDate);
     app.get("/api/actas/getCut/:id/:date", verifyAuth, controller.getCorte);
+    app.put("/api/actas/changeDate/:id", verifyAuth, controller.changeDate);
 
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 
