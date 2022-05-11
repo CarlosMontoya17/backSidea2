@@ -6,7 +6,7 @@ const Actas = database.Actas;
 
 
 exports.corte = () => {
-    cron.schedule('59 23 * * 5', () => {
+    cron.schedule('59 6 * * 6', () => {
         corteSemanal();
     }, { scheduled: true, timezone: 'America/Mexico_City' })
 
