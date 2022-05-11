@@ -300,25 +300,25 @@ exports.loadActa = async (req, res) => {
                 precioSu2Flat = 0
             }
             let newActa = await Actas.create({
-                 enterprise, 
-                 provider, 
-                 document, 
-                 states, 
-                 curp, 
-                 nombreacta, 
-                 requested, 
-                 idcreated: req.usuarioID, 
-                 price, 
-                 hidden: false, 
-                 idsup1:users.idSuper, 
-                 preciosup1:precioSu1Flat, 
-                 idsup2:super1.idSuper, 
-                 preciosup2: precioSu2Flat, 
-                 namefile
-                },
-                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden', 'idsup1','preciosup1', 'idsup2', 'preciosup2', 'namefile'] });
+                enterprise,
+                provider,
+                document,
+                states,
+                curp,
+                nombreacta,
+                requested,
+                idcreated: req.usuarioID,
+                price,
+                hidden: false,
+                idsup1: users.idSuper,
+                preciosup1: precioSu1Flat,
+                idsup2: super1.idSuper,
+                preciosup2: precioSu2Flat,
+                namefile
+            },
+                { field: ['enterprise', 'provider', 'document', 'states', 'curp', 'nombreacta', 'requested', 'idcreated', 'price', 'hidden', 'idsup1', 'preciosup1', 'idsup2', 'preciosup2', 'namefile'] });
             if (newActa) {
-                res.status(201).json({message: 'Acta Added!'});
+                res.status(201).json({ message: 'Acta Added!' });
             }
         } catch (error) {
             res.status(500).json(error);
@@ -416,7 +416,7 @@ exports.getCorte = async (req, res) => {
 exports.getMyCorte = async (req, res) => {
     const id = req.params.id;
     if (id == "1") {
-        const actas = await Actas.findAll({ where: { hidden:false }, order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden: false }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = [];
         let current = 0;
@@ -441,14 +441,14 @@ exports.getMyCorte = async (req, res) => {
                 "createdAt": actas[i].createdAt,
                 "price": actas[i].price
             });
-            
+
         }
         res.status(200).json(data);
 
     }
 
     else {
-        const actas = await Actas.findAll({ where: { hidden:false, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden: false, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = []
         let current = 0;
@@ -746,136 +746,100 @@ exports.getReadySend = async (req, res) => {
 
 
 exports.setSend = async (req, res) => {
-    const { id }  = req.params; 
+    const { id } = req.params;
     const { date, send } = req.body;
-    await Actas.update({ send }, {where: { corte:date, [Op.or]:[{ provider: id}, {enterprise: id}, {idsup1: id}, {idsup2:id}] }}).then(data => {
-        if(data != 0){
-            return res.status(200).json({message: 'Updated!'});
+    await Actas.update({ send }, { where: { corte: date, [Op.or]: [{ provider: id }, { enterprise: id }, { idsup1: id }, { idsup2: id }] } }).then(data => {
+        if (data != 0) {
+            return res.status(200).json({ message: 'Updated!' });
         }
-        else{
-            return res.status(404).json({message: 'No found!'});
+        else {
+            return res.status(404).json({ message: 'No found!' });
         }
     }).catch(err => {
-        res.status(500).json({message: 'Internal Error!'});
-    }); 
+        res.status(500).json({ message: 'Internal Error!' });
+    });
 }
 
 exports.changeDate = async (req, res) => {
     const { id } = req.params;
     const { date } = req.body;
-    if(req.usuarioRol != "Cliente" && req.usuarioRol != "Capturista"){
-        await Actas.update({ createdAt: date }, { where: {id} }).then(data => {
-            if(data != 0){
-                return res.status(200).json({message: 'Updated!'});
+    if (req.usuarioRol != "Cliente" && req.usuarioRol != "Capturista") {
+        await Actas.update({ createdAt: date }, { where: { id } }).then(data => {
+            if (data != 0) {
+                return res.status(200).json({ message: 'Updated!' });
             }
-            else{
-                return res.status(404).json({message: 'No found!'});
+            else {
+                return res.status(404).json({ message: 'No found!' });
             }
         }).catch(err => {
             return res.status(500).json(err);
         });
     }
-    else{
-        return res.status(500).json({message: 'Dont have auth!'})
+    else {
+        return res.status(500).json({ message: 'Dont have auth!' })
     }
-    
+
 }
 
 exports.moveToTrash = async (req, res) => {
     const Userid = req.usuarioID;
     const { id, hidden } = req.body;
 
-    await Actas.update({ hidden, idhidden:Userid }, {where: { id }}).then(data => {
-        if(data != 0){
-            return res.status(200).json({message: 'Updated!'});
+    await Actas.update({ hidden, idhidden: Userid }, { where: { id } }).then(data => {
+        if (data != 0) {
+            return res.status(200).json({ message: 'Updated!' });
         }
-        else{
-            return res.status(404).json({message: 'No found!'});
+        else {
+            return res.status(404).json({ message: 'No found!' });
         }
     }).catch(err => {
         return res.status(500).json(err);
     });
-   
+
 }
 
 exports.getTrash = async (req, res) => {
     const rol = req.usuarioRol;
 
-    if(rol == "Admin"){
-        const id = req.params.id;
-        if (JSON.stringify(id) == "1") {
-            const actas = await Actas.findAll({ where: { hidden:true }, order: [['id', 'ASC']] });
-            const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
-            let data = [];
-            let current = 0;
-            for (let i = 0; i < actas.length; i++) {
-    
-                var currentUser = usuarios.find(element => {
-                    return element["id"] == Number(actas[i].provider);
-                });
-                var currentProvider = usuarios.find(element => {
-                    return element["id"] == Number(actas[i].enterprise);
-                });
-                current++;
-                data.push({
-                    "i": current,
-                    "id": actas[i].id,
-                    "document": actas[i].document,
-                    "curp": actas[i].curp,
-                    "states": actas[i].states,
-                    "nombreacta": actas[i].nombreacta,
-                    "provider": currentProvider.nombre,
-                    "enterprise": currentUser.nombre,
-                    "createdAt": actas[i].createdAt,
-                    "price": actas[i].price,
-                    "culpable": actas[i].idhidden
-                });
-                
-            }
-            res.status(200).json(data);
-    
+    if (rol == "Admin") {
+
+        const actas = await Actas.findAll({ where: { hidden: true }, order: [['id', 'ASC']] });
+        const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
+        let data = [];
+        let current = 0;
+        for (let i = 0; i < actas.length; i++) {
+
+            var currentUser = usuarios.find(element => {
+                return element["id"] == Number(actas[i].provider);
+            });
+            var currentProvider = usuarios.find(element => {
+                return element["id"] == Number(actas[i].enterprise);
+            });
+            current++;
+            data.push({
+                "i": current,
+                "id": actas[i].id,
+                "document": actas[i].document,
+                "curp": actas[i].curp,
+                "states": actas[i].states,
+                "nombreacta": actas[i].nombreacta,
+                "provider": currentProvider.nombre,
+                "enterprise": currentUser.nombre,
+                "createdAt": actas[i].createdAt,
+                "price": actas[i].price,
+                "culpable": actas[i].idhidden
+            });
+
         }
-    
-        else {
-            const actas = await Actas.findAll({ where: { hidden:true, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
-            const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
-            let data = []
-            let current = 0;
-            for (let i = 0; i < actas.length; i++) {
-    
-                var currentUser = usuarios.find(element => {
-                    return element["id"] == Number(actas[i].provider);
-                });
-                var currentProvider = usuarios.find(element => {
-                    return element["id"] == Number(actas[i].enterprise);
-                });
-    
-                var superVisor = usuarios.find(element => {
-                    return element["id"] == Number(actas[i].idsup1);
-                })
-                current++;
-                data.push({
-                    "i": current,
-                    "id": actas[i].id,
-                    "document": actas[i].document,
-                    "curp": actas[i].curp,
-                    "states": actas[i].states,
-                    "nombreacta": actas[i].nombreacta,
-                    "provider": currentProvider.nombre,
-                    "enterprise": currentUser.nombre,
-                    "createdAt": actas[i].createdAt,
-                    "price": actas[i].price,
-                    "pay2": superVisor.nombre,
-                    "buy": actas[i].preciosup1,
-                    "culpable": actas[i].idhidden
-                });
-            }
-            res.status(200).json(data);
-        }
+        res.status(200).json(data);
+
+
+
+
     }
 
 
 
-    
-    
+
+
 }
