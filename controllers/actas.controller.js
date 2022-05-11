@@ -802,11 +802,80 @@ exports.getTrash = async (req, res) => {
     const rol = req.usuarioRol;
 
     if(rol == "Admin"){
-        await Actas.findAll({where: { hidden: true }}).then(data => {
+        const id = req.params.id;
+        if (id == "1") {
+            const actas = await Actas.findAll({ where: { hidden:true }, order: [['id', 'ASC']] });
+            const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
+            let data = [];
+            let current = 0;
+            for (let i = 0; i < actas.length; i++) {
+    
+                var currentUser = usuarios.find(element => {
+                    return element["id"] == Number(actas[i].provider);
+                });
+                var currentProvider = usuarios.find(element => {
+                    return element["id"] == Number(actas[i].enterprise);
+                });
+                current++;
+                data.push({
+                    "i": current,
+                    "id": actas[i].id,
+                    "document": actas[i].document,
+                    "curp": actas[i].curp,
+                    "states": actas[i].states,
+                    "nombreacta": actas[i].nombreacta,
+                    "provider": currentProvider.nombre,
+                    "enterprise": currentUser.nombre,
+                    "createdAt": actas[i].createdAt,
+                    "price": actas[i].price,
+                    "culpable": actas[i].idhidden
+                });
+                
+            }
             res.status(200).json(data);
-        }).catch(err => {
-            res.status(500).json({message: 'Internal Error!'})
-        });
+    
+        }
+    
+        else {
+            const actas = await Actas.findAll({ where: { hidden:true, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
+            const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
+            let data = []
+            let current = 0;
+            for (let i = 0; i < actas.length; i++) {
+    
+                var currentUser = usuarios.find(element => {
+                    return element["id"] == Number(actas[i].provider);
+                });
+                var currentProvider = usuarios.find(element => {
+                    return element["id"] == Number(actas[i].enterprise);
+                });
+    
+                var superVisor = usuarios.find(element => {
+                    return element["id"] == Number(actas[i].idsup1);
+                })
+                current++;
+                data.push({
+                    "i": current,
+                    "id": actas[i].id,
+                    "document": actas[i].document,
+                    "curp": actas[i].curp,
+                    "states": actas[i].states,
+                    "nombreacta": actas[i].nombreacta,
+                    "provider": currentProvider.nombre,
+                    "enterprise": currentUser.nombre,
+                    "createdAt": actas[i].createdAt,
+                    "price": actas[i].price,
+                    "pay2": superVisor.nombre,
+                    "buy": actas[i].preciosup1,
+                    "culpable": actas[i].idhidden
+                });
+            }
+            res.status(200).json(data);
+        }
     }
+
+
+
+    
     
 }
