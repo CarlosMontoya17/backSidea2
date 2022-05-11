@@ -363,8 +363,9 @@ exports.getCorte = async (req, res) => {
     const idToken = req.usuarioID;
     const myData = await Users.findOne({ where: { id }, attributes: ["rol"] });
 
+    
     if (date == "null") {
-        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null }, [Op.or]:[{hidden: false}, {hidden:null}]  }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { hidden: null || false , [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -387,7 +388,7 @@ exports.getCorte = async (req, res) => {
     }
     else {
 
-        await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date, [Op.or]:[{hidden: false}, {hidden:null}] }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { hidden: null || false ,  [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -400,7 +401,13 @@ exports.getCorte = async (req, res) => {
                 else if (idToken == data[i].idsup2) {
                     precio = data[i].preciosup2
                 }
-                arreglo = { "document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta": data[i].nombreacta, "curp": data[i].curp, "price": precio }
+                arreglo = { 
+                    "document": data[i].document, 
+                    "createdAt": data[i].createdAt, 
+                    "states": data[i].states, 
+                    "nombreacta": data[i].nombreacta, 
+                    "curp": data[i].curp, "price": precio 
+                }
                 dataFull.push(arreglo);
             }
             return res.status(200).json(dataFull);
@@ -447,7 +454,7 @@ exports.getMyCorte = async (req, res) => {
 
     }
     else {
-        const actas = await Actas.findAll({ where: { hidden: false, [Op.or]: [{ idcreated: id }, { provider: id }, {idsup1: id}, {idsup2: id}] }, order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden: false, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = []
         let current = 0;
