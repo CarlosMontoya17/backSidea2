@@ -363,7 +363,6 @@ exports.getCorte = async (req, res) => {
     const idToken = req.usuarioID;
     const myData = await Users.findOne({ where: { id }, attributes: ["rol"] });
 
-
     if (date == "null") {
         await Actas.findAll({ where: { [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
@@ -448,7 +447,7 @@ exports.getMyCorte = async (req, res) => {
 
     }
     else {
-        const actas = await Actas.findAll({ where: { hidden: false, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden: false, [Op.or]: [{ idcreated: id }, { provider: id }, {idsup1: id}] }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = []
         let current = 0;
