@@ -415,6 +415,7 @@ exports.getCorte = async (req, res) => {
 
 exports.getMyCorte = async (req, res) => {
     const id = req.params.id;
+
     if (id == "1") {
         const actas = await Actas.findAll({ where: { hidden: false }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
@@ -446,7 +447,6 @@ exports.getMyCorte = async (req, res) => {
         res.status(200).json(data);
 
     }
-
     else {
         const actas = await Actas.findAll({ where: { hidden: false, [Op.or]: [{ idcreated: id }, { provider: id }] }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
@@ -454,16 +454,23 @@ exports.getMyCorte = async (req, res) => {
         let current = 0;
         for (let i = 0; i < actas.length; i++) {
 
+
             var currentUser = usuarios.find(element => {
                 return element["id"] == Number(actas[i].provider);
             });
             var currentProvider = usuarios.find(element => {
                 return element["id"] == Number(actas[i].enterprise);
             });
-
-            var superVisor = usuarios.find(element => {
-                return element["id"] == Number(actas[i].idsup1);
-            })
+            var superVisor;
+            if(actas[i].idsup1 == null){
+                superVisor = "";
+            }
+            else{
+                superVisor = usuarios.find(element => {
+                    return element["id"] == Number(actas[i].idsup1);
+                })
+            }
+            
             current++;
             data.push({
                 "i": current,
@@ -748,16 +755,17 @@ exports.getReadySend = async (req, res) => {
 exports.setSend = async (req, res) => {
     const { id } = req.params;
     const { date, send } = req.body;
-    await Actas.update({ send }, { where: { corte: date, [Op.or]: [{ provider: id }, { enterprise: id }, { idsup1: id }, { idsup2: id }] } }).then(data => {
-        if (data != 0) {
-            return res.status(200).json({ message: 'Updated!' });
-        }
-        else {
-            return res.status(404).json({ message: 'No found!' });
-        }
-    }).catch(err => {
-        res.status(500).json({ message: 'Internal Error!' });
-    });
+    res.send(date);
+    // await Actas.update({ send }, { where: { corte: date, [Op.or]: [{ provider: id }, { enterprise: id }, { idsup1: id }, { idsup2: id }] } }).then(data => {
+    //     if (data != 0) {
+    //         return res.status(200).json({ message: 'Updated!' });
+    //     }
+    //     else {
+    //         return res.status(404).json({ message: 'No found!' });
+    //     }
+    // }).catch(err => {
+    //     res.status(500).json({ message: 'Internal Error!' });
+    // });
 }
 
 exports.changeDate = async (req, res) => {
