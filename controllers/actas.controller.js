@@ -803,7 +803,7 @@ exports.getTrash = async (req, res) => {
 
     if(rol == "Admin"){
         const id = req.params.id;
-        if (id == "1") {
+        if (JSON.stringify(id) == "1") {
             const actas = await Actas.findAll({ where: { hidden:true }, order: [['id', 'ASC']] });
             const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
             let data = [];
