@@ -17,9 +17,16 @@ exports.upPDF = (req, res) => {
         var data = {};
         pdfExtract.extract(path.resolve('assets/docs/' + file.originalname), options).then(data => {
             const page = data.pages[0].content;
-            console.log(page[5].str);
+
             const tipo = page[13].str;
             const tipo2 = page[10].str;
+            let paginaString = [];
+            for (let i = 0; i < page.length; i++) {
+                paginaString.push(page[i].str);
+
+            }
+
+
             let curp, estado, nombre, apellidos;
             if (tipo.includes("Acta")) {
                 switch (tipo) {
@@ -28,6 +35,14 @@ exports.upPDF = (req, res) => {
                         estado = page[10].str;
                         nombre = page[21].str;
                         apellidos = page[23].str + " " + page[25].str;
+                        if (nombre == " ") {
+                            let personaregistrada = paginaString.findIndex(function finder(data) { return data === "Datos de la Persona Registrada" });
+                            nombre = paginaString[personaregistrada + 1]
+                        }
+                        if (apellidos == "  ") {
+                            let personaregistrada = paginaString.findIndex(function finder(data) { return data === "Datos de la Persona Registrada" });
+                            apellidos = paginaString[personaregistrada + 3] + " " + paginaString[personaregistrada + 5]
+                        }
                         data = { tipo, curp, estado, nombre, apellidos }
                         res.send(data);
                         break;
@@ -120,7 +135,24 @@ exports.upPDF = (req, res) => {
                 res.json(data);
             }
             else {
-                res.status(406).send({ message: 'Actas/NSS Only!' });
+
+                if (paginaString.includes("Acta de Nacimiento")) {
+                    let curpIndex = paginaString.findIndex(function finder(data) { return data === "Clave Única de Registro de Población" });
+                    curp = paginaString[curpIndex+2];
+                    let stateIndex = paginaString.findIndex(function finder(data) { return data === "LUGAR DE REGISTRO" });
+                    estado = paginaString[stateIndex+2];
+                    let personaregistrada = paginaString.findIndex(function finder(data) { return data === "Datos de la Persona Registrada" });
+                    nombre = paginaString[personaregistrada + 1]
+                    apellidos = paginaString[personaregistrada + 3] + " " + paginaString[personaregistrada + 5]
+                    data = { tipo, curp, estado, nombre, apellidos }
+                    res.send(data);
+                }
+                else{
+                    res.status(406).send({ message: 'Actas/NSS Only!' });
+                }
+                
+
+
             }
 
         }).catch(err => {
@@ -173,6 +205,7 @@ exports.loadActa = async (req, res) => {
                     break;
             }
             let state;
+
             switch (states) {
                 case "CHIAPAS":
                     state = "chia";
@@ -280,6 +313,9 @@ exports.loadActa = async (req, res) => {
                     state = "";
                     break;
             }
+            if (states.includes("ESTADOS UNIDOS")) {
+                state = "ext"
+            }
             let precioSu1Flat;
             try {
                 precioSu1Flat = users.precios[documento]
@@ -363,9 +399,9 @@ exports.getCorte = async (req, res) => {
     const idToken = req.usuarioID;
     const myData = await Users.findOne({ where: { id }, attributes: ["rol"] });
 
-    
+
     if (date == "null") {
-        await Actas.findAll({ where: { hidden: null || false , [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -388,7 +424,7 @@ exports.getCorte = async (req, res) => {
     }
     else {
 
-        await Actas.findAll({ where: { hidden: null || false ,  [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -401,12 +437,12 @@ exports.getCorte = async (req, res) => {
                 else if (idToken == data[i].idsup2) {
                     precio = data[i].preciosup2
                 }
-                arreglo = { 
-                    "document": data[i].document, 
-                    "createdAt": data[i].createdAt, 
-                    "states": data[i].states, 
-                    "nombreacta": data[i].nombreacta, 
-                    "curp": data[i].curp, "price": precio 
+                arreglo = {
+                    "document": data[i].document,
+                    "createdAt": data[i].createdAt,
+                    "states": data[i].states,
+                    "nombreacta": data[i].nombreacta,
+                    "curp": data[i].curp, "price": precio
                 }
                 dataFull.push(arreglo);
             }
@@ -454,7 +490,7 @@ exports.getMyCorte = async (req, res) => {
 
     }
     else {
-        const actas = await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ idcreated: id }, { provider: id }, {idsup1: id}, {idsup2: id}] }, order: [['id', 'ASC']] });
+        const actas = await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ idcreated: id }, { provider: id }, { idsup1: id }, { idsup2: id }] }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
         let data = []
         let current = 0;
@@ -468,15 +504,15 @@ exports.getMyCorte = async (req, res) => {
                 return element["id"] == Number(actas[i].enterprise);
             });
             var superVisor;
-            if(actas[i].idsup1 == null){
+            if (actas[i].idsup1 == null) {
                 superVisor = "";
             }
-            else{
+            else {
                 superVisor = usuarios.find(element => {
                     return element["id"] == Number(actas[i].idsup1);
                 })
             }
-            
+
             current++;
             data.push({
                 "i": current,
