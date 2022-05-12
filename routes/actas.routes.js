@@ -31,4 +31,7 @@ module.exports = (app) => {
     app.put("/api/actas/changeDate/:id", verifyAuth, controller.changeDate);
     app.delete("/api/actas/deleteActa/:id", verifyAuth, controller.deleteActa);
 
+
+    app.get("/api/actas/getAllDates/", verifyAuth, controller.getAllDates);
+
 };
