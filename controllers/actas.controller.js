@@ -313,7 +313,7 @@ exports.loadActa = async (req, res) => {
                     state = "";
                     break;
             }
-            if (states.includes("ESTADOS UNIDOS")) {
+            if (states.includes("ESTADOS")) {
                 state = "ext"
             }
             let precioSu1Flat;
