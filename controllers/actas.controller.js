@@ -138,19 +138,19 @@ exports.upPDF = (req, res) => {
 
                 if (paginaString.includes("Acta de Nacimiento")) {
                     let curpIndex = paginaString.findIndex(function finder(data) { return data === "Clave Única de Registro de Población" });
-                    curp = paginaString[curpIndex+2];
+                    curp = paginaString[curpIndex + 2];
                     let stateIndex = paginaString.findIndex(function finder(data) { return data === "LUGAR DE REGISTRO" });
-                    estado = paginaString[stateIndex+2];
+                    estado = paginaString[stateIndex + 2];
                     let personaregistrada = paginaString.findIndex(function finder(data) { return data === "Datos de la Persona Registrada" });
                     nombre = paginaString[personaregistrada + 1]
                     apellidos = paginaString[personaregistrada + 3] + " " + paginaString[personaregistrada + 5]
                     data = { tipo, curp, estado, nombre, apellidos }
                     res.send(data);
                 }
-                else{
+                else {
                     res.status(406).send({ message: 'Actas/NSS Only!' });
                 }
-                
+
 
 
             }
@@ -222,6 +222,12 @@ exports.loadActa = async (req, res) => {
                 case "VERACRUZ":
                     state = "vera";
                     break;
+                case "VERACRUZ DE IGNACIO DE LA":
+                    state = "vera";
+                    break;
+                case "VERACRUZ DE IGNACIO DE LA LLAVE":
+                    state = "vera";
+                    break;
                 case "COAHUILA":
                     state = "coah";
                     break;
@@ -273,7 +279,7 @@ exports.loadActa = async (req, res) => {
                 case "ZACATECAS":
                     state = "zaca";
                     break;
-                case "TAMAUILIPAS":
+                case "TAMAULIPAS":
                     state = "tama";
                     break;
                 case "MORELOS":
@@ -301,6 +307,9 @@ exports.loadActa = async (req, res) => {
                     state = "nl";
                     break;
                 case "MEXICO":
+                    state = "mex";
+                    break;
+                case "CIUDAD DE MEXICO":
                     state = "mex";
                     break;
                 case "QUINTANA ROO":
@@ -401,7 +410,7 @@ exports.getCorte = async (req, res) => {
 
 
     if (date == "null") {
-        await Actas.findAll({ where: {  hidden: null || false, [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -897,40 +906,43 @@ exports.getTrash = async (req, res) => {
 /// C O R T E ////
 
 exports.getAllDates = async (req, res) => {
-    await Actas.findAll({group:['corte'], attributes: ['corte']}).then(data => {
+    await Actas.findAll({ group: ['corte'], attributes: ['corte'] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({message: 'Internal Error!'});
+        res.status(500).json({ message: 'Internal Error!' });
     });
 }
 
 exports.getUsersByDate = async (req, res) => {
-    const  id  = JSON.stringify(req.usuarioID);
+    const id = JSON.stringify(req.usuarioID);
     const { date } = req.params;
 
     var fecha;
-    if(date == "null"){
+    if (date == "null") {
         fecha = null;
     }
-    else{
+    else {
         fecha = date;
     }
 
-    const idLows = await Users.findAll({where: { idSuper: id }, attributes: ['id', 'username', 'nombre'], order: [['id', 'ASC']]});
+    const idLows = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'username', 'nombre'], order: [['id', 'ASC']] });
 
     let currents = [];
     for (let i = 0; i < idLows.length; i++) {
-        actasCurrent = await Actas.findOne({where: { corte: fecha, hidden: false,
-            [Op.or]: [{enterprise: JSON.stringify(idLows[i].id) }, {provider: JSON.stringify(idLows[i].id)}, {idsup1: JSON.stringify(idLows[i].id)}, {idsup2: JSON.stringify(idLows[i].id)}]},
+        actasCurrent = await Actas.findOne({
+            where: {
+                corte: fecha, hidden: false,
+                [Op.or]: [{ enterprise: JSON.stringify(idLows[i].id) }, { provider: JSON.stringify(idLows[i].id) }, { idsup1: JSON.stringify(idLows[i].id) }, { idsup2: JSON.stringify(idLows[i].id) }]
+            },
             attributes: ['provider', 'idsup1', 'idsup2']
         });
-        if(actasCurrent != null){
+        if (actasCurrent != null) {
             currents.push(idLows[i]);
         }
     }
 
     res.status(200).json(currents);
-    
+
 
 }
 
