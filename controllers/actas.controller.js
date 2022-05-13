@@ -328,7 +328,7 @@ exports.loadActa = async (req, res) => {
             let precioSu1Flat = 0;
             try {
                 precioSu1Flat = users.precios[documento]
-                if (JSON.stringify(precioSu1Flat).length > 1) {
+                if (JSON.stringify(precioSu1Flat).length > 1 && documento == "nac") {
                     precioSu1Flat = precioSu1Flat[state]
                 }
             } catch {
@@ -338,12 +338,17 @@ exports.loadActa = async (req, res) => {
             let precioSu2Flat = 0;
             try {
                 precioSu2Flat = super1.precios[documento]
-                if (JSON.stringify(precioSu2Flat).length > 1) {
+                
+                if (JSON.stringify(precioSu2Flat).length > 1 && documento == "nac") {
                     precioSu2Flat = precioSu2Flat[state]
+                    
                 }
             } catch {
                 precioSu2Flat = 0
             }
+
+
+            
             let newActa = await Actas.create({
                 enterprise,
                 provider,
@@ -366,7 +371,7 @@ exports.loadActa = async (req, res) => {
                 res.status(201).json({ message: 'Acta Added!' });
             }
         } catch (error) {
-            res.status(500).json(error);
+           res.status(500).json(error);
         }
     }
 
