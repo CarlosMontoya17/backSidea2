@@ -138,19 +138,19 @@ exports.upPDF = (req, res) => {
 
                 if (paginaString.includes("Acta de Nacimiento")) {
                     let curpIndex = paginaString.findIndex(function finder(data) { return data === "Clave Única de Registro de Población" });
-                    curp = paginaString[curpIndex + 2];
+                    curp = paginaString[curpIndex+2];
                     let stateIndex = paginaString.findIndex(function finder(data) { return data === "LUGAR DE REGISTRO" });
-                    estado = paginaString[stateIndex + 2];
+                    estado = paginaString[stateIndex+2];
                     let personaregistrada = paginaString.findIndex(function finder(data) { return data === "Datos de la Persona Registrada" });
                     nombre = paginaString[personaregistrada + 1]
                     apellidos = paginaString[personaregistrada + 3] + " " + paginaString[personaregistrada + 5]
                     data = { tipo, curp, estado, nombre, apellidos }
                     res.send(data);
                 }
-                else {
+                else{
                     res.status(406).send({ message: 'Actas/NSS Only!' });
                 }
-
+                
 
 
             }
@@ -897,53 +897,40 @@ exports.getTrash = async (req, res) => {
 /// C O R T E ////
 
 exports.getAllDates = async (req, res) => {
-    await Actas.findAll({ group: ['corte'], attributes: ['corte'] }).then(data => {
+    await Actas.findAll({group:['corte'], attributes: ['corte']}).then(data => {
         res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({ message: 'Internal Error!' });
+        res.status(500).json({message: 'Internal Error!'});
     });
 }
 
 exports.getUsersByDate = async (req, res) => {
-    const id = JSON.stringify(req.usuarioID);
+    const  id  = JSON.stringify(req.usuarioID);
     const { date } = req.params;
 
     var fecha;
-    if (date == "null") {
+    if(date == "null"){
         fecha = null;
     }
-    else {
+    else{
         fecha = date;
     }
 
-    const idLows = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'username', 'nombre'], order: [['id', 'ASC']] });
+    const idLows = await Users.findAll({where: { idSuper: id }, attributes: ['id', 'username', 'nombre'], order: [['id', 'ASC']]});
 
-    try {
-        let currents = [];
-        for (let i = 0; i < idLows.length; i++) {
-            actasCurrent = await Actas.findOne({
-                where: {
-                    corte: fecha, send: false || null,
-                    [Op.or]: [{ provider: JSON.stringify(idLows[i].id) }, { idsup1: JSON.stringify(idLows[i].id) }, { idsup2: JSON.stringify(idLows[i].id) }]
-                },
-                attributes: ['provider', 'idsup1', 'idsup2']
-            });
-            if (actasCurrent != null) {
-                currents.push(idLows[i]);
-            }
+    let currents = [];
+    for (let i = 0; i < idLows.length; i++) {
+        actasCurrent = await Actas.findOne({where: { corte: fecha, 
+            [Op.or]: [{provider: JSON.stringify(idLows[i].id)}, {idsup1: JSON.stringify(idLows[i].id)}, {idsup2: JSON.stringify(idLows[i].id)}]},
+            attributes: ['provider', 'idsup1', 'idsup2']
+        });
+        if(actasCurrent != null){
+            currents.push(idLows[i]);
         }
-
-        if (currents != []) {
-            return res.status(200).json(currents);
-        }
-        else {
-            return res.status(404).json({ message: 'No found!' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Internal error!' });
     }
 
-
+    res.status(200).json(currents);
+    
 
 }
 
