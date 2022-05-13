@@ -921,7 +921,7 @@ exports.getUsersByDate = async (req, res) => {
     let currents = [];
     for (let i = 0; i < idLows.length; i++) {
         actasCurrent = await Actas.findOne({where: { corte: fecha, 
-            [Op.or]: [{provider: JSON.stringify(idLows[i].id)}, {idsup1: JSON.stringify(idLows[i].id)}, {idsup2: JSON.stringify(idLows[i].id)}]},
+            [Op.or]: [{enterprise: JSON.stringify(idLows[i].id) }, {provider: JSON.stringify(idLows[i].id)}, {idsup1: JSON.stringify(idLows[i].id)}, {idsup2: JSON.stringify(idLows[i].id)}]},
             attributes: ['provider', 'idsup1', 'idsup2']
         });
         if(actasCurrent != null){
