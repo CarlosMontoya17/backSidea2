@@ -325,7 +325,7 @@ exports.loadActa = async (req, res) => {
             if (states.includes("ESTADOS")) {
                 state = "ext"
             }
-            let precioSu1Flat;
+            let precioSu1Flat = 0;
             try {
                 precioSu1Flat = users.precios[documento]
                 if (JSON.stringify(precioSu1Flat).length > 1) {
