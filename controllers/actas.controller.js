@@ -401,7 +401,7 @@ exports.getCorte = async (req, res) => {
 
 
     if (date == "null") {
-        await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { [Op.or]: [{hidden: null}, {hidden: false}] , [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: { [Op.is]: null } }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
@@ -424,7 +424,7 @@ exports.getCorte = async (req, res) => {
     }
     else {
 
-        await Actas.findAll({ where: { hidden: null || false, [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
+        await Actas.findAll({ where: { [Op.or]: [{hidden: null}, {hidden: false}], [Op.or]: [{ enterprise: id }, { provider: id }, { idsup1: id }, { idsup2: id }], corte: date }, order: [['createdAt', 'ASC']] }).then(data => {
             let dataFull = []
             for (let i = 0; i < data.length; i++) {
                 let precio;
