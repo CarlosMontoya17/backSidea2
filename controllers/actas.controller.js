@@ -894,7 +894,7 @@ exports.getTrash = async (req, res) => {
 
 }
 
-
+/// C O R T E ////
 
 exports.getAllDates = async (req, res) => {
     await Actas.findAll({group:['corte'], attributes: ['corte']}).then(data => {
@@ -902,5 +902,35 @@ exports.getAllDates = async (req, res) => {
     }).catch(err => {
         res.status(500).json({message: 'Internal Error!'});
     });
+}
+
+exports.getUsersByDate = async (req, res) => {
+    const  id  = JSON.stringify(req.usuarioID);
+    const { date } = req.params;
+
+    var fecha;
+    if(date == "null"){
+        fecha = null;
+    }
+    else{
+        fecha = date;
+    }
+
+    const idLows = await Users.findAll({where: { idSuper: id }, attributes: ['id', 'username', 'nombre'], order: [['id', 'ASC']]});
+    
+    let currents = [];
+    for (let i = 0; i < idLows.length; i++) {
+        actasCurrent = await Actas.findOne({where: { corte: fecha, send: false || null  , 
+            [Op.or]: [{provider: JSON.stringify(idLows[i].id)}, {idsup1: JSON.stringify(idLows[i].id)}, {idsup2: JSON.stringify(idLows[i].id)}]},
+            attributes: ['provider', 'idsup1', 'idsup2']
+        });
+        if(actasCurrent != null){
+            currents.push(idLows[i]);
+        }
+        
+    }
+    
+    res.status(200).json(currents);
+
 }
 

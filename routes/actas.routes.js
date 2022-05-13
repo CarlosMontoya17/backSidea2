@@ -33,5 +33,6 @@ module.exports = (app) => {
 
 
     app.get("/api/actas/getAllDates/", verifyAuth, controller.getAllDates);
+    app.get("/api/corte/getUsersByDate/:date", verifyAuth, controller.getUsersByDate);
 
 };
