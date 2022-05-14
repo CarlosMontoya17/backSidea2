@@ -35,4 +35,7 @@ module.exports = (app) => {
     app.get("/api/actas/getAllDates/", verifyAuth, controller.getAllDates);
     app.get("/api/corte/getUsersByDate/:date", verifyAuth, controller.getUsersByDate);
     app.get("/api/actas/getCut/:id/:date", verifyAuth, controller.getCorte);
+    
+    //Historial
+    app.get("/api/historial/getRegistersAt/:date", verifyAuth, controller.getRegistersAt);
 };

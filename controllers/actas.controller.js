@@ -947,7 +947,91 @@ exports.getUsersByDate = async (req, res) => {
     }
 
     res.status(200).json(currents);
-
-
 }
 
+
+exports.getRegistersAt = async (req, res) => {
+    const id = req.usuarioID;
+    const { date } = req.params;
+
+    let dateCurrent = date;
+    if( JSON.stringify(date) == "null"){
+        dateCurrent = null;
+    }
+
+    const usuarios = await Users.findAll({ attributes: ['id', 'username', 'nombre']});
+    const datos = await Actas.findAll({where: {
+        [Op.or]: [{ provider: JSON.stringify(id) }, {idsup1: JSON.stringify(id) }, {idsup2: JSON.stringify(id) }],
+        corte: dateCurrent, hidden: false
+    }, order: ['createdAt','id']});
+
+    if(datos.length > 0){
+        let dataToSend = [];
+        for (let i = 0; i < datos.length; i++) {
+            let empresa = usuarios.find(element => {
+                return element["id"] == Number(datos[i].enterprise);
+            })
+            let proveedor = usuarios.find(element => {
+                return element["id"] == Number(datos[i].provider);
+            })
+            var precio = 0;
+            var costo = 0;
+            var pagarA = "";
+
+
+            
+            if(datos[i].provider == id){
+                precio = datos[i].price;
+                costo = datos[i].preciosup1;
+                try {
+                    var pay2 = usuarios.find(element => {
+                        return element["id"] == Number(datos[i].idsup1);
+                    });
+                    pagarA = pay2.nombre;
+                } catch (error) {
+                    pagarA = "";
+                }
+                
+            }
+            else if(datos[i].idsup1 == id){
+                precio = datos[i].preciosup1;
+                costo = datos[i].preciosup2;
+                try {
+                    var pay2 = usuarios.find(element => {
+                        return element["id"] == Number(datos[i].idsup2);
+                    });
+                    pagarA = pay2.nombre;
+                } catch (error) {
+                    pagarA = "";
+                }
+                
+            }
+            else if(datos[i].idsup2 == id){
+                precio = datos[i].preciosup2;
+                costo = 0;
+                pagarA = "";
+            }
+
+
+
+            dataToSend.push({
+                "id": datos[i].id,
+                "enterprise": empresa.nombre,
+                "provider": proveedor.nombre,
+                "document": datos[i].document,
+                "price": precio,
+                "buy": costo,
+                "pay2": pagarA,
+                "createdAt": datos[i].createdAt,
+                "corte": datos[i].corte
+            });
+        }
+    
+    
+        return res.json(dataToSend);
+    }
+    else{
+        return res.status(404).json({message: 'No found!'})
+    }
+    
+}
