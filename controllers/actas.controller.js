@@ -1017,6 +1017,8 @@ exports.getRegistersAt = async (req, res) => {
             dataToSend.push({
                 "id": datos[i].id,
                 "enterprise": empresa.nombre,
+                "curp": datos[i].curp,
+                "states": datos[i].states,
                 "provider": proveedor.nombre,
                 "document": datos[i].document,
                 "price": precio,
