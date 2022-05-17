@@ -32,5 +32,4 @@ module.exports = (app) => {
 
     app.post("/api/hash/", controller.hasheo);
 
-    
 }
