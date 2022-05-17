@@ -22,6 +22,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         send: {
             type: Sequelize.BOOLEAN
+        },
+        comments: {
+            type: Sequelize.TEXT
         }
 
     }, {freezeTableName: true});
