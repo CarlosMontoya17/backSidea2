@@ -20,7 +20,7 @@ exports.createARequest = async (req, res) => {
 }
 
 exports.getRequestNoAttended = async (req, res) => {
-    await actas_req.findOne({where:{ send:false}}).then(data => {
+    await actas_req.findOne({where:{ send:false}, attributes: ['type', 'metadata']}).then(data => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json(err);
