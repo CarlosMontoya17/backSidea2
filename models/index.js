@@ -24,5 +24,6 @@ database.sequelize = sequelize;
 database.Users = require("./users.model")(sequelize,Sequelize);
 database.Capturistas = require("./capturistas.model")(sequelize,Sequelize);
 database.Actas = require("./actas.model")(sequelize,Sequelize);
+database.Actas_req = require("./actas_req.model")(sequelize, Sequelize);
 database.Prospectos = require("./prospectos.model")(sequelize, Sequelize);
 module.exports = database;
