@@ -22,7 +22,7 @@ exports.createARequest = async (req, res) => {
 exports.getRequestNoAttended = async (req, res) => {
     await actas_req.findOne({where:{ send:false}, attributes: ['id','type', 'metadata']}).then(data => {
         if(data.length > 0){
-            await actas_req.update({send:true}, {where: {id:data.id}});
+            actas_req.update({send:true}, {where: {id:data.id}});
             res.status(200).json(data);
         }
         else{
