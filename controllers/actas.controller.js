@@ -147,6 +147,17 @@ exports.upPDF = (req, res) => {
                     data = { tipo, curp, estado, nombre, apellidos }
                     res.send(data);
                 }
+                else if(paginaString.includes("Acta de Defunción")){
+                    let curpIndex = paginaString.findIndex(function finder(data) { return data === "Clave Única de Registro de Población" });
+                    curp = paginaString[curpIndex + 2];
+                    let stateIndex = paginaString.findIndex(function finder(data) { return data === "Entidad de Registro" });
+                    estado = paginaString[stateIndex - 2];
+                    let personaregistrada = paginaString.findIndex(function finder(data) { return data === "Datos de la Persona Fallecida:" });
+                    nombre = paginaString[personaregistrada + 2]
+                    apellidos = paginaString[personaregistrada + 4] + " " + paginaString[personaregistrada + 6]
+                    data = { tipo: "Acta de Defunción", curp, estado, nombre, apellidos }
+                    res.send(data);
+                }
                 else {
                     res.status(406).send({ message: 'Actas/NSS Only!' });
                 }
