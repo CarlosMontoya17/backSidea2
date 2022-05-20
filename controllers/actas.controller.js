@@ -954,16 +954,24 @@ exports.getRegistersAt = async (req, res) => {
     const id = req.usuarioID;
     const { date } = req.params;
 
-    let dateCurrent = date;
-    if( JSON.stringify(date) == "null"){
-        dateCurrent = null;
-    }
-
     const usuarios = await Users.findAll({ attributes: ['id', 'username', 'nombre']});
-    const datos = await Actas.findAll({where: {
-        [Op.or]: [{ provider: JSON.stringify(id) }, {idsup1: JSON.stringify(id) }, {idsup2: JSON.stringify(id) }],
-        corte: dateCurrent, hidden: false
-    }, order: ['createdAt','id']});
+    var datos = [];
+
+
+
+    if(date != "null"){
+        datos = await Actas.findAll({where: {
+            [Op.or]: [{ provider: JSON.stringify(id) }, {idsup1: id }, {idsup2: id }],
+            corte: date, hidden: false
+        }, order: ['createdAt','id']});
+    }
+    else{
+        datos = await Actas.findAll({where: {
+            [Op.or]: [{ provider: JSON.stringify(id) }, {idsup1: id }, {idsup2: id }],
+            corte: {[Op.eq]: null} , hidden: false
+        }, order: ['createdAt','id']});
+    }
+    
 
     if(datos.length > 0){
         let dataToSend = [];
