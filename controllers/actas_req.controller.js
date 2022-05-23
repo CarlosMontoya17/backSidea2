@@ -44,7 +44,7 @@ exports.commentsUp = async (req, res) => {
 exports.obtainAllRequets = async (req, res) => {
     const id = req.usuarioID;
     await actas_req.findAll({
-        where: { id_req: id }
+        where: { id_req: id }, order: [['createdAt', 'ASC']]
     }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
