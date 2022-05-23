@@ -922,7 +922,7 @@ exports.getTrash = async (req, res) => {
 /// C O R T E ////
 
 exports.getAllDates = async (req, res) => {
-    await Actas.findAll({ group: ['corte'], attributes: ['corte'] }).then(data => {
+    await Actas.findAll({ group: ['corte'], attributes: ['corte'], order: [['corte', 'DESC']] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json({ message: 'Internal Error!' });
