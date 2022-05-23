@@ -61,10 +61,9 @@ exports.upPDF = async (req, res) => {
     }
     else {
         const nameFile = req.file.originalname;
-        const array = nameFile.split("-");
-        const id = array[0];
-        path = nameFile
-        console.log(path);
+        var array = nameFile.split("-");
+        var id = array[0];
+        var path = nameFile
         await actas_req.update({
             url: path
         }, { where: { id: Number(id) } }).then(data => {
