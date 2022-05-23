@@ -25,6 +25,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         comments: {
             type: Sequelize.TEXT
+        },
+        url: {
+            type: Sequelize.TEXT
+        },
+        preferences: {
+            type: Sequelize.TEXT
         }
 
     }, {freezeTableName: true});
