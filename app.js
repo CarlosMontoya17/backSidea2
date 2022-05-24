@@ -69,7 +69,11 @@ cron.corte();
 //     });
 // });
 
-const socket = require('socket.io')(server);
+const socket = require('socket.io')(server, {
+  cors: {
+    origin: '*'
+  }
+});
 socket.on('connection', socket => {
   console.log("Socket!")
 })
