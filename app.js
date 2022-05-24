@@ -8,6 +8,7 @@ var pCert = fs.readFileSync('./server.crt', 'utf8');
 const app = express();
 const cron = require("./auto/cron");
 
+
 app.use(cors());
 
 const options = {
@@ -15,7 +16,7 @@ const options = {
     cert: pCert
   }
   
-https.createServer(options, app).listen(3030, ()=> {
+const server = https.createServer(options, app).listen(3030, ()=> {
   console.log("Server working on port 3030");
 });
 
@@ -68,10 +69,15 @@ cron.corte();
 //     });
 // });
 
+const socket = require('socket.io')(server);
+socket.on('connection', socket => {
+  console.log("Socket!")
+})
+
 //Routes
 require('./routes/users.routes')(app);
 require('./routes/capturistas.routes')(app);
 require('./routes/actas.routes')(app);
 require('./routes/actas_req.routes')(app);
 require('./routes/publicidad.routes')(app);
-
+require('./routes/notifications.routes')(app, socket);
