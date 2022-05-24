@@ -6,5 +6,5 @@ const uploaderPublicidad = require("../middlewares/uploaderPublicidad");
 module.exports = (app) => {
         app.post('/api/ads/up/', verifyAuth, uploaderPublicidad.upload.single('ad') ,controller.upAd);
         app.get("/api/ads/getNames/", verifyAuth, controller.returnAll);
-        app.get("/api/ads/getImage/:id", verifyAuth, controller.returnImage);
+        app.get("/api/ads/getImage/:id", controller.returnImage);
 }
