@@ -73,4 +73,5 @@ require('./routes/users.routes')(app);
 require('./routes/capturistas.routes')(app);
 require('./routes/actas.routes')(app);
 require('./routes/actas_req.routes')(app);
+require('./routes/publicidad.routes')(app);
 
