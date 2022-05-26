@@ -1,5 +1,6 @@
 const db = require("../models");
 const actas_req = db.Actas_req;
+const Op = db.Sequelize.Op;
 const path = require('path');
 
 exports.createARequest = async (req, res) => {
@@ -20,7 +21,7 @@ exports.createARequest = async (req, res) => {
 }
 
 exports.getRequestNoAttended = async (req, res) => {
-    await actas_req.findOne({ where: { send: false }, attributes: ['id', 'type', 'metadata', 'id_req'] }).then(data => {
+    await actas_req.findOne({ where: { [Op.or]: [{send: false}, {comments: null}]  }, attributes: ['id', 'type', 'metadata', 'id_req'] }).then(data => {
         actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {

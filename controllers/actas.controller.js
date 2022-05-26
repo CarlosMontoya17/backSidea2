@@ -17,7 +17,6 @@ exports.upPDF = (req, res) => {
         var data = {};
         pdfExtract.extract(path.resolve('assets/docs/' + file.originalname), options).then(data => {
             const page = data.pages[0].content;
-
             const tipo = page[13].str;
             const tipo2 = page[10].str;
             let paginaString = [];
@@ -25,8 +24,6 @@ exports.upPDF = (req, res) => {
                 paginaString.push(page[i].str);
 
             }
-
-
             let curp, estado, nombre, apellidos;
             if (tipo.includes("Acta")) {
                 switch (tipo) {
@@ -158,8 +155,20 @@ exports.upPDF = (req, res) => {
                     data = { tipo: "Acta de Defunción", curp, estado, nombre, apellidos }
                     res.send(data);
                 }
+                else if(paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS")){
+                    curp = paginaString[paginaString.length - 7];
+                    nombreFull = paginaString[paginaString.length - 6];
+                    nombre = nombreFull.split(' ')[0] +" "+ nombreFull.split(' ')[1];
+                    apellidos = nombreFull.split(' ')[2] +" "+ nombreFull.split(' ')[3];
+                    estado = paginaString[paginaString.length - 14].split(',')[1].split(' ')[1];
+                    data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
+                    res.send(paginaString)
+                }
+
+
                 else {
                     res.status(406).send({ message: 'Actas/NSS Only!' });
+                    
                 }
 
 
