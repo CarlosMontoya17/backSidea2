@@ -21,7 +21,7 @@ exports.createARequest = async (req, res) => {
 }
 
 exports.getRequestNoAttended = async (req, res) => {
-    await actas_req.findOne({ where: { comments: null }, attributes: ['id', 'type', 'metadata', 'id_req'] }).then(data => {
+    await actas_req.findOne({ where: { comments: null }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
         actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {
