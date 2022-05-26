@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const database = require("../models");
 const Actas = database.Actas;
+const Actas_req = database.Actas_req;
 
 
 exports.corte = () => {
@@ -28,6 +29,18 @@ function corteSemanal(){
     } 
     today = yyyy+'-'+mm+'-'+dd;
     Actas.update({corte: today}, {where: {corte: null}}).then(data => {
+        if(data == 1){
+            console.log("Corte Realizado");
+        }
+        else{
+            console.log("No hay actas!");
+        }   
+    }).catch(err => {
+        console.log(err);
+    });
+
+
+    Actas_req.update({corte: today}, {where: {corte: null}}).then(data => {
         if(data == 1){
             console.log("Corte Realizado");
         }
