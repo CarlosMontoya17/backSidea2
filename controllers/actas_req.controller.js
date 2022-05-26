@@ -78,6 +78,18 @@ exports.upPDF = async (req, res) => {
 
 }
 
+exports.whomRequested = async (req, res) => {
+    const { id } = req.params;
+
+    await actas_req.findOne({where: {id}, attributes: ['id_req']}).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({ message: 'Internal Error!' });
+    });
+
+
+}
+
 
 exports.getMyActa = async (req, res) => {
     const { id } = req.params;
