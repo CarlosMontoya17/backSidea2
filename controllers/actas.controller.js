@@ -155,7 +155,7 @@ exports.upPDF = (req, res) => {
                     data = { tipo: "Acta de Defunción", curp, estado, nombre, apellidos }
                     res.send(data);
                 }
-                else if(paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS")){
+                else if(paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS") == true && paginaString.includes("POR ORIGINACIÓN DE CRÉDITO") == false){
                     curp = paginaString[paginaString.length - 7];
                     nombreFull = paginaString[paginaString.length - 6];
                     nombre = nombreFull.split(' ')[0] +" "+ nombreFull.split(' ')[1];
@@ -174,10 +174,18 @@ exports.upPDF = (req, res) => {
                     data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
                     res.send(data)
                 }
-
+                else if(paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS") == true && paginaString.includes("POR ORIGINACIÓN DE CRÉDITO") == true){
+                    curp = paginaString[paginaString.length - 36];
+                    nombreFull = paginaString[paginaString.length - 34];
+                    nombre = nombreFull.split(' ')[nombreFull.split(' ').length-1]
+                    apellidos = nombreFull.split(' ')[0] +" "+ nombreFull.split(' ')[1];
+                    estado = paginaString[paginaString.length - 18].split(' ')[0];
+                    data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
+                    res.send(data)
+                }
 
                 else {
-                    res.send(paginaString)
+                    res.send(paginaString);
                     //res.status(406).send({ message: 'Actas/NSS Only!' });
                     
                 }
