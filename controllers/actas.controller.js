@@ -506,18 +506,36 @@ exports.getMyCorte = async (req, res) => {
                 return element["id"] == Number(actas[i].enterprise);
             });
             current++;
-            data.push({
-                "i": current,
-                "id": actas[i].id,
-                "document": actas[i].document,
-                "curp": actas[i].curp,
-                "states": actas[i].states,
-                "nombreacta": actas[i].nombreacta,
-                "provider": currentProvider.nombre,
-                "enterprise": currentUser.nombre,
-                "createdAt": actas[i].createdAt,
-                "price": actas[i].price
-            });
+            try{
+                data.push({
+                    "i": current,
+                    "id": actas[i].id,
+                    "document": actas[i].document,
+                    "curp": actas[i].curp,
+                    "states": actas[i].states,
+                    "nombreacta": actas[i].nombreacta,
+                    "provider": currentProvider.nombre,
+                    "enterprise": currentUser.nombre,
+                    "createdAt": actas[i].createdAt,
+                    "price": actas[i].price
+                });
+            }
+            catch{
+                data.push({
+                    "i": current,
+                    "id": actas[i].id,
+                    "document": actas[i].document,
+                    "curp": actas[i].curp,
+                    "states": actas[i].states,
+                    "nombreacta": actas[i].nombreacta,
+                    "provider": "Usuario Eliminado",
+                    "enterprise": currentUser.nombre,
+                    "createdAt": actas[i].createdAt,
+                    "price": actas[i].price
+                });
+            }
+            
+            
 
         }
         res.status(200).json(data);
