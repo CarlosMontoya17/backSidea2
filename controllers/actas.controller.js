@@ -162,7 +162,7 @@ exports.upPDF = (req, res) => {
                     apellidos = nombreFull.split(' ')[2] +" "+ nombreFull.split(' ')[3];
                     estado = paginaString[paginaString.length - 14].split(',')[1].split(' ')[1];
                     data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
-                    res.send(paginaString)
+                    res.send(data)
                 }
 
 
@@ -219,6 +219,9 @@ exports.loadActa = async (req, res) => {
                     break;
                 case "CONSTANCIA DE NO INHABILITACIÓN":
                     documento = "inh";
+                    break;
+                case "AVISO PARA RETENCIÓN DE DESCUENTOS":
+                    documento = "ret";
                     break;
                 default:
                     documento = "";
