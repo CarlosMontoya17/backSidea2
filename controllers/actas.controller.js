@@ -164,10 +164,21 @@ exports.upPDF = (req, res) => {
                     data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
                     res.send(data)
                 }
+                else if(paginaString.includes("DE SUSPENSIÓN DE DESCUENTOS")){
+                    curp = paginaString[paginaString.length - 6];
+                    nombre = paginaString[paginaString.length - 11];
+                    nombreFull = paginaString[paginaString.length - 1];
+                    apellidos = nombreFull.split(' ')[nombreFull.split(' ').length-2] +" "+ nombreFull.split(' ')[nombreFull.split(' ').length-1];
+                    nombre = nombreFull.split(' ')[0];
+                    estado = paginaString[paginaString.length - 8].split(',')[1].split(' ')[1];
+                    data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
+                    res.send(data)
+                }
 
 
                 else {
-                    res.status(406).send({ message: 'Actas/NSS Only!' });
+                    res.send(paginaString)
+                    //res.status(406).send({ message: 'Actas/NSS Only!' });
                     
                 }
 
