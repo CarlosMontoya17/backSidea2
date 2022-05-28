@@ -5,15 +5,16 @@ const path = require('path');
 
 exports.createARequest = async (req, res) => {
     const id_req = req.usuarioID;
-    const { type, metadata } = req.body;
+    const { type, metadata, preferences } = req.body;
 
     console.log(id_req);
     await actas_req.create({
         type,
         metadata,
         id_req,
-        send: false
-    }, { fields: ['type', 'metadata', 'id_req', 'send'] }).then(data => {
+        send: false,
+        preferences
+    }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences'] }).then(data => {
         res.status(201).json({ message: 'Created!' })
     }).catch(err => {
         res.status(500).json(err);
