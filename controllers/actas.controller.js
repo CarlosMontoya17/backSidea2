@@ -944,19 +944,37 @@ exports.getTrash = async (req, res) => {
             });
 
             current++;
-            data.push({
-                "i": current,
-                "id": actas[i].id,
-                "document": actas[i].document,
-                "curp": actas[i].curp,
-                "states": actas[i].states,
-                "nombreacta": actas[i].nombreacta,
-                "provider": currentProvider.nombre,
-                "enterprise": currentUser.nombre,
-                "createdAt": actas[i].createdAt,
-                "price": actas[i].price,
-                "culpable": nombreCulpable
-            });
+            try{
+                data.push({
+                    "i": current,
+                    "id": actas[i].id,
+                    "document": actas[i].document,
+                    "curp": actas[i].curp,
+                    "states": actas[i].states,
+                    "nombreacta": actas[i].nombreacta,
+                    "provider": currentProvider.nombre,
+                    "enterprise": currentUser.nombre,
+                    "createdAt": actas[i].createdAt,
+                    "price": actas[i].price,
+                    "culpable": nombreCulpable
+                });
+            }
+            catch{
+                data.push({
+                    "i": current,
+                    "id": actas[i].id,
+                    "document": actas[i].document,
+                    "curp": actas[i].curp,
+                    "states": actas[i].states,
+                    "nombreacta": actas[i].nombreacta,
+                    "provider": currentProvider.nombre,
+                    "enterprise": "Usuario Eliminado",
+                    "createdAt": actas[i].createdAt,
+                    "price": actas[i].price,
+                    "culpable": nombreCulpable
+                });
+            }
+            
 
         }
         res.status(200).json(data);
