@@ -34,6 +34,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         corte:{ 
             type: Sequelize.DATE
+        },
+        ip_req: {
+            type: Sequelize.TEXT
         }
 
     }, {freezeTableName: true});
