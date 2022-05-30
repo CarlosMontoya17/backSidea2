@@ -46,6 +46,30 @@ exports.commentsUp = async (req, res) => {
 
 exports.obtainAllRequets = async (req, res) => {
     const id = req.usuarioID;
+
+    // if(id != 1){
+    //     await actas_req.findAll({
+    //         where: { id_req: id }, order: [['createdAt', 'DESC']]
+    //     }).then(data => {
+    //         res.status(200).json(data);
+    //     }).catch(err => {
+    //         res.status(500).json({
+    //             message: 'Internal Error!'
+    //         })
+    //     });
+    // }
+    // else{
+    //     await actas_req.findAll({
+    //         order: [['createdAt', 'DESC']]
+    //     }).then(data => {
+    //         res.status(200).json(data);
+    //     }).catch(err => {
+    //         res.status(500).json({
+    //             message: 'Internal Error!'
+    //         })
+    //     });
+    // }
+
     await actas_req.findAll({
         where: { id_req: id }, order: [['createdAt', 'DESC']]
     }).then(data => {
@@ -83,7 +107,7 @@ exports.upPDF = async (req, res) => {
 exports.whomRequested = async (req, res) => {
     const { id } = req.params;
 
-    await actas_req.findOne({where: {id}, attributes: ['id_req', 'preferences']}).then(data => {
+    await actas_req.findOne({ where: { id }, attributes: ['id_req', 'preferences'] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json({ message: 'Internal Error!' });
@@ -98,7 +122,7 @@ exports.getMyActa = async (req, res) => {
 
     await actas_req.findOne({ where: { id }, attributes: ['url'] }).then(data => {
 
-        res.sendFile( path.join(__dirname, "..", "assets", "actas", data.url) );
+        res.sendFile(path.join(__dirname, "..", "assets", "actas", data.url));
 
     }).catch(err => {
         res.status(500).json(err);

@@ -923,9 +923,9 @@ exports.moveToTrash = async (req, res) => {
 }
 
 exports.getTrash = async (req, res) => {
-    const rol = req.usuarioRol;
+    const id = req.usuarioID;
 
-    if (rol == "Admin") {
+    if (id == 1) {
 
         const actas = await Actas.findAll({ where: { hidden: true }, order: [['id', 'ASC']] });
         const usuarios = await Users.findAll({ attributes: ['id', 'nombre'] });
@@ -964,6 +964,9 @@ exports.getTrash = async (req, res) => {
 
 
 
+    }
+    else{
+        res.status(404).json({message: 'Dont have auth!'})
     }
 
 }
