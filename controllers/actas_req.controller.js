@@ -23,7 +23,7 @@ exports.createARequest = async (req, res) => {
 }
 
 exports.getRequestNoAttended = async (req, res) => {
-    await actas_req.findOne({ where: { comments: null }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+    await actas_req.findOne({ where: { [Op.or]: [{comments: null}, {comments: ""}]  }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
         actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {
@@ -107,7 +107,7 @@ exports.upPDF = async (req, res) => {
 exports.whomRequested = async (req, res) => {
     const { id } = req.params;
 
-    await actas_req.findOne({ where: { id }, attributes: ['id_req', 'preferences'] }).then(data => {
+    await actas_req.findOne({ where: { id }, attributes: ['id_req', 'preferences', 'metadata'] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json({ message: 'Internal Error!' });
