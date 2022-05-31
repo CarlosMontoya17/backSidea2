@@ -419,7 +419,6 @@ exports.loadActa = async (req, res) => {
 
 }
 
-
 exports.getMyDatesCuts = async (req, res) => {
     const { id } = req.params;
     const data = await Actas.findAll({ where: { enterprise: id }, group: ['corte'], attributes: ['corte'] });
@@ -450,6 +449,7 @@ exports.getCorteDate = async (req, res) => {
         });
     }
 }
+
 exports.getCorte = async (req, res) => {
     const { id, date } = req.params;
     const idToken = req.usuarioID;
@@ -508,8 +508,6 @@ exports.getCorte = async (req, res) => {
         });
     }
 }
-
-
 
 exports.getMyCorte = async (req, res) => {
     const id = req.params.id;
@@ -658,7 +656,6 @@ exports.countMyActasEnterprise = async (req, res) => {
     res.json(data);
 }
 
-
 exports.clientsCurrent = async (req, res) => {
     const id = JSON.stringify(req.usuarioID);
 
@@ -695,7 +692,6 @@ exports.getMyDocumentsUploaded = async (req, res) => {
 
 }
 
-
 exports.deleteActa = async (req, res) => {
     const rol = req.usuarioRol;
     if (rol == "") {
@@ -727,7 +723,6 @@ exports.deleteActa = async (req, res) => {
         });
     }
 }
-
 
 exports.documentsLevel = async (req, res) => {
     const id = JSON.stringify(req.usuarioID);
@@ -788,7 +783,6 @@ exports.documentsLevel = async (req, res) => {
 
 }
 
-
 exports.lowerToCut = async (req, res) => {
     const id = req.usuarioID;
     const idLower = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'nombre'], group: ['id'] });
@@ -845,7 +839,6 @@ exports.getDontSend = async (req, res) => {
     }
 }
 
-
 exports.getReadySend = async (req, res) => {
     const id = req.usuarioID;
     const idLower = await Users.findAll({ where: { idSuper: id }, attributes: ['id', 'nombre'], group: ['id'] });
@@ -866,7 +859,6 @@ exports.getReadySend = async (req, res) => {
         res.status(404).json({ message: 'No found' });
     }
 }
-
 
 exports.setSend = async (req, res) => {
     const { id } = req.params;

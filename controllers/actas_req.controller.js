@@ -7,7 +7,7 @@ exports.createARequest = async (req, res) => {
     const id_req = req.usuarioID;
     const { type, metadata, preferences } = req.body;
 
-    if(type == "CURP"){
+
         console.log(id_req);
         await actas_req.create({
             type,
@@ -21,7 +21,7 @@ exports.createARequest = async (req, res) => {
         }).catch(err => {
             res.status(500).json(err);
         });
-    }
+
     
 }
 
