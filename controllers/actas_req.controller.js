@@ -25,7 +25,7 @@ exports.createARequest = async (req, res) => {
         });
     }
     else{
-        res.json({message: 'NO HAVE AUTH!'})
+        res.status(500).json({message: 'NO HAVE AUTH!'})
     }
     
 
