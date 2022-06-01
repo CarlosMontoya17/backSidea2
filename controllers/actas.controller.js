@@ -599,6 +599,18 @@ exports.getMyCorte = async (req, res) => {
                 })
             }
 
+            var currentUploader = usuarios.find(element => {
+                return element["id"] == Number(actas[i].idcreated);
+            });
+
+            var nombreUploader = ""
+            try {
+                nombreUploader = currentUploader.nombre;
+            } catch (error) {
+                nombreUploader = "Usuario Eliminado";
+            }
+
+
             current++;
             data.push({
                 "i": current,
@@ -612,7 +624,8 @@ exports.getMyCorte = async (req, res) => {
                 "createdAt": actas[i].createdAt,
                 "price": actas[i].price,
                 "pay2": superVisor.nombre,
-                "buy": actas[i].preciosup1
+                "buy": actas[i].preciosup1,
+                "uploadBy": nombreUploader
             });
         }
         res.status(200).json(data);
