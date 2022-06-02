@@ -6,7 +6,7 @@ const path = require('path');
 exports.createARequest = async (req, res) => {
     const id_req = req.usuarioID;
     
-    // if(id_req == 983){
+    if(id_req == 983){
         const { type, metadata, preferences } = req.body;
 
 
@@ -23,10 +23,10 @@ exports.createARequest = async (req, res) => {
         }).catch(err => {
             res.status(500).json(err);
         });
-    // }
-    // else{
-    //     res.status(500).json({message: 'NO HAVE AUTH!'})
-    // }
+    }
+    else{
+        res.status(500).json({message: 'NO HAVE AUTH!'})
+    }
     
 
     
