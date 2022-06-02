@@ -5,8 +5,7 @@ const https = require("http");
 const cors = require("cors");
 var pKey = fs.readFileSync('./actasalinstante_com.key', 'utf8');
 var pCert = fs.readFileSync('./actasalinstante_com.crt', 'utf8');
-const multipart = require ("connect-multiparty");
-const multipartMiddleware = multipart();
+
 
 const app = express();
 const cron = require("./auto/cron");
