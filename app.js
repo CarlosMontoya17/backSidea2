@@ -1,10 +1,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const fs = require("fs");
-const https = require("http");
+const https = require("https");
 const cors = require("cors");
-var pKey = fs.readFileSync('./server.key', 'utf8');
-var pCert = fs.readFileSync('./server.crt', 'utf8');
+var pKey = fs.readFileSync('./actasalinstante_com.key', 'utf8');
+var pCert = fs.readFileSync('./actasalinstante_com.crt', 'utf8');
 const app = express();
 const cron = require("./auto/cron");
 
