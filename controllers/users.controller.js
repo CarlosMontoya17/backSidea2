@@ -344,18 +344,25 @@ exports.getMyData = async (req, res) => {
     if (idSuper) {
 
         var datos = {};
-        if (tipo == 'nac' && Object.keys(precios[tipo]).length > 2) {
-            if (estado) {
-                datos.precio = precios[tipo][estado];
+        try{
+            if (tipo == 'nac' && Object.keys(precios[tipo]).length > 2) {
+                if (estado) {
+                    datos.precio = precios[tipo][estado];
+                }
+                else {
+                    return res.status(500).json({ message: 'Indicate State/Mun' });
+                }
+    
             }
             else {
-                return res.status(500).json({ message: 'Indicate State/Mun' });
+                datos.precio = precios[tipo];
             }
-
         }
-        else {
-            datos.precio = precios[tipo];
+        catch{
+            datos.precio = 0;
         }
+        
+        
         const { username, id } = await Users.findOne({ where: { id: idSuper }, attributes: ['username', 'id'] });
         datos.superviser = id;
         return res.send(datos);
