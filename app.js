@@ -1,10 +1,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const fs = require("fs");
-const https = require("http");
+const https = require("https");
 const cors = require("cors");
-var pKey = fs.readFileSync('./actasalinstante_com.key', 'utf8');
-var pCert = fs.readFileSync('./actasalinstante_com.crt', 'utf8');
+var pKey = fs.readFileSync('./actasalinstante.key');
+var pCert = fs.readFileSync('./actasalinstante.crt');
 
 
 const app = express();
@@ -13,14 +13,16 @@ const cron = require("./auto/cron");
 
 app.use(cors());
 
+const port = 3030;
+
 const options = {
-    key: pKey,
-    cert: pCert
+    cert: pCert,
+    key: pKey
   }
 
 
-const server = https.createServer(options, app).listen(3030, ()=> {
-  console.log("Server working on port 3030");
+const server = https.createServer(options, app).listen(port, ()=> {
+  console.log(`Server is listening on ${port}`);
 });
 
 
