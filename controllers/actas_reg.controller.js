@@ -357,306 +357,306 @@ exports.upPDF = (req, res) => {
 }
 
 
-exports.newActaRegister = async (req, res) => {
-    /*  
-    document
-    state
-    curp
-    nameinside
-    namefile
-    level0
-    idcreated:Token
-    */
+// exports.newActaRegister = async (req, res) => {
+//     /*  
+//     document
+//     state
+//     curp
+//     nameinside
+//     namefile
+//     level0
+//     idcreated:Token
+//     */
 
-    var { document, state, curp, nameinside, namefile, level0 } = req.body;
-
-
-    if (!document && !state && !curp && !nameinside && !namefile && !level0) {
-        return res.status(500);
-    }
-    else {
-        const usuarios = await Users.findAll({ attributes: ['id', 'precios', 'idSuper'], group: ['id'] });
-
-        var encryptState = Encrypt.State(state);
-        var encryptDocument = Encrypt.Document(document);
-
-        //Setting to start from level 0
-        var datafull = [];
-        level0 = Number(level0);
-        var level1;
-        var level2;
-        var level3;
-        var level4;
-
-        var precio0;
-        var precio1;
-        var precio2;
-        var precio3;
-        var precio4;
-        var precio5;
+//     var { document, state, curp, nameinside, namefile, level0 } = req.body;
 
 
-        /*  --  LEVELS --   */
-        for (let i = 0; i < 6; i++) {
+//     if (!document && !state && !curp && !nameinside && !namefile && !level0) {
+//         return res.status(500);
+//     }
+//     else {
+//         const usuarios = await Users.findAll({ attributes: ['id', 'precios', 'idSuper'], group: ['id'] });
 
-            var data = usuarios.find(element => {
-                switch (i) {
-                    case 0:
-                        return element["id"] == level0;
-                        break;
-                    case 1:
-                        return element["id"] == level1;
-                        break;
-                    case 2:
-                        return element["id"] == level2;
-                        break;
-                    case 3:
-                        return element["id"] == level3;
-                        break;
-                    case 4:
-                        return element["id"] == level4;
-                        break;
-                    case 5:
-                        return element["id"] == level5;
-                        break;
-                    default:
-                        break;
-                }
-            });
-            switch (i) {
-                case 0:
-                    level1 = data.idSuper;
-                    try {
-                        if (typeof (data.precios[encryptDocument]) == "object") {
-                            precio0 = data.precios[encryptDocument][encryptState]
-                        }
-                        else if (typeof (data.precios[encryptDocument]) == "number") {
-                            precio0 = data.precios[encryptDocument]
-                        }
-                        else {
-                            precio0 = null;
-                        }
-                    } catch {
-                        precio0 = null;
-                    }
+//         var encryptState = Encrypt.State(state);
+//         var encryptDocument = Encrypt.Document(document);
+
+//         //Setting to start from level 0
+//         var datafull = [];
+//         level0 = Number(level0);
+//         var level1;
+//         var level2;
+//         var level3;
+//         var level4;
+
+//         var precio0;
+//         var precio1;
+//         var precio2;
+//         var precio3;
+//         var precio4;
+//         var precio5;
 
 
-                    break;
-                case 1:
-                    level2 = data.idSuper;
-                    try {
-                        if (typeof (data.precios[encryptDocument]) == "object") {
-                            precio0 = data.precios[encryptDocument][encryptState]
-                        }
-                        else if (typeof (data.precios[encryptDocument]) == "number") {
-                            precio0 = data.precios[encryptDocument]
-                        }
-                        else {
-                            precio0 = null;
-                        }
-                    } catch {
-                        precio0 = null;
-                    }
-                    break;
-                case 2:
-                    level3 = data.idSuper;
-                    try {
-                        if (typeof (data.precios[encryptDocument]) == "object") {
-                            precio0 = data.precios[encryptDocument][encryptState]
-                        }
-                        else if (typeof (data.precios[encryptDocument]) == "number") {
-                            precio0 = data.precios[encryptDocument]
-                        }
-                        else {
-                            precio0 = null;
-                        }
-                    } catch {
-                        precio0 = null;
-                    }
-                    break;
-                case 3:
-                    level4 = data.idSuper;
-                    try {
-                        if (typeof (data.precios[encryptDocument]) == "object") {
-                            precio0 = data.precios[encryptDocument][encryptState]
-                        }
-                        else if (typeof (data.precios[encryptDocument]) == "number") {
-                            precio0 = data.precios[encryptDocument]
-                        }
-                        else {
-                            precio0 = null;
-                        }
-                    } catch {
-                        precio0 = null;
-                    }
-                    break;
-                case 4:
-                    level5 = data.idSuper;
-                    break;
-                case 5:
-                    level6 = data.idSuper;
-                    break;
-                default:
-                    break;
-            }
+//         /*  --  LEVELS --   */
+//         for (let i = 0; i < 6; i++) {
 
-            let precio;
-
-            console.log(data);
-        }
+//             var data = usuarios.find(element => {
+//                 switch (i) {
+//                     case 0:
+//                         return element["id"] == level0;
+//                         break;
+//                     case 1:
+//                         return element["id"] == level1;
+//                         break;
+//                     case 2:
+//                         return element["id"] == level2;
+//                         break;
+//                     case 3:
+//                         return element["id"] == level3;
+//                         break;
+//                     case 4:
+//                         return element["id"] == level4;
+//                         break;
+//                     case 5:
+//                         return element["id"] == level5;
+//                         break;
+//                     default:
+//                         break;
+//                 }
+//             });
+//             switch (i) {
+//                 case 0:
+//                     level1 = data.idSuper;
+//                     try {
+//                         if (typeof (data.precios[encryptDocument]) == "object") {
+//                             precio0 = data.precios[encryptDocument][encryptState]
+//                         }
+//                         else if (typeof (data.precios[encryptDocument]) == "number") {
+//                             precio0 = data.precios[encryptDocument]
+//                         }
+//                         else {
+//                             precio0 = null;
+//                         }
+//                     } catch {
+//                         precio0 = null;
+//                     }
 
 
+//                     break;
+//                 case 1:
+//                     level2 = data.idSuper;
+//                     try {
+//                         if (typeof (data.precios[encryptDocument]) == "object") {
+//                             precio0 = data.precios[encryptDocument][encryptState]
+//                         }
+//                         else if (typeof (data.precios[encryptDocument]) == "number") {
+//                             precio0 = data.precios[encryptDocument]
+//                         }
+//                         else {
+//                             precio0 = null;
+//                         }
+//                     } catch {
+//                         precio0 = null;
+//                     }
+//                     break;
+//                 case 2:
+//                     level3 = data.idSuper;
+//                     try {
+//                         if (typeof (data.precios[encryptDocument]) == "object") {
+//                             precio0 = data.precios[encryptDocument][encryptState]
+//                         }
+//                         else if (typeof (data.precios[encryptDocument]) == "number") {
+//                             precio0 = data.precios[encryptDocument]
+//                         }
+//                         else {
+//                             precio0 = null;
+//                         }
+//                     } catch {
+//                         precio0 = null;
+//                     }
+//                     break;
+//                 case 3:
+//                     level4 = data.idSuper;
+//                     try {
+//                         if (typeof (data.precios[encryptDocument]) == "object") {
+//                             precio0 = data.precios[encryptDocument][encryptState]
+//                         }
+//                         else if (typeof (data.precios[encryptDocument]) == "number") {
+//                             precio0 = data.precios[encryptDocument]
+//                         }
+//                         else {
+//                             precio0 = null;
+//                         }
+//                     } catch {
+//                         precio0 = null;
+//                     }
+//                     break;
+//                 case 4:
+//                     level5 = data.idSuper;
+//                     break;
+//                 case 5:
+//                     level6 = data.idSuper;
+//                     break;
+//                 default:
+//                     break;
+//             }
 
+//             let precio;
 
-        /*   */
+//             console.log(data);
+//         }
 
 
 
 
-
-
-        /* Precio Level0 */
-
-        var data0 = usuarios.find(element => {
-            return element["id"] == Number(level0);
-        });
-        let precio0;
-        let level1 = data0.idSuper;
-        try {
-            if (typeof (data0.precios[encryptDocument]) == "object") {
-                precio0 = data0.precios[encryptDocument][encryptState]
-            }
-            else if (typeof (data0.precios[encryptDocument]) == "number") {
-                precio0 = data0.precios[encryptDocument]
-            }
-            else {
-                precio0 = null;
-            }
-        } catch {
-            precio0 = null;
-        }
-
-        /* Precio Level1 */
-        var data1 = usuarios.find(element => {
-            return element["id"] == Number(level1);
-        });
-        let precio1;
-        let level2 = data1.idSuper;
-        try {
-            if (typeof (data1.precios[encryptDocument]) == "object") {
-                precio1 = data1.precios[encryptDocument][encryptState]
-            }
-            else if (typeof (data1.precios[encryptDocument]) == "number") {
-                precio1 = data1.precios[encryptDocument]
-            }
-            else {
-                precio1 = null;
-            }
-        } catch {
-            precio1 = null;
-        }
-
-
-
-        /* Precio Level2 */
-        var data2 = usuarios.find(element => {
-            return element["id"] == Number(level2);
-        });
-        let precio2;
-        let level3 = data2.idSuper;
-
-        try {
-            if (typeof (data2.precios[encryptDocument]) == "object") {
-                precio2 = data2.precios[encryptDocument][encryptState]
-            }
-            else if (typeof (data2.precios[encryptDocument]) == "number") {
-                precio2 = data2.precios[encryptDocument]
-            }
-            else {
-                precio2 = null;
-            }
-        } catch {
-            precio2 = null;
-        }
-
-
-
-        /* Precio Level3 */
-        var data3 = usuarios.find(element => {
-            return element["id"] == Number(level3);
-        });
-        let precio3;
-        let level4 = data3.idSuper;
-        try {
-            if (typeof (data3.precios[encryptDocument]) == "object") {
-                precio3 = data3.precios[encryptDocument][encryptState]
-            }
-            else if (typeof (data3.precios[encryptDocument]) == "number") {
-                precio3 = data3.precios[encryptDocument]
-            }
-            else {
-                precio3 = null;
-            }
-        } catch {
-            precio3 = null;
-        }
-
-
-        /* Precio Level4 */
-        var data4 = usuarios.find(element => {
-            return element["id"] == Number(level4);
-        });
-        let precio4;
-        let level5 = data4.idSuper;
-
-        try {
-            if (typeof (data4.precios[encryptDocument]) == "object") {
-                precio4 = data4.precios[encryptDocument][encryptState]
-            }
-            else if (typeof (data4.precios[encryptDocument]) == "number") {
-                precio4 = data4.precios[encryptDocument]
-            }
-            else {
-                precio4 = null;
-            }
-        }
-        catch {
-            precio4 = null;
-        }
+//         /*   */
 
 
 
 
 
 
+//         /* Precio Level0 */
 
-        datafull.push({
-            "document": document,
-            "state": state,
-            "curp": curp,
-            "nameinside": nameinside,
-            "namefile": namefile,
-            "level0": level0,
-            "price0": precio0,
-            "level1": level1,
-            "price1": precio1,
-            "level2": level2,
-            "price2": precio2,
-            "level3": level3,
-            "price3": precio3,
-            "level4": level4,
-            "price4": precio4,
-        });
+//         var data0 = usuarios.find(element => {
+//             return element["id"] == Number(level0);
+//         });
+//         let precio0;
+//         let level1 = data0.idSuper;
+//         try {
+//             if (typeof (data0.precios[encryptDocument]) == "object") {
+//                 precio0 = data0.precios[encryptDocument][encryptState]
+//             }
+//             else if (typeof (data0.precios[encryptDocument]) == "number") {
+//                 precio0 = data0.precios[encryptDocument]
+//             }
+//             else {
+//                 precio0 = null;
+//             }
+//         } catch {
+//             precio0 = null;
+//         }
+
+//         /* Precio Level1 */
+//         var data1 = usuarios.find(element => {
+//             return element["id"] == Number(level1);
+//         });
+//         let precio1;
+//         let level2 = data1.idSuper;
+//         try {
+//             if (typeof (data1.precios[encryptDocument]) == "object") {
+//                 precio1 = data1.precios[encryptDocument][encryptState]
+//             }
+//             else if (typeof (data1.precios[encryptDocument]) == "number") {
+//                 precio1 = data1.precios[encryptDocument]
+//             }
+//             else {
+//                 precio1 = null;
+//             }
+//         } catch {
+//             precio1 = null;
+//         }
+
+
+
+//         /* Precio Level2 */
+//         var data2 = usuarios.find(element => {
+//             return element["id"] == Number(level2);
+//         });
+//         let precio2;
+//         let level3 = data2.idSuper;
+
+//         try {
+//             if (typeof (data2.precios[encryptDocument]) == "object") {
+//                 precio2 = data2.precios[encryptDocument][encryptState]
+//             }
+//             else if (typeof (data2.precios[encryptDocument]) == "number") {
+//                 precio2 = data2.precios[encryptDocument]
+//             }
+//             else {
+//                 precio2 = null;
+//             }
+//         } catch {
+//             precio2 = null;
+//         }
+
+
+
+//         /* Precio Level3 */
+//         var data3 = usuarios.find(element => {
+//             return element["id"] == Number(level3);
+//         });
+//         let precio3;
+//         let level4 = data3.idSuper;
+//         try {
+//             if (typeof (data3.precios[encryptDocument]) == "object") {
+//                 precio3 = data3.precios[encryptDocument][encryptState]
+//             }
+//             else if (typeof (data3.precios[encryptDocument]) == "number") {
+//                 precio3 = data3.precios[encryptDocument]
+//             }
+//             else {
+//                 precio3 = null;
+//             }
+//         } catch {
+//             precio3 = null;
+//         }
+
+
+//         /* Precio Level4 */
+//         var data4 = usuarios.find(element => {
+//             return element["id"] == Number(level4);
+//         });
+//         let precio4;
+//         let level5 = data4.idSuper;
+
+//         try {
+//             if (typeof (data4.precios[encryptDocument]) == "object") {
+//                 precio4 = data4.precios[encryptDocument][encryptState]
+//             }
+//             else if (typeof (data4.precios[encryptDocument]) == "number") {
+//                 precio4 = data4.precios[encryptDocument]
+//             }
+//             else {
+//                 precio4 = null;
+//             }
+//         }
+//         catch {
+//             precio4 = null;
+//         }
 
 
 
 
-        res.status(200).json(datafull);
 
 
 
-    }
+//         datafull.push({
+//             "document": document,
+//             "state": state,
+//             "curp": curp,
+//             "nameinside": nameinside,
+//             "namefile": namefile,
+//             "level0": level0,
+//             "price0": precio0,
+//             "level1": level1,
+//             "price1": precio1,
+//             "level2": level2,
+//             "price2": precio2,
+//             "level3": level3,
+//             "price3": precio3,
+//             "level4": level4,
+//             "price4": precio4,
+//         });
 
-}
+
+
+
+//         res.status(200).json(datafull);
+
+
+
+//     }
+
+// }
 
 
