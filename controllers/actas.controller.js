@@ -370,9 +370,10 @@ exports.loadActa = async (req, res) => {
             else if (states.includes("EXTRANJERO")) {
                 state = "ext"
             }
-            else if(state = ""){
+            else{
                 state = "ext"
             }
+
             let precioSu1Flat = 0;
             try {
                 precioSu1Flat = users.precios[documento]
