@@ -368,7 +368,7 @@ exports.newActaRegister = async (req, res) => {
     idcreated:Token
     */
 
-    const { document, state, curp, nameinside, namefile, level0 } = req.body;
+    var { document, state, curp, nameinside, namefile, level0 } = req.body;
 
 
     if (!document && !state && !curp && !nameinside && !namefile && !level0) {
@@ -381,25 +381,28 @@ exports.newActaRegister = async (req, res) => {
         var encryptDocument = Encrypt.Document(document);
 
         var datafull = [];
-
+        
         /* Precio Level0 */
+        level0 = Number(level0);
         var data0 = usuarios.find(element => {
-            let data = element["id"] == Number(level0);
-            return data;
+            return element["id"] == Number(level0);
         });
         let precio0;
         let level1 = data0.idSuper;
         try {
-            precio0 = data0.precios[encryptDocument][encryptState]
-        }
-        catch {
-            try {
+            if(typeof(data0.precios[encryptDocument])=="object"){
+                precio0 = data0.precios[encryptDocument][encryptState]
+            }
+            else if(typeof(data0.precios[encryptDocument])=="number"){
                 precio0 = data0.precios[encryptDocument]
-            } catch {
+            }
+            else{
                 precio0 = null;
             }
-
+        } catch {
+            precio0 = null;
         }
+        
         /* Precio Level1 */
         var data1 = usuarios.find(element => {
             return element["id"] == Number(level1);
@@ -407,15 +410,20 @@ exports.newActaRegister = async (req, res) => {
         let precio1;
         let level2 = data1.idSuper;
         try {
-            precio1 = data1.precios[encryptDocument][encryptState]
-        }
-        catch {
-            try {
+            if(typeof(data1.precios[encryptDocument])=="object"){
+                precio1 = data1.precios[encryptDocument][encryptState]
+            }
+            else if(typeof(data1.precios[encryptDocument])=="number"){
                 precio1 = data1.precios[encryptDocument]
-            } catch {
+            }
+            else{
                 precio1 = null;
             }
+        } catch{
+            precio1 = null;
         }
+
+        
 
         /* Precio Level2 */
         var data2 = usuarios.find(element => {
@@ -423,16 +431,22 @@ exports.newActaRegister = async (req, res) => {
         });
         let precio2;
         let level3 = data2.idSuper;
+
         try {
-            precio2 = data2.precios[encryptDocument][encryptState]
-        }
-        catch {
-            try {
+            if(typeof(data2.precios[encryptDocument])=="object"){
+                precio2 = data2.precios[encryptDocument][encryptState]
+            }
+            else if(typeof(data2.precios[encryptDocument])=="number"){
                 precio2 = data2.precios[encryptDocument]
-            } catch {
+            }
+            else{
                 precio2 = null;
             }
+        } catch {
+            precio2 = null;
         }
+
+        
 
         /* Precio Level3 */
         var data3 = usuarios.find(element => {
@@ -441,15 +455,19 @@ exports.newActaRegister = async (req, res) => {
         let precio3;
         let level4 = data3.idSuper;
         try {
-            precio3 = data3.precios[encryptDocument][encryptState]
-        }
-        catch {
-            try {
+            if(typeof(data3.precios[encryptDocument])=="object"){
+                precio3 = data3.precios[encryptDocument][encryptState]
+            }
+            else if(typeof(data3.precios[encryptDocument])=="number"){
                 precio3 = data3.precios[encryptDocument]
-            } catch {
+            }
+            else{
                 precio3 = null;
             }
+        } catch {
+            precio3 = null;
         }
+        
 
         /* Precio Level4 */
         var data4 = usuarios.find(element => {
@@ -457,18 +475,34 @@ exports.newActaRegister = async (req, res) => {
         });
         let precio4;
         let level5 = data4.idSuper;
-        try {
-            precio4 = data4.precios[encryptDocument][encryptState]
-        }
-        catch {
-            try {
-                precio4 = precio4.precios[encryptDocument]
-            } catch {
+
+        try{
+            if(typeof(data4.precios[encryptDocument])=="object"){
+                precio4 = data4.precios[encryptDocument][encryptState]
+            }
+            else if(typeof(data4.precios[encryptDocument])=="number"){
+                precio4 = data4.precios[encryptDocument]
+            }
+            else{
                 precio4 = null;
             }
         }
+        catch{
+            precio4 = null;
+        }
+
+
+
+
+
+
 
         datafull.push({
+            "document": document,
+            "state": state,
+            "curp": curp,
+            "nameinside": nameinside,
+            "namefile":namefile,
             "level0": level0,
             "price0": precio0,
             "level1": level1,
