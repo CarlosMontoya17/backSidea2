@@ -367,6 +367,12 @@ exports.loadActa = async (req, res) => {
             if (states.includes("ESTADOS")) {
                 state = "ext"
             }
+            else if (states.includes("EXTRANJERO")) {
+                state = "ext"
+            }
+            else if(state = ""){
+                state = "ext"
+            }
             let precioSu1Flat = 0;
             try {
                 precioSu1Flat = users.precios[documento]
