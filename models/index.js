@@ -29,4 +29,5 @@ database.Prospectos = require("./prospectos.model")(sequelize, Sequelize);
 database.Publicidad = require("./publicidad.model")(sequelize, Sequelize);
 database.Notifications = require("./notifications.model")(sequelize, Sequelize);
 database.Actas_reg = require("./actas_reg.model")(sequelize, Sequelize);
+database.Rfc_req = require("./rfc_req.model")(sequelize,Sequelize);
 module.exports = database;

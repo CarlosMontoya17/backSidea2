@@ -3,6 +3,7 @@ const Actas = database.Actas;
 const Users = database.Users;
 const Op = database.Sequelize.Op;
 const path = require("path");
+const { Console } = require("console");
 const PDFExtract = require('pdf.js-extract').PDFExtract;
 const pdfExtract = new PDFExtract();
 const options = {};
@@ -373,7 +374,6 @@ exports.loadActa = async (req, res) => {
             else{
                 state = "ext"
             }
-
             let precioSu1Flat = 0;
             try {
                 precioSu1Flat = users.precios[documento]
