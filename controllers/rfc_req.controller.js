@@ -22,7 +22,7 @@ exports.createOne = async (req, res) => {
 
 
 exports.getOneTask = async (req, res) => {
-    const data = await rfc_req.findOne({where: { [Op.or]: [{comments: null}, {comments: ""}]}, attributes: ['id', 'id_req', 'search', 'data']});
+    const data = await rfc_req.findOne({where: { [Op.or]: [{comments: null}, {comments: ""}]}, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']]});
     if(data != null){
         res.status(200).json(data);
     }
