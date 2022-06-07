@@ -69,17 +69,12 @@ exports.upPdf = async (req, res) => {
     } 
 }
 
-exports.reComment = async (req, res) => {
+exports.getMyData = async (req, res) => {
     const { id } = req.params;
-    const { comments } = req.body;
-    await rfc_req.update({ comments },{ where: {id} }).then(data => {
-        if(data != 0){
-            res.status(200).json({message: 'Updated!'});
-        }
-        else{
-            res.status(404).json({message: 'No found!'});
-        }
+
+    await rfc_req.findOne({where: {id}}).then(data => {
+        res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({message: 'Internal Error!'})
+        res.status(500).json({message: 'Internal Error!'});
     });
 }
