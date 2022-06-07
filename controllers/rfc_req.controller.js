@@ -26,9 +26,6 @@ exports.getOneTask = async (req, res) => {
     if(data != null){
         res.status(200).json(data);
     }
-    else{
-        res.status(404).json({message: 'No Found!'});
-    }
 }
 
 exports.getAllRequest = async (req, res) => {

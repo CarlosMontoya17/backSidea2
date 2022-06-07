@@ -1,7 +1,6 @@
 const db = require("../models");
 const Notifications = db.Notifications;
 
-
 exports.newNotification = async (req, res) => {
     const { id_req, data } = req.body;
 

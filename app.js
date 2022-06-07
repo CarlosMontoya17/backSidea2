@@ -36,12 +36,6 @@ app.use(function(req, res, next) {
     next();
   });
   
-/*
-app.listen(3030, () =>{
-    console.log("Server is running");
-});*/
-
-
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
