@@ -10,4 +10,5 @@ module.exports = (app) => {
 
     app.post("/api/rfc/request/robotUp/", uploaderRFC.upload.single('rfc'), controller.upPdf);
     app.get("/api/rfc/request/getMyRequest/", verifyAuth, controller.getAllRequest);
+    app.put("/api/rfc/request/reComment/:id", controller.reComment);
 }
