@@ -31,6 +31,16 @@ exports.getOneTask = async (req, res) => {
     }
 }
 
+exports.getAllRequest = async (req, res) => {
+    const id  = req.usuarioID;
+    await rfc_req.findAll({where: {id_req: id}, order: [['id', 'ASC']]}).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({message: 'Internal Error!'});
+    });
+
+}
+
 exports.addComments = async (req, res) => {
     const { comments } = req.body;
     const { id } = req.params;
@@ -41,4 +51,23 @@ exports.addComments = async (req, res) => {
     }); 
 
 
+}
+
+exports.upPdf = async (req, res) => {
+    const file = req.file;
+    if (!file) {
+        res.status(500).json({ message: 'No file!' });
+    }
+    else {
+        const nameFile = req.file.originalname;
+        var array = nameFile.split("-");
+        var id = array[0];
+        await rfc_req.update({
+            namefile: nameFile
+        }, { where: { id: Number(id) } }).then(data => {
+            res.status(201).json({ message: 'Ready' });
+        }).catch(err => {
+            res.status(500).json({ message: 'Internal Error!' });
+        });
+    } 
 }

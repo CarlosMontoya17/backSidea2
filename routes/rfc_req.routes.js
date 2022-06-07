@@ -1,5 +1,6 @@
 const controller = require("../controllers/rfc_req.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
+const uploaderRFC = require("../middlewares/uploaderRFC");
 
 
 module.exports = (app) => {
@@ -7,5 +8,6 @@ module.exports = (app) => {
     app.get("/api/rfc/request/getOne/", controller.getOneTask);
     app.put("/api/rfc/request/comment/:id", controller.addComments);
 
-
+    app.post("/api/rfc/request/robotUp/", uploaderRFC.upload.single('rfc'), controller.upPdf);
+    app.get("/api/rfc/request/getMyRequest/", verifyAuth, controller.getAllRequest);
 }
