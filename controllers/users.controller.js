@@ -172,36 +172,69 @@ exports.getOne = async (req, res) => {
 
 
 exports.create = async (req, res) => {
+
+
     const { username, password, rol, type, idSuper, precios, status, nombre } = req.body;
     try {
         let userExist = await Users.findOne({ where: { username } });
-        if(userExist != null){
-            return res.status(304).json({
-                message: 'User already exist'
-            });
-        }
-        else{
-            const salt = await bcrypt.genSalt(10);
-            const hasedPs = await bcrypt.hash(password, salt)
-            let newUser = await Users.create({
-                username,
-                password: hasedPs,
-                rol,
-                type,
-                idSuper,
-                precios,
-                status,
-                nombre
-            }, {
-                fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
-            });
-            if (newUser) {
-                return res.status(201).json({
-                    message: 'User created',
-                    data: newUser
+        try{
+            if(typeof(userExist.id) == "number"){
+                return res.status(304).json({
+                    message: 'User already exist'
                 });
+                
             }
-        }        
+        }
+        catch{
+            const salt = await bcrypt.genSalt(10);
+                    const hasedPs = await bcrypt.hash(password, salt)
+                    let newUser = await Users.create({
+                        username,
+                        password: hasedPs,
+                        rol,
+                        type,
+                        idSuper,
+                        precios,
+                        status,
+                        nombre
+                    }, {
+                        fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
+                    });
+                    if (newUser) {
+                        return res.status(201).json({
+                            message: 'User created',
+                            data: newUser
+                        });
+                    }
+        }
+        
+        // if(userExist != null){
+        //     return res.status(304).json({
+        //         message: 'User already exist'
+        //     });
+        // }
+        // else{
+        //     const salt = await bcrypt.genSalt(10);
+        //     const hasedPs = await bcrypt.hash(password, salt)
+        //     let newUser = await Users.create({
+        //         username,
+        //         password: hasedPs,
+        //         rol,
+        //         type,
+        //         idSuper,
+        //         precios,
+        //         status,
+        //         nombre
+        //     }, {
+        //         fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
+        //     });
+        //     if (newUser) {
+        //         return res.status(201).json({
+        //             message: 'User created',
+        //             data: newUser
+        //         });
+        //     }
+        // }        
     }
     catch (err) {
         console.log(err);
