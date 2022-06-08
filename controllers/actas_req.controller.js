@@ -5,12 +5,9 @@ const path = require('path');
 
 exports.createARequest = async (req, res) => {
     const id_req = req.usuarioID;
-    
-    // if(id_req == 983){
+    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios'] });
+    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
         const { type, metadata, preferences } = req.body;
-
-
-        console.log(id_req);
         await actas_req.create({
             type,
             metadata,
@@ -19,10 +16,17 @@ exports.createARequest = async (req, res) => {
             preferences,
             ip_req: req.ip
         }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
-            res.status(201).json({ message: 'Created!' })
+            return res.status(201).json({ message: 'Created!' })
         }).catch(err => {
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
+
+    }
+    else{
+        return res.status(401).json({message: 'Unauthorized!'});
+    }
+    // if(id_req == 983){
+
     // }
     // else{
     //     res.status(500).json({message: 'NO HAVE AUTH!'})
