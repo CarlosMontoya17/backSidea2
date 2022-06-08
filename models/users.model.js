@@ -38,6 +38,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         promocion: {
             type: Sequelize.JSON
+        },
+        servicios: {
+            type: Sequelize.TEXT
         }
     }, { freezeTableName: true });
     return Users;
