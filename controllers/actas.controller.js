@@ -561,19 +561,38 @@ exports.getMyCorte = async (req, res) => {
                 });
             }
             catch{
-                data.push({
-                    "i": current,
-                    "id": actas[i].id,
-                    "document": actas[i].document,
-                    "curp": actas[i].curp,
-                    "states": actas[i].states,
-                    "nombreacta": actas[i].nombreacta,
-                    "provider": "Usuario Eliminado",
-                    "enterprise": currentUser.nombre,
-                    "createdAt": actas[i].createdAt,
-                    "price": actas[i].price,
-                    "uploadBy": nombreUploader
-                });
+                try{
+                    data.push({
+                        "i": current,
+                        "id": actas[i].id,
+                        "document": actas[i].document,
+                        "curp": actas[i].curp,
+                        "states": actas[i].states,
+                        "nombreacta": actas[i].nombreacta,
+                        "provider": "Usuario Eliminado",
+                        "enterprise": currentUser.nombre,
+                        "createdAt": actas[i].createdAt,
+                        "price": actas[i].price,
+                        "uploadBy": nombreUploader
+                    });
+                }
+                catch{
+                    data.push({
+                        "i": current,
+                        "id": actas[i].id,
+                        "document": actas[i].document,
+                        "curp": actas[i].curp,
+                        "states": actas[i].states,
+                        "nombreacta": actas[i].nombreacta,
+                        "provider": "Usuario Eliminado",
+                        "enterprise": "Usuario Eliminado",
+                        "createdAt": actas[i].createdAt,
+                        "price": actas[i].price,
+                        "uploadBy": nombreUploader
+                    });
+                }
+
+                
             }
             
             
