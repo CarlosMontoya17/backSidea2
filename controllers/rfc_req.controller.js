@@ -30,7 +30,7 @@ exports.getOneTask = async (req, res) => {
 
 exports.getAllRequest = async (req, res) => {
     const id  = req.usuarioID;
-    await rfc_req.findAll({where: {id_req: id}, order: [['id', 'ASC']]}).then(data => {
+    await rfc_req.findAll({where: {id_req: id}, order: [['id', 'DESC']]}).then(data => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json({message: 'Internal Error!'});
