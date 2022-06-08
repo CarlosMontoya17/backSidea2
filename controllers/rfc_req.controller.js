@@ -96,7 +96,7 @@ exports.getMyData = async (req, res) => {
 exports.getMyRFC = async (req, res) => {
     const { id } = req.params;
 
-    await rfc_req.findOne({ where: { id }, attributes: ['url'] }).then(data => {
+    await rfc_req.findOne({ where: { id }, attributes: ['namefile'] }).then(data => {
 
         res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.url));
 
