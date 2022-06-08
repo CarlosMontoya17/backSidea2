@@ -2,7 +2,7 @@ const db = require("../models");
 const rfc_req = db.Rfc_req;
 const Users = db.Users;
 const { Op } = require("sequelize");
-
+const path = require("path");
 
 exports.createOne = async (req, res) => {
     const idUsuario = req.usuarioID;
@@ -97,7 +97,9 @@ exports.getMyRFC = async (req, res) => {
     const { id } = req.params;
 
     await rfc_req.findOne({ where: { id }, attributes: ['namefile'] }).then(data => {
+        console.log(data.namefile);
 
+        
         res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.namefile));
 
     }).catch(err => {
