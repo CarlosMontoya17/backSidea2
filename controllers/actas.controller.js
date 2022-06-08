@@ -629,6 +629,27 @@ exports.getMyCorte = async (req, res) => {
                 return element["id"] == Number(actas[i].idcreated);
             });
 
+            var supervisorname = ""
+            try {
+                supervisorname = superVisor.nombre;
+            } catch (error) {
+                supervisorname = "Usuario Eliminado";
+            }
+
+            var proveedorname = ""
+            try {
+                proveedorname = currentProvider.nombre;
+            } catch (error) {
+                proveedorname = "Usuario Eliminado";
+            }
+
+            var enterprisename = ""
+            try {
+                enterprisename = currentUser.nombre;
+            } catch (error) {
+                enterprisename = "Usuario Eliminado";
+            }
+
             var nombreUploader = ""
             try {
                 nombreUploader = currentUploader.nombre;
@@ -645,11 +666,11 @@ exports.getMyCorte = async (req, res) => {
                 "curp": actas[i].curp,
                 "states": actas[i].states,
                 "nombreacta": actas[i].nombreacta,
-                "provider": currentProvider.nombre,
-                "enterprise": currentUser.nombre,
+                "provider": proveedorname,
+                "enterprise": enterprisename,
                 "createdAt": actas[i].createdAt,
                 "price": actas[i].price,
-                "pay2": superVisor.nombre,
+                "pay2": supervisorname,
                 "buy": actas[i].preciosup1,
                 "uploadBy": nombreUploader
             });
