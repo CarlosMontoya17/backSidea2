@@ -1,5 +1,6 @@
 const db = require("../models");
 const actas_req = db.Actas_req;
+const Users = db.Users;
 const Op = db.Sequelize.Op;
 const path = require('path');
 
