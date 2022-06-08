@@ -98,7 +98,7 @@ exports.getMyRFC = async (req, res) => {
 
     await rfc_req.findOne({ where: { id }, attributes: ['namefile'] }).then(data => {
 
-        res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.url));
+        res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.namefile));
 
     }).catch(err => {
         res.status(500).json(err);
