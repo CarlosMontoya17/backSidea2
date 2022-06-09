@@ -6,24 +6,42 @@ const path = require("path");
 
 exports.createOne = async (req, res) => {
     const idUsuario = req.usuarioID;
-    
+
     const datosUsuario = await Users.findOne({ where: { id: idUsuario }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
-    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all")
-    {
-        const allUser = await Users.findAll({attributes: ['id', 'rol', 'username', 'idSuper']});
-        var usercurrent = datosUsuario;
-        while(true){
-            var superuser = allUser.find(element => {
-                return element["id"] == Number(usercurrent.idSuper);
-            });
-            usercurrent = superuser;
-            if(superuser.rol != "Sucursal" && superuser.rol != "Empleado"){
-                break;
-            }
-        }
-    
-        if(usercurrent.id == 1324){
+    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
+
+        if (idUsuario == 1324) {
             //Robot 2
+            const { search, data } = req.body;
+            await rfc_req.create({
+                search,
+                data,
+                ip: req.ip,
+                id_req: req.usuarioID,
+                robot: 2
+            }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
+                if (data != 0) {
+                    return res.status(201).json({ message: 'Created!' });
+                }
+            }).catch(err => {
+                return res.status(500).json({ message: 'Internal Error!' });
+            });
+        }
+        else {
+            const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
+            var usercurrent = datosUsuario;
+            while (true) {
+                var superuser = allUser.find(element => {
+                    return element["id"] == Number(usercurrent.idSuper);
+                });
+                usercurrent = superuser;
+                if (superuser.rol != "Sucursal" && superuser.rol != "Empleado") {
+                    break;
+                }
+            }
+
+            if (usercurrent.id == 1324) {
+                //Robot 2
                 const { search, data } = req.body;
                 await rfc_req.create({
                     search,
@@ -31,49 +49,57 @@ exports.createOne = async (req, res) => {
                     ip: req.ip,
                     id_req: req.usuarioID,
                     robot: 2
-                },{field: ['search', 'data', 'ip', 'id_req', 'robot']}).then(data => {
-                    if(data != 0){
-                        return res.status(201).json({message: 'Created!'});
+                }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
+                    if (data != 0) {
+                        return res.status(201).json({ message: 'Created!' });
                     }
                 }).catch(err => {
-                    return res.status(500).json({message: 'Internal Error!'});
+                    return res.status(500).json({ message: 'Internal Error!' });
                 });
+            }
+            else {
+                //Robot 1
+                const { search, data } = req.body;
+                await rfc_req.create({
+                    search,
+                    data,
+                    ip: req.ip,
+                    id_req: req.usuarioID,
+                    robot: 1
+                }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
+                    if (data != 0) {
+                        return res.status(201).json({ message: 'Created!' });
+                    }
+                }).catch(err => {
+                    return res.status(500).json({ message: 'Internal Error!' });
+                });
+            }
         }
-        else{
-            //Robot 1
-            const { search, data } = req.body;
-            await rfc_req.create({
-                search,
-                data,
-                ip: req.ip,
-                id_req: req.usuarioID,
-                robot: 1
-            },{field: ['search', 'data', 'ip', 'id_req', 'robot']}).then(data => {
-                if(data != 0){
-                    return res.status(201).json({message: 'Created!'});
-                }
-            }).catch(err => {
-                return res.status(500).json({message: 'Internal Error!'});
-            });
-        }
+
+
+
+
+
+
+
 
     }
-    else{
-        return res.status(401).json({message: 'Unauthorized!'});
+    else {
+        return res.status(401).json({ message: 'Unauthorized!' });
     }
 
 
-    
-
-
-        
-        
 
 
 
-    
 
-    
+
+
+
+
+
+
+
 
     // if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
     //     const { search, data } = req.body;
@@ -104,18 +130,18 @@ exports.createOne = async (req, res) => {
 
 
 exports.getOneTaskRobot1 = async (req, res) => {
-    await rfc_req.findOne({ where: { robot: 1 , [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
+    await rfc_req.findOne({ where: { robot: 1, [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({message: 'Internal Error!'});
+        res.status(500).json({ message: 'Internal Error!' });
     });
 }
 
 exports.getOneTaskRobot2 = async (req, res) => {
-    await rfc_req.findOne({ where: { robot: 2 , [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
+    await rfc_req.findOne({ where: { robot: 2, [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({message: 'Internal Error!'});
+        res.status(500).json({ message: 'Internal Error!' });
     });
 }
 
@@ -125,7 +151,7 @@ exports.getOneTask = async (req, res) => {
     await rfc_req.findOne({ where: { [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({message: 'Internal Error!'});
+        res.status(500).json({ message: 'Internal Error!' });
     });
 
 }
@@ -188,7 +214,7 @@ exports.getMyRFC = async (req, res) => {
     await rfc_req.findOne({ where: { id }, attributes: ['namefile'] }).then(data => {
         console.log(data.namefile);
 
-        
+
         res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.namefile));
 
     }).catch(err => {
