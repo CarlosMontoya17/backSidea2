@@ -5,7 +5,12 @@ const uploaderRFC = require("../middlewares/uploaderRFC");
 
 module.exports = (app) => {
     app.post("/api/rfc/request/new/", verifyAuth, controller.createOne);
+
     app.get("/api/rfc/request/getOne/", controller.getOneTask);
+
+    app.get("/api/rfc/request/robots/1/getOne/", controller.getOneTaskRobot1);
+    app.get("/api/rfc/request/robots/2/getOne/", controller.getOneTaskRobot2);
+
     app.put("/api/rfc/request/comment/:id", controller.addComments);
     app.get("/api/rfc/request/getMyData/:id", verifyAuth ,controller.getMyData);
 

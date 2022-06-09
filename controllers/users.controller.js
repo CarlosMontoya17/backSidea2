@@ -197,7 +197,7 @@ exports.create = async (req, res) => {
                         precios,
                         status,
                         nombre,
-                        servicios: 'actas'
+                        servicios: "actas"
                     }, {
                         fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
                     });

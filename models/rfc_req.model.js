@@ -31,6 +31,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         updatedAt: {
             type: Sequelize.TIME
+        },
+        robot: {
+            type: Sequelize.INTEGER
         }
 
     }, {freezeTableName: true});
