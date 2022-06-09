@@ -9,7 +9,7 @@ exports.createOne = async (req, res) => {
     const datosUsuario = await Users.findOne({ where: { id: idUsuario }, attributes: ['servicios'] });
     if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
 
-        
+
 
 
 
@@ -41,10 +41,12 @@ exports.createOne = async (req, res) => {
 
 
 exports.getOneTask = async (req, res) => {
-    const data = await rfc_req.findOne({ where: { [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] });
-    if (data != null) {
+    await rfc_req.findOne({ where: { [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
         res.status(200).json(data);
-    }
+    }).catch(err => {
+        res.status(500).json({message: 'Internal Error!'});
+    });
+
 }
 
 exports.getAllRequest = async (req, res) => {
