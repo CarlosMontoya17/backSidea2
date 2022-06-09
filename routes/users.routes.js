@@ -32,4 +32,6 @@ module.exports = (app) => {
 
     app.post("/api/hash/", controller.hasheo);
 
+    app.put("/api/update/services/:id", verifyAuth, controller.updateServices)
+
 }

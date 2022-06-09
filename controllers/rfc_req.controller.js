@@ -8,6 +8,12 @@ exports.createOne = async (req, res) => {
     const idUsuario = req.usuarioID;
     const datosUsuario = await Users.findOne({ where: { id: idUsuario }, attributes: ['servicios'] });
     if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
+
+        
+
+
+
+
         const { search, data } = req.body;
         await rfc_req.create({
             search,

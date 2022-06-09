@@ -196,7 +196,8 @@ exports.create = async (req, res) => {
                         idSuper,
                         precios,
                         status,
-                        nombre
+                        nombre,
+                        servicios: 'actas'
                     }, {
                         fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
                     });
@@ -241,6 +242,30 @@ exports.create = async (req, res) => {
         res.status(500).json(err);
     }
 }
+
+exports.updateServices = async (req, res) => {
+    const { id } = req.params;
+    const { servicios } = req.body;
+
+    await Users.update({servicios}, {where: {id}}).then(data => {
+            if(data != 0){
+                res.status(200).json({message: 'Updated!'});
+            }
+            else{
+                res.status(404).json({message})
+            }
+    }).catch(err => {
+        res.status(500).json({
+            message: 'Error while user trying updated'
+        });
+    });
+
+
+
+
+}
+
+
 
 exports.deleteUser = async (req, res, next) => {
     const rol = req.usuarioRol;
