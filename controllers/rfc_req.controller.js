@@ -8,6 +8,9 @@ exports.createOne = async (req, res) => {
     const idUsuario = req.usuarioID;
 
     const datosUsuario = await Users.findOne({ where: { id: idUsuario }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
+
+
+    
     if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
 
         if (idUsuario == 1324) {
@@ -75,55 +78,10 @@ exports.createOne = async (req, res) => {
                 });
             }
         }
-
-
-
-
-
-
-
-
     }
     else {
         return res.status(401).json({ message: 'Unauthorized!' });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
-    //     const { search, data } = req.body;
-    //     await rfc_req.create({
-    //         search,
-    //         data,
-    //         ip: req.ip,
-    //         id_req: req.usuarioID
-    //     },{field: ['search', 'data', 'ip', 'id_req']}).then(data => {
-    //         if(data != 0){
-    //             return res.status(201).json({message: 'Created!'});
-    //         }
-    //     }).catch(err => {
-    //         return res.status(500).json({message: 'Internal Error!'});
-    //     });
-    // }
-    // else{
-    //     return res.status(401).json({message: 'Unauthorized!'});
-    // }
-
-
-
-
-
 }
 
 

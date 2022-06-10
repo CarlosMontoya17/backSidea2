@@ -6,26 +6,96 @@ const path = require('path');
 
 exports.createARequest = async (req, res) => {
     const id_req = req.usuarioID;
-    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios'] });
+    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
+   
+   
     if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
 
 
         const { type, metadata, preferences } = req.body;
 
-        if(type != "Cadena Digital"){
+        // if(type != "Cadena Digital"){
+        //     await actas_req.create({
+        //         type,
+        //         metadata,
+        //         id_req,
+        //         send: false,
+        //         preferences,
+        //         ip_req: req.ip
+        //     }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
+        //         return res.status(201).json({ message: 'Created!' })
+        //     }).catch(err => {
+        //         return res.status(500).json(err);
+        //     });
+        // }
+
+
+        if(id_req == 1359){
             await actas_req.create({
                 type,
                 metadata,
                 id_req,
                 send: false,
                 preferences,
-                ip_req: req.ip
+                ip_req: req.ip,
+                robot:2
             }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
                 return res.status(201).json({ message: 'Created!' })
             }).catch(err => {
                 return res.status(500).json(err);
             });
         }
+        else{
+            const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
+            var usercurrent = datosUsuario;
+            while (true) {
+                var superuser = allUser.find(element => {
+                    return element["id"] == Number(usercurrent.idSuper);
+                });
+                usercurrent = superuser;
+                if (superuser.rol != "Sucursal" && superuser.rol != "Empleado") {
+                    break;
+                }
+            }
+
+
+            if(usercurrent.id == 1359){
+                await actas_req.create({
+                    type,
+                    metadata,
+                    id_req,
+                    send: false,
+                    preferences,
+                    ip_req: req.ip,
+                    robot:2
+                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
+                    return res.status(201).json({ message: 'Created!' })
+                }).catch(err => {
+                    return res.status(500).json(err);
+                });
+            }
+            else{
+                await actas_req.create({
+                    type,
+                    metadata,
+                    id_req,
+                    send: false,
+                    preferences,
+                    ip_req: req.ip,
+                    robot:1
+                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
+                    return res.status(201).json({ message: 'Created!' })
+                }).catch(err => {
+                    return res.status(500).json(err);
+                });
+            }
+
+
+
+        }
+
+
+
         
 
     }
@@ -45,6 +115,24 @@ exports.createARequest = async (req, res) => {
 
 exports.getRequestNoAttended = async (req, res) => {
     await actas_req.findOne({ where: { [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+        actas_req.update({ send: true }, { where: { id: data.id } });
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+}
+
+exports.getOneRobot1 = async (req, res) => {
+    await actas_req.findOne({ where: { robot: 1, [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+        actas_req.update({ send: true }, { where: { id: data.id } });
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+}
+
+exports.getOneRobot2 = async (req, res) => {
+    await actas_req.findOne({ where: { robot: 2, [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
         actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {

@@ -37,6 +37,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         ip_req: {
             type: Sequelize.TEXT
+        },
+        robot: {
+            type: Sequelize.INTEGER
         }
 
     }, {freezeTableName: true});
