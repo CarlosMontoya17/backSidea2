@@ -39,7 +39,7 @@ exports.createARequest = async (req, res) => {
                 preferences,
                 ip_req: req.ip,
                 robot: 2
-            }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
+            }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
                 return res.status(201).json({ message: 'Created!' })
             }).catch(err => {
                 return res.status(500).json(err);
@@ -54,7 +54,7 @@ exports.createARequest = async (req, res) => {
                     preferences,
                     ip_req: req.ip,
                     robot: 1
-                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
+                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
                     return res.status(201).json({ message: 'Created!' })
                 }).catch(err => {
                     return res.status(500).json(err);
