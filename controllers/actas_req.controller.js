@@ -30,7 +30,7 @@ exports.createARequest = async (req, res) => {
         // }
 
 
-        if(id_req == 1359){
+        if(id_req == 1500){
             await actas_req.create({
                 type,
                 metadata,
@@ -46,35 +46,6 @@ exports.createARequest = async (req, res) => {
             });
         }
         else{
-            const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
-            var usercurrent = datosUsuario;
-            while (true) {
-                var superuser = allUser.find(element => {
-                    return element["id"] == Number(usercurrent.idSuper);
-                });
-                usercurrent = superuser;
-                if (superuser.rol != "Sucursal" && superuser.rol != "Empleado") {
-                    break;
-                }
-            }
-
-
-            if(usercurrent.id == 1359){
-                await actas_req.create({
-                    type,
-                    metadata,
-                    id_req,
-                    send: false,
-                    preferences,
-                    ip_req: req.ip,
-                    robot:2
-                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
-                    return res.status(201).json({ message: 'Created!' })
-                }).catch(err => {
-                    return res.status(500).json(err);
-                });
-            }
-            else{
                 await actas_req.create({
                     type,
                     metadata,
@@ -88,16 +59,7 @@ exports.createARequest = async (req, res) => {
                 }).catch(err => {
                     return res.status(500).json(err);
                 });
-            }
-
-
-
         }
-
-
-
-        
-
     }
     else{
         return res.status(401).json({message: 'Unauthorized!'});
