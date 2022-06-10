@@ -10,10 +10,7 @@ exports.createARequest = async (req, res) => {
    
    
     if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
-
-
         const { type, metadata, preferences } = req.body;
-
         // if(type != "Cadena Digital"){
         //     await actas_req.create({
         //         type,
@@ -28,8 +25,6 @@ exports.createARequest = async (req, res) => {
         //         return res.status(500).json(err);
         //     });
         // }
-
-
         if(id_req == 1500){
             await actas_req.create({
                 type,
@@ -46,6 +41,37 @@ exports.createARequest = async (req, res) => {
             });
         }
         else{
+            const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
+            var usercurrent = datosUsuario;
+            while (true) {
+                var superuser = allUser.find(element => {
+                    return element["id"] == Number(usercurrent.idSuper);
+                });
+                usercurrent = superuser;
+                if (superuser.rol != "Sucursal" && superuser.rol != "Empleado" && superuser.rol != "Cliente") {
+                    break;
+                }
+            }
+
+
+            if (usercurrent.id == 1500) {
+                //Robot 2
+                await actas_req.create({
+                    type,
+                    metadata,
+                    id_req,
+                    send: false,
+                    preferences,
+                    ip_req: req.ip,
+                    robot: 2
+                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
+                    return res.status(201).json({ message: 'Created!' })
+                }).catch(err => {
+                    return res.status(500).json(err);
+                });
+            }
+            else {
+                //Robot 1
                 await actas_req.create({
                     type,
                     metadata,
@@ -59,6 +85,10 @@ exports.createARequest = async (req, res) => {
                 }).catch(err => {
                     return res.status(500).json(err);
                 });
+            }
+
+
+                
         }
     }
     else{
