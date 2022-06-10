@@ -461,6 +461,7 @@ exports.getCorte = async (req, res) => {
     const { id, date } = req.params;
     const idToken = req.usuarioID;
     const myData = await Users.findOne({ where: { id }, attributes: ["rol"] });
+    const users = await Users.findAll({attributes: ['id', 'nombre']});
 
 
     if (date == "null") {
@@ -477,7 +478,31 @@ exports.getCorte = async (req, res) => {
                 else if (idToken == data[i].idsup2) {
                     precio = data[i].preciosup2
                 }
-                arreglo = { "document": data[i].document, "createdAt": data[i].createdAt, "states": data[i].states, "nombreacta": data[i].nombreacta, "curp": data[i].curp, "price": precio }
+
+                var uploadBy = users.find(element => {
+                    return element["id"] == Number(data[i].idcreated);
+                });
+
+                var ciber = users.find(element => {
+                    return element["id"] == Number(data[i].enterprise);
+                });
+
+                var superviser = users.find(element => {
+                    return element["id"] == Number(data[i].provider);
+                });
+
+                arreglo = { 
+                    "document": data[i].document, 
+                    "createdAt": data[i].createdAt, 
+                    "states": data[i].states, 
+                    "nombreacta": data[i].nombreacta, 
+                    "curp": data[i].curp, 
+                    "price": precio,
+                    "ciber": ciber,
+                    "superviser": superviser,
+                    "uploadBy": uploadBy
+                };
+
                 dataFull.push(arreglo);
             }
             return res.status(200).json(dataFull);
@@ -500,12 +525,29 @@ exports.getCorte = async (req, res) => {
                 else if (idToken == data[i].idsup2) {
                     precio = data[i].preciosup2
                 }
+
+                var uploadBy = users.find(element => {
+                    return element["id"] == Number(data[i].idcreated);
+                });
+
+                var ciber = users.find(element => {
+                    return element["id"] == Number(data[i].enterprise);
+                });
+
+                var superviser = users.find(element => {
+                    return element["id"] == Number(data[i].provider);
+                });
+
                 arreglo = {
                     "document": data[i].document,
                     "createdAt": data[i].createdAt,
                     "states": data[i].states,
                     "nombreacta": data[i].nombreacta,
-                    "curp": data[i].curp, "price": precio
+                    "curp": data[i].curp, 
+                    "price": precio,
+                    "ciber": ciber,
+                    "superviser": superviser,
+                    "uploadBy": uploadBy
                 }
                 dataFull.push(arreglo);
             }
