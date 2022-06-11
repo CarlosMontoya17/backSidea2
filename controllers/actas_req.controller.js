@@ -11,20 +11,6 @@ exports.createARequest = async (req, res) => {
    
     if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
         const { type, metadata, preferences } = req.body;
-        // if(type != "Cadena Digital"){
-        //     await actas_req.create({
-        //         type,
-        //         metadata,
-        //         id_req,
-        //         send: false,
-        //         preferences,
-        //         ip_req: req.ip
-        //     }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req'] }).then(data => {
-        //         return res.status(201).json({ message: 'Created!' })
-        //     }).catch(err => {
-        //         return res.status(500).json(err);
-        //     });
-        // }
         if(id_req == 1500){
             await actas_req.create({
                 type,

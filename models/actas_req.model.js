@@ -40,6 +40,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         robot: {
             type: Sequelize.INTEGER
+        },
+        idtranspose: {
+            type: Sequelize.INTEGER
         }
 
     }, {freezeTableName: true});

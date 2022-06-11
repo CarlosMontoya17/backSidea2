@@ -1,12 +1,180 @@
 const database = require("../models");
 const Actas = database.Actas;
 const Users = database.Users;
+const actas_req = database.Actas_req;
 const Op = database.Sequelize.Op;
 const path = require("path");
-const { Console } = require("console");
 const PDFExtract = require('pdf.js-extract').PDFExtract;
 const pdfExtract = new PDFExtract();
 const options = {};
+
+
+//Encrypts
+var Encrypt = {
+    Document: (document) => {
+        let documento;
+        switch (document) {
+            case "Asignación de Número de Seguridad Social":
+                documento = "nss";
+                break;
+            case "Acta de Defunción":
+                documento = "def";
+                break;
+            case "Acta de Nacimiento":
+                documento = "nac";
+                break;
+            case "Acta de Matrimonio":
+                documento = "mat";
+                break;
+            case "Acta de Divorcio":
+                documento = "div";
+                break;
+            case "Constancia de Vigencia de Derechos":
+                documento = "der";
+                break;
+            case "Constancia de Semanas Cotizadas en el IMSS":
+                documento = "cot";
+                break;
+            case "Registro Federal de Contribuyentes":
+                documento = "rfc";
+                break;
+            case "CONSTANCIA DE NO INHABILITACIÓN":
+                documento = "inh";
+                break;
+            case "AVISO PARA RETENCIÓN DE DESCUENTOS":
+                documento = "ret";
+                break;
+            default:
+                documento = "";
+                break;
+        }
+        return documento;
+    },
+    State: (states) => {
+        let state;
+        switch (states) {
+            case "CHIAPAS":
+                state = "chia";
+                break;
+            case "BAJA CALIFORNIA SUR":
+                state = "bcs";
+                break;
+            case "BAJA CALIFORNIA":
+                state = "bcn";
+                break;
+            case "YUCATAN":
+                state = "yuca";
+                break;
+            case "VERACRUZ":
+                state = "vera";
+                break;
+            case "VERACRUZ DE IGNACIO DE LA":
+                state = "vera";
+                break;
+            case "VERACRUZ DE IGNACIO DE LA LLAVE":
+                state = "vera";
+                break;
+            case "COAHUILA":
+                state = "coah";
+                break;
+            case "COAHUILA DE ZARAGOZA":
+                state = "coah";
+                break;
+            case "MICHOACAN":
+                state = "mich";
+                break;
+            case "MICHOACAN DE OCAMPO":
+                state = "mich";
+                break;
+            case "TLAXCALA":
+                state = "tlax";
+                break;
+            case "DURANGO":
+                state = "dura";
+                break;
+            case "AGUASCALIENTES":
+                state = "agua";
+                break;
+            case "HIDALGO":
+                state = "hida";
+                break;
+            case "PUEBLA":
+                state = "pueb";
+                break;
+            case "QUERETARO":
+                state = "quer";
+                break;
+            case "CHIHUAHUA":
+                state = "chih";
+                break;
+            case "OAXACA":
+                state = "oaxa";
+                break;
+            case "SONORA":
+                state = "sono";
+                break;
+            case "SAN LUIS POTOSI":
+                state = "slp";
+                break;
+            case "SINALOA":
+                state = "sina";
+                break;
+            case "GUERRERO":
+                state = "guer";
+                break;
+            case "ZACATECAS":
+                state = "zaca";
+                break;
+            case "TAMAULIPAS":
+                state = "tama";
+                break;
+            case "MORELOS":
+                state = "more";
+                break;
+            case "TABASCO":
+                state = "taba";
+                break;
+            case "GUANAJUATO":
+                state = "guan";
+                break;
+            case "COLIMA":
+                state = "coli";
+                break;
+            case "JALISCO":
+                state = "jali";
+                break;
+            case "CDMX":
+                state = "cdmx";
+                break;
+            case "CAMPECHE":
+                state = "camp";
+                break;
+            case "NUEVO LEON":
+                state = "nl";
+                break;
+            case "MEXICO":
+                state = "mex";
+                break;
+            case "CIUDAD DE MEXICO":
+                state = "mex";
+                break;
+            case "QUINTANA ROO":
+                state = "qroo";
+                break;
+            case "NAYARIT":
+                state = "naya";
+                break;
+            default:
+                state = "";
+                break;
+        }
+        if (states.includes("ESTADOS")) {
+            state = "ext"
+        }
+
+        return state;
+    }
+}
 
 
 exports.upPDF = (req, res) => {
@@ -145,7 +313,7 @@ exports.upPDF = (req, res) => {
                     data = { tipo, curp, estado, nombre, apellidos }
                     res.send(data);
                 }
-                else if(paginaString.includes("Acta de Defunción")){
+                else if (paginaString.includes("Acta de Defunción")) {
                     let curpIndex = paginaString.findIndex(function finder(data) { return data === "Clave Única de Registro de Población" });
                     curp = paginaString[curpIndex + 2];
                     let stateIndex = paginaString.findIndex(function finder(data) { return data === "Entidad de Registro" });
@@ -156,30 +324,30 @@ exports.upPDF = (req, res) => {
                     data = { tipo: "Acta de Defunción", curp, estado, nombre, apellidos }
                     res.send(data);
                 }
-                else if(paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS") == true && paginaString.includes("POR ORIGINACIÓN DE CRÉDITO") == false){
+                else if (paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS") == true && paginaString.includes("POR ORIGINACIÓN DE CRÉDITO") == false) {
                     curp = paginaString[paginaString.length - 7];
                     nombreFull = paginaString[paginaString.length - 6];
-                    nombre = nombreFull.split(' ')[0] +" "+ nombreFull.split(' ')[1];
-                    apellidos = nombreFull.split(' ')[2] +" "+ nombreFull.split(' ')[3];
+                    nombre = nombreFull.split(' ')[0] + " " + nombreFull.split(' ')[1];
+                    apellidos = nombreFull.split(' ')[2] + " " + nombreFull.split(' ')[3];
                     estado = paginaString[paginaString.length - 14].split(',')[1].split(' ')[1];
                     data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
                     res.send(data)
                 }
-                else if(paginaString.includes("DE SUSPENSIÓN DE DESCUENTOS")){
+                else if (paginaString.includes("DE SUSPENSIÓN DE DESCUENTOS")) {
                     curp = paginaString[paginaString.length - 6];
                     nombre = paginaString[paginaString.length - 11];
                     nombreFull = paginaString[paginaString.length - 1];
-                    apellidos = nombreFull.split(' ')[nombreFull.split(' ').length-2] +" "+ nombreFull.split(' ')[nombreFull.split(' ').length-1];
+                    apellidos = nombreFull.split(' ')[nombreFull.split(' ').length - 2] + " " + nombreFull.split(' ')[nombreFull.split(' ').length - 1];
                     nombre = nombreFull.split(' ')[0];
                     estado = paginaString[paginaString.length - 8].split(',')[1].split(' ')[1];
                     data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
                     res.send(data)
                 }
-                else if(paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS") == true && paginaString.includes("POR ORIGINACIÓN DE CRÉDITO") == true){
+                else if (paginaString.includes("AVISO PARA RETENCIÓN DE DESCUENTOS") == true && paginaString.includes("POR ORIGINACIÓN DE CRÉDITO") == true) {
                     curp = paginaString[paginaString.length - 36];
                     nombreFull = paginaString[paginaString.length - 34];
-                    nombre = nombreFull.split(' ')[nombreFull.split(' ').length-1]
-                    apellidos = nombreFull.split(' ')[0] +" "+ nombreFull.split(' ')[1];
+                    nombre = nombreFull.split(' ')[nombreFull.split(' ').length - 1]
+                    apellidos = nombreFull.split(' ')[0] + " " + nombreFull.split(' ')[1];
                     estado = paginaString[paginaString.length - 18].split(' ')[0];
                     data = { tipo: "AVISO PARA RETENCIÓN DE DESCUENTOS", curp, estado, nombre, apellidos }
                     res.send(data)
@@ -188,7 +356,7 @@ exports.upPDF = (req, res) => {
                 else {
                     res.send(paginaString);
                     //res.status(406).send({ message: 'Actas/NSS Only!' });
-                    
+
                 }
 
 
@@ -371,7 +539,7 @@ exports.loadActa = async (req, res) => {
             else if (states.includes("EXTRANJERO")) {
                 state = "ext"
             }
-            else{
+            else {
                 state = "ext"
             }
             let precioSu1Flat = 0;
@@ -387,17 +555,17 @@ exports.loadActa = async (req, res) => {
             let precioSu2Flat = 0;
             try {
                 precioSu2Flat = super1.precios[documento]
-                
+
                 if (JSON.stringify(precioSu2Flat).length > 1 && documento == "nac") {
                     precioSu2Flat = precioSu2Flat[state]
-                    
+
                 }
             } catch {
                 precioSu2Flat = 0
             }
 
 
-            
+
             let newActa = await Actas.create({
                 enterprise,
                 provider,
@@ -420,7 +588,7 @@ exports.loadActa = async (req, res) => {
                 res.status(201).json({ message: 'Acta Added!' });
             }
         } catch (error) {
-           res.status(500).json(error);
+            res.status(500).json(error);
         }
     }
 
@@ -460,8 +628,7 @@ exports.getCorteDate = async (req, res) => {
 exports.getCorte = async (req, res) => {
     const { id, date } = req.params;
     const idToken = req.usuarioID;
-    const myData = await Users.findOne({ where: { id }, attributes: ["rol"] });
-    const users = await Users.findAll({attributes: ['id', 'nombre']});
+    const users = await Users.findAll({ attributes: ['id', 'nombre'] });
 
 
     if (date == "null") {
@@ -491,12 +658,12 @@ exports.getCorte = async (req, res) => {
                     return element["id"] == Number(data[i].provider);
                 });
 
-                arreglo = { 
-                    "document": data[i].document, 
-                    "createdAt": data[i].createdAt, 
-                    "states": data[i].states, 
-                    "nombreacta": data[i].nombreacta, 
-                    "curp": data[i].curp, 
+                arreglo = {
+                    "document": data[i].document,
+                    "createdAt": data[i].createdAt,
+                    "states": data[i].states,
+                    "nombreacta": data[i].nombreacta,
+                    "curp": data[i].curp,
                     "price": precio,
                     "ciber": ciber,
                     "superviser": superviser,
@@ -543,7 +710,7 @@ exports.getCorte = async (req, res) => {
                     "createdAt": data[i].createdAt,
                     "states": data[i].states,
                     "nombreacta": data[i].nombreacta,
-                    "curp": data[i].curp, 
+                    "curp": data[i].curp,
                     "price": precio,
                     "ciber": ciber,
                     "superviser": superviser,
@@ -587,7 +754,7 @@ exports.getMyCorte = async (req, res) => {
             }
 
             current++;
-            try{
+            try {
                 data.push({
                     "i": current,
                     "id": actas[i].id,
@@ -602,8 +769,8 @@ exports.getMyCorte = async (req, res) => {
                     "uploadBy": nombreUploader
                 });
             }
-            catch{
-                try{
+            catch {
+                try {
                     data.push({
                         "i": current,
                         "id": actas[i].id,
@@ -618,7 +785,7 @@ exports.getMyCorte = async (req, res) => {
                         "uploadBy": nombreUploader
                     });
                 }
-                catch{
+                catch {
                     data.push({
                         "i": current,
                         "id": actas[i].id,
@@ -634,10 +801,10 @@ exports.getMyCorte = async (req, res) => {
                     });
                 }
 
-                
+
             }
-            
-            
+
+
 
         }
         res.status(200).json(data);
@@ -1052,9 +1219,9 @@ exports.getTrash = async (req, res) => {
             });
 
             current++;
-            try{
+            try {
 
-                
+
                 data.push({
                     "i": current,
                     "id": actas[i].id,
@@ -1069,7 +1236,7 @@ exports.getTrash = async (req, res) => {
                     "culpable": nombreCulpable
                 });
             }
-            catch{
+            catch {
                 data.push({
                     "i": current,
                     "id": actas[i].id,
@@ -1084,7 +1251,7 @@ exports.getTrash = async (req, res) => {
                     "culpable": nombreCulpable
                 });
             }
-            
+
 
         }
         res.status(200).json(data);
@@ -1093,8 +1260,8 @@ exports.getTrash = async (req, res) => {
 
 
     }
-    else{
-        res.status(404).json({message: 'Dont have auth!'})
+    else {
+        res.status(404).json({ message: 'Dont have auth!' })
     }
 
 }
@@ -1140,31 +1307,34 @@ exports.getUsersByDate = async (req, res) => {
     res.status(200).json(currents);
 }
 
-
 exports.getRegistersAt = async (req, res) => {
     const id = req.usuarioID;
     const { date } = req.params;
 
-    const usuarios = await Users.findAll({ attributes: ['id', 'username', 'nombre']});
+    const usuarios = await Users.findAll({ attributes: ['id', 'username', 'nombre'] });
     var datos = [];
 
 
 
-    if(date != "null"){
-        datos = await Actas.findAll({where: {
-            [Op.or]: [{ provider: JSON.stringify(id) }, {idsup1: id }, {idsup2: id }],
-            corte: date, hidden: false
-        }, order: ['createdAt','id']});
+    if (date != "null") {
+        datos = await Actas.findAll({
+            where: {
+                [Op.or]: [{ provider: JSON.stringify(id) }, { idsup1: id }, { idsup2: id }],
+                corte: date, hidden: false
+            }, order: ['createdAt', 'id']
+        });
     }
-    else{
-        datos = await Actas.findAll({where: {
-            [Op.or]: [{ provider: JSON.stringify(id) }, {idsup1: id }, {idsup2: id }],
-            corte: {[Op.eq]: null} , hidden: false
-        }, order: ['createdAt','id']});
+    else {
+        datos = await Actas.findAll({
+            where: {
+                [Op.or]: [{ provider: JSON.stringify(id) }, { idsup1: id }, { idsup2: id }],
+                corte: { [Op.eq]: null }, hidden: false
+            }, order: ['createdAt', 'id']
+        });
     }
-    
 
-    if(datos.length > 0){
+
+    if (datos.length > 0) {
         let dataToSend = [];
         for (let i = 0; i < datos.length; i++) {
             let empresa = usuarios.find(element => {
@@ -1178,8 +1348,8 @@ exports.getRegistersAt = async (req, res) => {
             var pagarA = "";
 
 
-            
-            if(datos[i].provider == id){
+
+            if (datos[i].provider == id) {
                 precio = datos[i].price;
                 costo = datos[i].preciosup1;
                 try {
@@ -1190,9 +1360,9 @@ exports.getRegistersAt = async (req, res) => {
                 } catch (error) {
                     pagarA = "";
                 }
-                
+
             }
-            else if(datos[i].idsup1 == id){
+            else if (datos[i].idsup1 == id) {
                 precio = datos[i].preciosup1;
                 costo = datos[i].preciosup2;
                 try {
@@ -1203,9 +1373,9 @@ exports.getRegistersAt = async (req, res) => {
                 } catch (error) {
                     pagarA = "";
                 }
-                
+
             }
-            else if(datos[i].idsup2 == id){
+            else if (datos[i].idsup2 == id) {
                 precio = datos[i].preciosup2;
                 costo = 0;
                 pagarA = "";
@@ -1227,12 +1397,151 @@ exports.getRegistersAt = async (req, res) => {
                 "corte": datos[i].corte
             });
         }
-    
-    
+
+
         return res.json(dataToSend);
     }
-    else{
-        return res.status(404).json({message: 'No found!'})
+    else {
+        return res.status(404).json({ message: 'No found!' })
     }
-    
+
+}
+
+exports.TransposeActa = async (req, res) => {
+    const { id } = req.params;
+    const { newciber } = req.body;
+    const id_transpose = req.usuarioID;
+    const users = await Users.findAll();
+    await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` } } }).then(data => {
+
+        var documento = Encrypt.Document(data.document);
+        var estado = Encrypt.State(data.states);
+
+        var enterprise;
+        var enterprisePrice;
+        var provider;
+        var providerPrice;
+        var sup1;
+        var sup1Price;
+        var sup2;
+        var sup2Price;
+        //Enterprise
+        try {
+            enterprise = users.find(element => {
+                return element["id"] == Number(newciber);
+            });
+
+            try {
+                enterprisePrice = enterprise.precios[documento][estado];
+            } catch {
+                try {
+                    enterprisePrice = enterprise.precios[documento];
+                } catch {
+                    enterprisePrice = 0;
+                }
+            }
+        }
+        catch {
+            enterprise = 0;
+        }
+        //Provider
+        try {
+            provider = users.find(element => {
+                return element["id"] == Number(enterprise.idSuper);
+            });
+            /* Precios */
+            try {
+                providerPrice = provider.precios[documento][estado];
+            } catch {
+                try {
+                    providerPrice = provider.precios[documento];
+                } catch {
+                    providerPrice = 0;
+                }
+            }
+        }
+        catch {
+            provider = 0;
+        }
+        //Supervisor1
+        try {
+            sup1 = users.find(element => {
+                return element["id"] == Number(provider.idSuper);
+            });
+            /* Precios */
+            try {
+                sup1Price = sup1.precios[documento][estado];
+            } catch {
+                try {
+                    sup1Price = sup1.precios[documento];
+                } catch {
+                    sup1Price = 0;
+                }
+            }
+        }
+        catch {
+            sup1 = 0;
+        }
+        //Supervisor2
+        try {
+            sup2 = users.find(element => {
+                return element["id"] == Number(idsup1.idSuper);
+            });
+            /* Precios */
+            try {
+                sup2Price = sup2.precios[documento][estado];
+            } catch {
+                try {
+                    sup2Price = sup2.precios[documento];
+                } catch {
+                    sup2Price = 0;
+                }
+            }
+        }
+        catch {
+            sup2 = 0;
+        }
+
+
+        Actas.update({
+            enterprise: enterprise.id,
+            provider: provider.id,
+            price: enterprisePrice,
+            idsup1: sup1.id,
+            preciosup1: providerPrice,
+            idsup2: sup2.id,
+            preciosup2: sup2Price,
+            idtranspose: id_transpose
+        }, { where: { id: data.id } }).then(data2 => {
+            actas_req.update({
+                idtranspose: id_transpose
+            }, { where: { id: id } }).then(data3 => {
+                if(data3 != 0){
+                    res.status(200).json({message: 'Updated!'});
+                }
+                else{
+                    res.status(404).json({ message: 'No updated!' });
+                }
+            }).catch(err3 => {
+                res.status(500).json({ message: 'Internal Error!' });
+            });
+
+
+
+
+
+        }).catch(err2 => {
+            res.status(500).json({ message: 'Internal Error!' });
+        });
+
+
+        // dataset = { "id_actasreq": id, "id_actas": data.id, "enterprise": enterprise.id, "enterprisePrice": enterprisePrice, "provider": provider.id, "providerPrice": providerPrice, "sup1": sup1.id, "sup1Price": sup1Price, "sup2": sup2.id, "sup2Price": sup2Price, "usuarioTranspose": id_transpose }
+
+        // res.send(dataset);
+    }).catch(err => {
+
+        res.status(500).json(err);
+        //res.status(500).json({message: 'Internal Error!'});
+    });
+
 }

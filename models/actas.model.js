@@ -65,6 +65,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         idhidden: {
             type: Sequelize.DOUBLE
+        },
+        idtranspose: {
+            type: Sequelize.INTEGER
         }
     }, {freezeTableName:true});
     return actas;
