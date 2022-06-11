@@ -43,6 +43,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         idtranspose: {
             type: Sequelize.INTEGER
+        },
+        downloaded: {
+            type: Sequelize.BOOLEAN
         }
 
     }, {freezeTableName: true});

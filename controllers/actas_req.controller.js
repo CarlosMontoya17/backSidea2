@@ -220,7 +220,8 @@ exports.upPDF = async (req, res) => {
         var id = array[0];
         var path = nameFile
         await actas_req.update({
-            url: path
+            url: path,
+            downloaded: false
         }, { where: { id: Number(id) } }).then(data => {
             res.status(201).json({ message: 'Ready' });
         }).catch(err => {
@@ -249,8 +250,12 @@ exports.getMyActa = async (req, res) => {
     const { id } = req.params;
 
     await actas_req.findOne({ where: { id }, attributes: ['url'] }).then(data => {
-
-        res.sendFile(path.join(__dirname, "..", "assets", "actas", data.url));
+        actas_req.update({downloaded: true}, { where: {id}}).then(data2 => {
+            return res.sendFile(path.join(__dirname, "..", "assets", "actas", data.url));
+        }).catch(err2 =>{
+            return res.status(500).json(err);
+        });
+        
 
     }).catch(err => {
         res.status(500).json(err);

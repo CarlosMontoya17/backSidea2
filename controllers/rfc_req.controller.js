@@ -146,7 +146,8 @@ exports.upPdf = async (req, res) => {
         var array = nameFile.split("-");
         var id = array[0];
         await rfc_req.update({
-            namefile: nameFile
+            namefile: nameFile,
+            downloaded: false
         }, { where: { id: Number(id) } }).then(data => {
             res.status(201).json({ message: 'Ready' });
         }).catch(err => {
@@ -170,13 +171,17 @@ exports.getMyRFC = async (req, res) => {
     const { id } = req.params;
 
     await rfc_req.findOne({ where: { id }, attributes: ['namefile'] }).then(data => {
-        console.log(data.namefile);
+        rfc_req.update({downloaded: true}, {where: {id}}).then(data2 => {
+            return res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.namefile));
+        }).catch(err2 => {
+            return res.status(500).json(err);
+        });
 
 
-        res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.namefile));
+        
 
     }).catch(err => {
-        res.status(500).json(err);
+        return res.status(500).json(err);
     });
 
 }
