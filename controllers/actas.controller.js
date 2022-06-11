@@ -1,6 +1,7 @@
 const database = require("../models");
 const Actas = database.Actas;
 const Users = database.Users;
+const rfc_req = database.Rfc_req;
 const actas_req = database.Actas_req;
 const Op = database.Sequelize.Op;
 const path = require("path");
@@ -1409,139 +1410,276 @@ exports.getRegistersAt = async (req, res) => {
 
 exports.TransposeActa = async (req, res) => {
     const { id } = req.params;
-    const { newciber } = req.body;
+    const { newciber, service } = req.body;
     const id_transpose = req.usuarioID;
     const users = await Users.findAll();
-    await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` } } }).then(data => {
 
-        var documento = Encrypt.Document(data.document);
-        var estado = Encrypt.State(data.states);
+    if(service == "actas"){
+        await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` }, document: { [Op.like]: '%Acta de%' } } }).then(data => {
 
-        var enterprise;
-        var enterprisePrice;
-        var provider;
-        var providerPrice;
-        var sup1;
-        var sup1Price;
-        var sup2;
-        var sup2Price;
-        //Enterprise
-        try {
-            enterprise = users.find(element => {
-                return element["id"] == Number(newciber);
-            });
-
+            var documento = Encrypt.Document(data.document);
+            var estado = Encrypt.State(data.states);
+    
+            var enterprise;
+            var enterprisePrice;
+            var provider;
+            var providerPrice;
+            var sup1;
+            var sup1Price;
+            var sup2;
+            var sup2Price;
+            //Enterprise
             try {
-                enterprisePrice = enterprise.precios[documento][estado];
-            } catch {
+                enterprise = users.find(element => {
+                    return element["id"] == Number(newciber);
+                });
+    
                 try {
-                    enterprisePrice = enterprise.precios[documento];
+                    enterprisePrice = enterprise.precios[documento][estado];
                 } catch {
-                    enterprisePrice = 0;
+                    try {
+                        enterprisePrice = enterprise.precios[documento];
+                    } catch {
+                        enterprisePrice = 0;
+                    }
                 }
             }
-        }
-        catch {
-            enterprise = 0;
-        }
-        //Provider
-        try {
-            provider = users.find(element => {
-                return element["id"] == Number(enterprise.idSuper);
-            });
-            /* Precios */
+            catch {
+                enterprise = 0;
+            }
+            //Provider
             try {
-                providerPrice = provider.precios[documento][estado];
-            } catch {
+                provider = users.find(element => {
+                    return element["id"] == Number(enterprise.idSuper);
+                });
+                /* Precios */
                 try {
-                    providerPrice = provider.precios[documento];
+                    providerPrice = provider.precios[documento][estado];
                 } catch {
-                    providerPrice = 0;
+                    try {
+                        providerPrice = provider.precios[documento];
+                    } catch {
+                        providerPrice = 0;
+                    }
                 }
             }
-        }
-        catch {
-            provider = 0;
-        }
-        //Supervisor1
-        try {
-            sup1 = users.find(element => {
-                return element["id"] == Number(provider.idSuper);
-            });
-            /* Precios */
+            catch {
+                provider = 0;
+            }
+            //Supervisor1
             try {
-                sup1Price = sup1.precios[documento][estado];
-            } catch {
+                sup1 = users.find(element => {
+                    return element["id"] == Number(provider.idSuper);
+                });
+                /* Precios */
                 try {
-                    sup1Price = sup1.precios[documento];
+                    sup1Price = sup1.precios[documento][estado];
                 } catch {
-                    sup1Price = 0;
+                    try {
+                        sup1Price = sup1.precios[documento];
+                    } catch {
+                        sup1Price = 0;
+                    }
                 }
             }
-        }
-        catch {
-            sup1 = 0;
-        }
-        //Supervisor2
-        try {
-            sup2 = users.find(element => {
-                return element["id"] == Number(idsup1.idSuper);
-            });
-            /* Precios */
+            catch {
+                sup1 = 0;
+            }
+            //Supervisor2
             try {
-                sup2Price = sup2.precios[documento][estado];
-            } catch {
+                sup2 = users.find(element => {
+                    return element["id"] == Number(idsup1.idSuper);
+                });
+                /* Precios */
                 try {
-                    sup2Price = sup2.precios[documento];
+                    sup2Price = sup2.precios[documento][estado];
                 } catch {
-                    sup2Price = 0;
+                    try {
+                        sup2Price = sup2.precios[documento];
+                    } catch {
+                        sup2Price = 0;
+                    }
                 }
             }
-        }
-        catch {
-            sup2 = 0;
-        }
-
-
-        Actas.update({
-            enterprise: enterprise.id,
-            provider: provider.id,
-            price: enterprisePrice,
-            idsup1: sup1.id,
-            preciosup1: providerPrice,
-            idsup2: sup2.id,
-            preciosup2: sup2Price,
-            idtranspose: id_transpose
-        }, { where: { id: data.id } }).then(data2 => {
-            actas_req.update({
+            catch {
+                sup2 = 0;
+            }
+    
+    
+            Actas.update({
+                enterprise: enterprise.id,
+                provider: provider.id,
+                price: enterprisePrice,
+                idsup1: sup1.id,
+                preciosup1: providerPrice,
+                idsup2: sup2.id,
+                preciosup2: sup2Price,
                 idtranspose: id_transpose
-            }, { where: { id: id } }).then(data3 => {
-                if(data3 != 0){
-                    res.status(200).json({message: 'Updated!'});
-                }
-                else{
-                    res.status(404).json({ message: 'No updated!' });
-                }
-            }).catch(err3 => {
+            }, { where: { id: data.id } }).then(data2 => {
+                actas_req.update({
+                    idtranspose: id_transpose
+                }, { where: { id: id } }).then(data3 => {
+                    if(data3 != 0){
+                        res.status(200).json({message: 'Updated!'});
+                    }
+                    else{
+                        res.status(404).json({ message: 'No updated!' });
+                    }
+                }).catch(err3 => {
+                    res.status(500).json({ message: 'Internal Error!' });
+                });
+    
+    
+    
+    
+    
+            }).catch(err2 => {
                 res.status(500).json({ message: 'Internal Error!' });
             });
-
-
-
-
-
-        }).catch(err2 => {
-            res.status(500).json({ message: 'Internal Error!' });
+    
+    
+            // dataset = { "id_actasreq": id, "id_actas": data.id, "enterprise": enterprise.id, "enterprisePrice": enterprisePrice, "provider": provider.id, "providerPrice": providerPrice, "sup1": sup1.id, "sup1Price": sup1Price, "sup2": sup2.id, "sup2Price": sup2Price, "usuarioTranspose": id_transpose }
+    
+            // res.send(dataset);
+        }).catch(err => {
+    
+            res.status(500).json(err);
+            //res.status(500).json({message: 'Internal Error!'});
         });
+    }
+    else if(service == "rfc"){
+        await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` }, document: { [Op.like]: '%Registro Federal%' } } }).then(data => {
 
-
-        // dataset = { "id_actasreq": id, "id_actas": data.id, "enterprise": enterprise.id, "enterprisePrice": enterprisePrice, "provider": provider.id, "providerPrice": providerPrice, "sup1": sup1.id, "sup1Price": sup1Price, "sup2": sup2.id, "sup2Price": sup2Price, "usuarioTranspose": id_transpose }
-
-        // res.send(dataset);
-    }).catch(err => {
-
-        res.status(500).json(err);
-        //res.status(500).json({message: 'Internal Error!'});
-    });
+            var documento = Encrypt.Document(data.document);
+            var estado = Encrypt.State(data.states);
+    
+            var enterprise;
+            var enterprisePrice;
+            var provider;
+            var providerPrice;
+            var sup1;
+            var sup1Price;
+            var sup2;
+            var sup2Price;
+            //Enterprise
+            try {
+                enterprise = users.find(element => {
+                    return element["id"] == Number(newciber);
+                });
+    
+                try {
+                    enterprisePrice = enterprise.precios[documento][estado];
+                } catch {
+                    try {
+                        enterprisePrice = enterprise.precios[documento];
+                    } catch {
+                        enterprisePrice = 0;
+                    }
+                }
+            }
+            catch {
+                enterprise = 0;
+            }
+            //Provider
+            try {
+                provider = users.find(element => {
+                    return element["id"] == Number(enterprise.idSuper);
+                });
+                /* Precios */
+                try {
+                    providerPrice = provider.precios[documento][estado];
+                } catch {
+                    try {
+                        providerPrice = provider.precios[documento];
+                    } catch {
+                        providerPrice = 0;
+                    }
+                }
+            }
+            catch {
+                provider = 0;
+            }
+            //Supervisor1
+            try {
+                sup1 = users.find(element => {
+                    return element["id"] == Number(provider.idSuper);
+                });
+                /* Precios */
+                try {
+                    sup1Price = sup1.precios[documento][estado];
+                } catch {
+                    try {
+                        sup1Price = sup1.precios[documento];
+                    } catch {
+                        sup1Price = 0;
+                    }
+                }
+            }
+            catch {
+                sup1 = 0;
+            }
+            //Supervisor2
+            try {
+                sup2 = users.find(element => {
+                    return element["id"] == Number(idsup1.idSuper);
+                });
+                /* Precios */
+                try {
+                    sup2Price = sup2.precios[documento][estado];
+                } catch {
+                    try {
+                        sup2Price = sup2.precios[documento];
+                    } catch {
+                        sup2Price = 0;
+                    }
+                }
+            }
+            catch {
+                sup2 = 0;
+            }
+    
+    
+            Actas.update({
+                enterprise: enterprise.id,
+                provider: provider.id,
+                price: enterprisePrice,
+                idsup1: sup1.id,
+                preciosup1: providerPrice,
+                idsup2: sup2.id,
+                preciosup2: sup2Price,
+                idtranspose: id_transpose
+            }, { where: { id: data.id } }).then(data2 => {
+                rfc_req.update({
+                    idtranspose: id_transpose
+                }, { where: { id: id } }).then(data3 => {
+                    if(data3 != 0){
+                        res.status(200).json({message: 'Updated!'});
+                    }
+                    else{
+                        res.status(404).json({ message: 'No updated!' });
+                    }
+                }).catch(err3 => {
+                    res.status(500).json({ message: 'Internal Error!' });
+                });
+    
+    
+    
+    
+    
+            }).catch(err2 => {
+                res.status(500).json({ message: 'Internal Error!' });
+            });
+    
+    
+            // dataset = { "id_actasreq": id, "id_actas": data.id, "enterprise": enterprise.id, "enterprisePrice": enterprisePrice, "provider": provider.id, "providerPrice": providerPrice, "sup1": sup1.id, "sup1Price": sup1Price, "sup2": sup2.id, "sup2Price": sup2Price, "usuarioTranspose": id_transpose }
+    
+            // res.send(dataset);
+        }).catch(err => {
+    
+            res.status(500).json(err);
+            //res.status(500).json({message: 'Internal Error!'});
+        });
+    }
+    
 
 }
