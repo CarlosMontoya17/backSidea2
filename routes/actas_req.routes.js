@@ -11,6 +11,7 @@ module.exports = function(app) {
     app.get("/api/actas/requests/getOneTask/", controller.getRequestNoAttended);
     app.get("/api/actas/request/robots/1/getOne/", controller.getOneRobot1);
     app.get("/api/actas/request/robots/2/getOne/", controller.getOneRobot2);
+    app.get("/api/actas/request/robots/3/getOne/", controller.getOneRobot3);
 
     app.put("/api/actas/requests/comment/:id", controller.commentsUp);
     app.post("/api/actas/robotUp/", uploaderActa.upload.single('acta'), controller.upPDF);
