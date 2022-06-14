@@ -1551,7 +1551,6 @@ exports.TransposeActa = async (req, res) => {
         await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` }, document: { [Op.like]: '%Registro Federal%' } } }).then(data => {
 
             var documento = Encrypt.Document(data.document);
-            var estado = Encrypt.State(data.states);
     
             var enterprise;
             var enterprisePrice;
@@ -1567,15 +1566,12 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(newciber);
                 });
     
-                try {
-                    enterprisePrice = enterprise.precios[documento][estado];
-                } catch {
+                
                     try {
                         enterprisePrice = enterprise.precios[documento];
                     } catch {
                         enterprisePrice = 0;
                     }
-                }
             }
             catch {
                 enterprise = 0;
@@ -1586,15 +1582,12 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(enterprise.idSuper);
                 });
                 /* Precios */
-                try {
-                    providerPrice = provider.precios[documento][estado];
-                } catch {
                     try {
                         providerPrice = provider.precios[documento];
                     } catch {
                         providerPrice = 0;
                     }
-                }
+                
             }
             catch {
                 provider = 0;
@@ -1605,15 +1598,12 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(provider.idSuper);
                 });
                 /* Precios */
-                try {
-                    sup1Price = sup1.precios[documento][estado];
-                } catch {
                     try {
                         sup1Price = sup1.precios[documento];
                     } catch {
                         sup1Price = 0;
                     }
-                }
+                
             }
             catch {
                 sup1 = 0;
@@ -1624,15 +1614,12 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(idsup1.idSuper);
                 });
                 /* Precios */
-                try {
-                    sup2Price = sup2.precios[documento][estado];
-                } catch {
                     try {
                         sup2Price = sup2.precios[documento];
                     } catch {
                         sup2Price = 0;
                     }
-                }
+                
             }
             catch {
                 sup2 = 0;
