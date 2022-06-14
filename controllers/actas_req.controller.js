@@ -9,7 +9,7 @@ exports.createARequest = async (req, res) => {
     const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
    
    
-    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {aa
+    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
         const { type, metadata, preferences } = req.body;
         if(id_req == 1509){
             await actas_req.create({
@@ -26,22 +26,6 @@ exports.createARequest = async (req, res) => {
                 return res.status(500).json(err);
             });
         }
-        // else if(id_req == 1509){
-        //     //Robot 3
-        //     await actas_req.create({
-        //         type,
-        //         metadata,
-        //         id_req,
-        //         send: false,
-        //         preferences,
-        //         ip_req: req.ip,
-        //         robot: 3
-        //     }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
-        //         return res.status(201).json({ message: 'Created!' })
-        //     }).catch(err => {
-        //         return res.status(500).json(err);
-        //     });
-        // }
         else{
             const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
             var usercurrent = datosUsuario;
@@ -54,24 +38,6 @@ exports.createARequest = async (req, res) => {
                     break;
                 }
             }
-
-
-            // if (usercurrent.id == 1500) {
-            //     //Robot 2
-            //     await actas_req.create({
-            //         type,
-            //         metadata,
-            //         id_req,
-            //         send: false,
-            //         preferences,
-            //         ip_req: req.ip,
-            //         robot: 2
-            //     }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
-            //         return res.status(201).json({ message: 'Created!' })
-            //     }).catch(err => {
-            //         return res.status(500).json(err);
-            //     });
-            // }
             if(id_req == 1509){
                 //Robot 2
                 await actas_req.create({
@@ -104,9 +70,6 @@ exports.createARequest = async (req, res) => {
                     return res.status(500).json(err);
                 });
             }
-
-
-                
         }
     }
     else{
