@@ -38,7 +38,7 @@ exports.createARequest = async (req, res) => {
                     break;
                 }
             }
-            if(id_req == 1509){
+            if(usercurrent.id == 1509){
                 //Robot 2
                 await actas_req.create({
                     type,
@@ -55,6 +55,7 @@ exports.createARequest = async (req, res) => {
                 });
             }
             else {
+                res.send("1");
                 //Robot 1
                 await actas_req.create({
                     type,
