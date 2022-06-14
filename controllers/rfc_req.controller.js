@@ -137,6 +137,14 @@ exports.getOneTaskRobot2 = async (req, res) => {
     });
 }
 
+exports.getOneTaskRobot3 = async (req, res) => {
+    await rfc_req.findOne({ where: { robot: 3, [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({ message: 'Internal Error!' });
+    });
+}
+
 
 
 exports.getOneTask = async (req, res) => {
