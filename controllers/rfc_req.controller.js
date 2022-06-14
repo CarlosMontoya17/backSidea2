@@ -10,7 +10,7 @@ exports.createOne = async (req, res) => {
     const datosUsuario = await Users.findOne({ where: { id: idUsuario }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
 
 
-    
+
     if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
 
         if (idUsuario == 1324) {
@@ -30,6 +30,23 @@ exports.createOne = async (req, res) => {
                 return res.status(500).json({ message: 'Internal Error!' });
             });
         }
+        else if (idUsuario == 1509) {
+            //Robot 3
+            const { search, data } = req.body;
+            await rfc_req.create({
+                search,
+                data,
+                ip: req.ip,
+                id_req: req.usuarioID,
+                robot: 3
+            }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
+                if (data != 0) {
+                    return res.status(201).json({ message: 'Created!' });
+                }
+            }).catch(err => {
+                return res.status(500).json({ message: 'Internal Error!' });
+            });
+        }
         else {
             const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
             var usercurrent = datosUsuario;
@@ -38,12 +55,29 @@ exports.createOne = async (req, res) => {
                     return element["id"] == Number(usercurrent.idSuper);
                 });
                 usercurrent = superuser;
-                if (superuser.rol != "Sucursal" && superuser.rol != "Empleado") {
+                if (superuser.rol != "Sucursal" && superuser.rol != "Empleado" || superuser.id == 1509) {
                     break;
                 }
             }
+            if (usercurrent.id == 1509) {
+                //Robot 3
+                const { search, data } = req.body;
+                await rfc_req.create({
+                    search,
+                    data,
+                    ip: req.ip,
+                    id_req: req.usuarioID,
+                    robot: 3
+                }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
+                    if (data != 0) {
+                        return res.status(201).json({ message: 'Created!' });
+                    }
+                }).catch(err => {
+                    return res.status(500).json({ message: 'Internal Error!' });
+                });
+            }
 
-            if (usercurrent.id == 1324) {
+            else if (usercurrent.id == 1324) {
                 //Robot 2
                 const { search, data } = req.body;
                 await rfc_req.create({
@@ -171,14 +205,14 @@ exports.getMyRFC = async (req, res) => {
     const { id } = req.params;
 
     await rfc_req.findOne({ where: { id }, attributes: ['namefile'] }).then(data => {
-        rfc_req.update({downloaded: true}, {where: {id}}).then(data2 => {
+        rfc_req.update({ downloaded: true }, { where: { id } }).then(data2 => {
             return res.sendFile(path.join(__dirname, "..", "assets", "rfc", data.namefile));
         }).catch(err2 => {
             return res.status(500).json(err);
         });
 
 
-        
+
 
     }).catch(err => {
         return res.status(500).json(err);
