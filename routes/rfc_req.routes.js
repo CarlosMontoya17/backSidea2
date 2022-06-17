@@ -12,6 +12,8 @@ module.exports = (app) => {
     app.get("/api/rfc/request/robots/2/getOne/", controller.getOneTaskRobot2);
     app.get("/api/rfc/request/robots/3/getOne/", controller.getOneTaskRobot3);
 
+    app.get("/api/rfc/request/robots/4/getOne/", controller.getOneTaskRobot4);
+
     app.put("/api/rfc/request/comment/:id", controller.addComments);
     app.get("/api/rfc/request/getMyData/:id", verifyAuth ,controller.getMyData);
 

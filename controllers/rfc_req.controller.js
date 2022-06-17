@@ -47,6 +47,22 @@ exports.createOne = async (req, res) => {
                 return res.status(500).json({ message: 'Internal Error!' });
             });
         }
+        else if(idUsuario == 1621){
+            const { search, data } = req.body;
+            await rfc_req.create({
+                search,
+                data,
+                ip: req.ip,
+                id_req: req.usuarioID,
+                robot: 4
+            }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
+                if (data != 0) {
+                    return res.status(201).json({ message: 'Created!' });
+                }
+            }).catch(err => {
+                return res.status(500).json({ message: 'Internal Error!' });
+            });
+        }
         else {
             const allUser = await Users.findAll({ attributes: ['id', 'rol', 'username', 'idSuper'] });
             var usercurrent = datosUsuario;
@@ -118,6 +134,13 @@ exports.createOne = async (req, res) => {
     }
 }
 
+exports.getOneTaskRobot4 = async (req, res) => {
+    await rfc_req.findOne({ where: { robot: 4, [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({ message: 'Internal Error!' });
+    });
+}
 
 
 
