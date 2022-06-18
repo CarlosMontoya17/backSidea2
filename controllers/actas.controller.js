@@ -1414,12 +1414,12 @@ exports.TransposeActa = async (req, res) => {
     const id_transpose = req.usuarioID;
     const users = await Users.findAll();
 
-    if(service == "actas"){
+    if (service == "actas") {
         await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` }, document: { [Op.like]: '%Acta de%' } } }).then(data => {
 
             var documento = Encrypt.Document(data.document);
             var estado = Encrypt.State(data.states);
-    
+
             var enterprise;
             var enterprisePrice;
             var provider;
@@ -1433,35 +1433,31 @@ exports.TransposeActa = async (req, res) => {
                 enterprise = users.find(element => {
                     return element["id"] == Number(newciber);
                 });
-    
-                try {
+
+                if (typeof (enterprise.precios[documento]) != "number") {
                     enterprisePrice = enterprise.precios[documento][estado];
-                } catch {
-                    try {
-                        enterprisePrice = enterprise.precios[documento];
-                    } catch {
-                        enterprisePrice = 0;
-                    }
+                }
+                else {
+                    enterprisePrice = enterprise.precios[documento];
                 }
             }
             catch {
                 enterprise = 0;
             }
+
             //Provider
             try {
                 provider = users.find(element => {
                     return element["id"] == Number(enterprise.idSuper);
                 });
                 /* Precios */
-                try {
+                if (typeof (provider.precios[documento]) != "number") {
                     providerPrice = provider.precios[documento][estado];
-                } catch {
-                    try {
-                        providerPrice = provider.precios[documento];
-                    } catch {
-                        providerPrice = 0;
-                    }
                 }
+                else {
+                    providerPrice = provider.precios[documento];
+                }
+               
             }
             catch {
                 provider = 0;
@@ -1472,15 +1468,13 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(provider.idSuper);
                 });
                 /* Precios */
-                try {
+                if (typeof (sup1.precios[documento]) != "number") {
                     sup1Price = sup1.precios[documento][estado];
-                } catch {
-                    try {
-                        sup1Price = sup1.precios[documento];
-                    } catch {
-                        sup1Price = 0;
-                    }
                 }
+                else {
+                    sup1Price = sup1.precios[documento];
+                }
+                
             }
             catch {
                 sup1 = 0;
@@ -1491,21 +1485,19 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(idsup1.idSuper);
                 });
                 /* Precios */
-                try {
+                if (typeof (sup2.precios[documento]) != "number") {
                     sup2Price = sup2.precios[documento][estado];
-                } catch {
-                    try {
-                        sup2Price = sup2.precios[documento];
-                    } catch {
-                        sup2Price = 0;
-                    }
                 }
+                else {
+                    sup2Price = sup2.precios[documento];
+                }
+                
             }
             catch {
                 sup2 = 0;
             }
-    
-    
+
+
             Actas.update({
                 enterprise: enterprise.id,
                 provider: provider.id,
@@ -1519,39 +1511,39 @@ exports.TransposeActa = async (req, res) => {
                 actas_req.update({
                     idtranspose: id_transpose
                 }, { where: { id: id } }).then(data3 => {
-                    if(data3 != 0){
-                        res.status(200).json({message: 'Updated!'});
+                    if (data3 != 0) {
+                        res.status(200).json({ message: 'Updated!' });
                     }
-                    else{
+                    else {
                         res.status(404).json({ message: 'No updated!' });
                     }
                 }).catch(err3 => {
                     res.status(500).json({ message: 'Internal Error!' });
                 });
-    
-    
-    
-    
-    
+
+
+
+
+
             }).catch(err2 => {
                 res.status(500).json({ message: 'Internal Error!' });
             });
-    
-    
+
+
             // dataset = { "id_actasreq": id, "id_actas": data.id, "enterprise": enterprise.id, "enterprisePrice": enterprisePrice, "provider": provider.id, "providerPrice": providerPrice, "sup1": sup1.id, "sup1Price": sup1Price, "sup2": sup2.id, "sup2Price": sup2Price, "usuarioTranspose": id_transpose }
-    
+
             // res.send(dataset);
         }).catch(err => {
-    
+
             res.status(500).json(err);
             //res.status(500).json({message: 'Internal Error!'});
         });
     }
-    else if(service == "rfc"){
+    else if (service == "rfc") {
         await Actas.findOne({ where: { namefile: { [Op.like]: `${id}-%` }, document: { [Op.like]: '%Registro Federal%' } } }).then(data => {
 
             var documento = Encrypt.Document(data.document);
-    
+
             var enterprise;
             var enterprisePrice;
             var provider;
@@ -1565,13 +1557,13 @@ exports.TransposeActa = async (req, res) => {
                 enterprise = users.find(element => {
                     return element["id"] == Number(newciber);
                 });
-    
-                
-                    try {
-                        enterprisePrice = enterprise.precios[documento];
-                    } catch {
-                        enterprisePrice = 0;
-                    }
+
+
+                try {
+                    enterprisePrice = enterprise.precios[documento];
+                } catch {
+                    enterprisePrice = 0;
+                }
             }
             catch {
                 enterprise = 0;
@@ -1582,12 +1574,12 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(enterprise.idSuper);
                 });
                 /* Precios */
-                    try {
-                        providerPrice = provider.precios[documento];
-                    } catch {
-                        providerPrice = 0;
-                    }
-                
+                try {
+                    providerPrice = provider.precios[documento];
+                } catch {
+                    providerPrice = 0;
+                }
+
             }
             catch {
                 provider = 0;
@@ -1598,12 +1590,12 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(provider.idSuper);
                 });
                 /* Precios */
-                    try {
-                        sup1Price = sup1.precios[documento];
-                    } catch {
-                        sup1Price = 0;
-                    }
-                
+                try {
+                    sup1Price = sup1.precios[documento];
+                } catch {
+                    sup1Price = 0;
+                }
+
             }
             catch {
                 sup1 = 0;
@@ -1614,18 +1606,18 @@ exports.TransposeActa = async (req, res) => {
                     return element["id"] == Number(idsup1.idSuper);
                 });
                 /* Precios */
-                    try {
-                        sup2Price = sup2.precios[documento];
-                    } catch {
-                        sup2Price = 0;
-                    }
-                
+                try {
+                    sup2Price = sup2.precios[documento];
+                } catch {
+                    sup2Price = 0;
+                }
+
             }
             catch {
                 sup2 = 0;
             }
-    
-    
+
+
             Actas.update({
                 enterprise: enterprise.id,
                 provider: provider.id,
@@ -1639,34 +1631,34 @@ exports.TransposeActa = async (req, res) => {
                 rfc_req.update({
                     idtranspose: id_transpose
                 }, { where: { id: id } }).then(data3 => {
-                    if(data3 != 0){
-                        res.status(200).json({message: 'Updated!'});
+                    if (data3 != 0) {
+                        res.status(200).json({ message: 'Updated!' });
                     }
-                    else{
+                    else {
                         res.status(404).json({ message: 'No updated!' });
                     }
                 }).catch(err3 => {
                     res.status(500).json({ message: 'Internal Error!' });
                 });
-    
-    
-    
-    
-    
+
+
+
+
+
             }).catch(err2 => {
                 res.status(500).json({ message: 'Internal Error!' });
             });
-    
-    
+
+
             // dataset = { "id_actasreq": id, "id_actas": data.id, "enterprise": enterprise.id, "enterprisePrice": enterprisePrice, "provider": provider.id, "providerPrice": providerPrice, "sup1": sup1.id, "sup1Price": sup1Price, "sup2": sup2.id, "sup2Price": sup2Price, "usuarioTranspose": id_transpose }
-    
+
             // res.send(dataset);
         }).catch(err => {
-    
+
             res.status(500).json(err);
             //res.status(500).json({message: 'Internal Error!'});
         });
     }
-    
+
 
 }
