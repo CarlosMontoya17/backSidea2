@@ -1,9 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
-    const actas_reg = sequelize.define("actas_reg", {
+    const actas_trash = sequelize.define("actas_trash", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true
+        },
+        idsuper:{
+            type: Sequelize.INTEGER
         },
         document: {
             type: Sequelize.TEXT
@@ -15,9 +18,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.TEXT
         },
         nameinside: {
-            type: Sequelize.TEXT
-        },
-        namefile: {
             type: Sequelize.TEXT
         },
         level0: {
@@ -65,11 +65,11 @@ module.exports = (sequelize, Sequelize) => {
         idcreated: {
             type: Sequelize.INTEGER
         },
-        hidden: {
-            type: Sequelize.BOOLEAN
-        },
         idhidden: {
             type: Sequelize.BOOLEAN
+        },
+        idtranspose: {
+            type: Sequelize.INTEGER
         },
         createdAt: {
             type: Sequelize.TIME
@@ -77,10 +77,10 @@ module.exports = (sequelize, Sequelize) => {
         updatedAt: {
             type: Sequelize.TIME
         },
-        idtranspose: {
-            type: Sequelize.INTEGER
+        namefile: {
+            type: Sequelize.TEXT
         }
     }, {freezeTableName: true});
 
-    return actas_reg;
+    return actas_trash;
 }

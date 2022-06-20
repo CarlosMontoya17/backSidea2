@@ -1,5 +1,8 @@
 const db = require('../models');
 const actas_reg = db.Actas_reg;
+const actas_req = db.Actas_req;
+const rfc_req = db.Rfc_req;
+const Op = db.Sequelize.Op;
 const Users = db.Users;
 
 var Encrypt = {
@@ -168,7 +171,52 @@ var Encrypt = {
     }
 }
 
+var Assigments = {
+    Levels: (startUser, users, documentEncrypt, stateEncrypt) => {
+        var levels = {};
+        var i = 0;
+        while (true) {
+            var lvlCurrent = {};
+            if (i == 0) {
+                lvlCurrent = users.find(element => {
+                    return element["id"] == Number(startUser);
+                });
+            }
+            else if (i < 5) {
+                lvlCurrent = users.find(element => {
+                    return element["id"] == Number(levels[i - 1].idSuper);
+                });
+            }
+            else if (i == 5) {
+                break;
+            }
+            try {
+                if (typeof (lvlCurrent.precios[documentEncrypt]) != "number") {
+                    levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt][stateEncrypt], "idSuper": lvlCurrent.idSuper };
+                }
+                else {
+                    levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt], "idSuper": lvlCurrent.idSuper };
+                }
+            }
+            catch {
+                for (let index = i + 1; index < 6; index++) {
+                    levels[index] = { "id": null, "price": null, "idSuper": null };
+                }
+                break;
+            }
+            if (levels[i].id == 1) {
+                for (let index = i + 1; index < 6; index++) {
+                    levels[index] = { "id": null, "price": null, "idSuper": null };
+                }
+                break;
+            }
+            i++;
+        }
+        return levels;
+    }
+}
 
+//Leer PDFs
 exports.upPDF = (req, res) => {
     const file = req.file;
     if (!file) {
@@ -356,9 +404,132 @@ exports.upPDF = (req, res) => {
     }
 }
 
+//Subir Registro de Actas
+exports.newActaReg = async (req, res) => {
+    const { document, state, dataset, nameinside, namefile, level0 } = req.body;
+    const idcreated = req.usuarioID;
+    try {
+        //Encrypt Data
+        var documentEncrypt = Encrypt.Document(document);
+        var stateEncrypt = Encrypt.State(state);
+        //Obtain All Users
+        var users = await Users.findAll({ attributes: ['id', 'nombre', 'precios', 'idSuper'] });
+        //Obtaint Levels
+        var levels = Assigments.Levels(level0, users, documentEncrypt, stateEncrypt);
+        //Add New Acta
+        await actas_reg.create({
+            document,
+            state,
+            dataset,
+            nameinside,
+            namefile,
+            level0: levels[0].id,
+            price0: levels[0].price,
+            level1: levels[1].id,
+            price1: levels[1].price,
+            level2: levels[2].id,
+            price2: levels[2].price,
+            level3: levels[3].id,
+            price3: levels[3].price,
+            level4: levels[4].id,
+            price4: levels[4].price,
+            level5: levels[5].id,
+            price5: levels[5].price,
+            idcreated
+
+        }, {
+            fields: [
+                'document',
+                'state',
+                'dataset',
+                'nameinside',
+                'namefile',
+                'level0', 'price0',
+                'level1', 'price1',
+                'level2', 'price2',
+                'level3', 'price3',
+                'level4', 'price4',
+                'level5', 'price5',
+                'idcreated'
+            ]
+        }).then(data => {
+            return res.status(201).json({ message: 'Created!' })
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+
+    }
+    catch (Ex) {
+        console.log(Ex);
+        res.status(500).json({ message: 'Internal Error!' });
+    }
+}
+
+//Traspasar un Acta
+exports.TransposeReg = async (req, res) => {
+    const { id } = req.params;
+    const { newciber, service } = req.body;
+    const id_transpose = req.usuarioID;
+    //Verify Service
+    var search = "";
+    if (service == "acta") {
+        search = "Acta de";
+    }
+    else if (service == "rfc") {
+        search = "Registro Federal";
+    }
+    else {
+        return res.status(401).json({ message: 'Service No Found' });
+    }
+    //Search Reg
+    const actaReg = await actas_reg.findOne({ where: { namefile: { [Op.like]: `${id}-%` }, document: { [Op.like]: `%${search}%` } } });
+    if (actaReg) {
+        const users = await Users.findAll({ attributes: ['id', 'nombre', 'precios', 'idSuper'] });
+        var documentEncrypt = Encrypt.Document(actaReg.document);
+        var stateEncrypt = Encrypt.State(actaReg.state);
+        var levels = Assigments.Levels(newciber, users, documentEncrypt, stateEncrypt);
+        actas_reg.update({
+            level0: levels[0].id,
+            price0: levels[0].price,
+            level1: levels[1].id,
+            price1: levels[1].price,
+            level2: levels[2].id,
+            price2: levels[2].price,
+            level3: levels[3].id,
+            price3: levels[3].price,
+            level4: levels[4].id,
+            price4: levels[4].price,
+            level5: levels[5].id,
+            price5: levels[5].price,
+            idtranspose: id_transpose
+        }, { where: { id: actaReg.id } }).then(data => {
+            if(service == "acta"){
+                actas_req.update({ idtranspose: id_transpose }, {where: {id}}).then(data2 => {
+                    return res.status(200).json({ message: 'Updated!' });
+                }).catch(err2 => {
+                    return res.status(500).json({ message: 'Internal Error!' });
+                });
+            }
+            else if(service == "rfc"){
+                rfc_req.update({ idtranspose: id_transpose }, {where: {id}}).then(data2 => {
+                    return res.status(200).json({ message: 'Updated!' });
+                }).catch(err2 => {
+                    return res.status(500).json({ message: 'Internal Error!' });
+                });
+            }
+        }).catch(err => {
+            return res.status(500).json({ message: 'Internal Error!' });
+        });
+    }
+    else {
+        return res.status(404).json({ message: 'Document no found!' });
+    }
+}
+
+
 
 // exports.newActaRegister = async (req, res) => {
-//     /*  
+//     /*
 //     document
 //     state
 //     curp

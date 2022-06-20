@@ -4,5 +4,6 @@ const uploaderDoc = require("../middlewares/uploaderDoc");
 
 module.exports = (app) => {
     app.post("/api/actas/reg/load/", verifyAuth ,uploaderDoc.upload.single('doc'), controller.upPDF);
-    // app.post("/api/actas/reg/up", verifyAuth ,controller.newActaRegister);
+    app.post("/api/actas/reg/new/", verifyAuth, controller.newActaReg);
+    app.put("/api/actas/reg/transpose/:id", verifyAuth, controller.TransposeReg);
 };
