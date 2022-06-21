@@ -21,7 +21,7 @@ exports.createOne = async (req, res) => {
                 data,
                 ip: req.ip,
                 id_req: req.usuarioID,
-                robot: 2
+                robot: 1
             }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                 if (data != 0) {
                     return res.status(201).json({ message: 'Created!' });
