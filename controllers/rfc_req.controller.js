@@ -11,7 +11,7 @@ exports.createOne = async (req, res) => {
 
 
 
-    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all" && idUsuario == 1662) {
+    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all" && idUsuario == 1662 || id_req == 1324) {
 
         if (idUsuario == 1324) {
             //Robot 2

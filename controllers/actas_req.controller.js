@@ -9,7 +9,7 @@ exports.createARequest = async (req, res) => {
     const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
    
    
-    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all" && id_req == 1662) {
+    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all" && id_req == 1662 || id_req == 1324) {
         const { type, metadata, preferences } = req.body;
 
             await actas_req.create({
