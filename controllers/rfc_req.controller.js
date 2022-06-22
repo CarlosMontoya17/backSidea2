@@ -11,7 +11,7 @@ exports.createOne = async (req, res) => {
 
 
 
-    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all" && idUsuario == 1662 || idUsuario == 1324) {
+    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
 
         if (idUsuario == 1324) {
             //Robot 2
@@ -21,7 +21,7 @@ exports.createOne = async (req, res) => {
                 data,
                 ip: req.ip,
                 id_req: req.usuarioID,
-                robot: 1
+                robot: 2
             }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                 if (data != 0) {
                     return res.status(201).json({ message: 'Created!' });

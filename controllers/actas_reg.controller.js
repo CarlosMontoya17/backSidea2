@@ -453,7 +453,7 @@ exports.newActaReg = async (req, res) => {
                 'idcreated'
             ]
         }).then(data => {
-            return res.status(201).json({ message: 'Created!' })
+            return res.status(201).json({ message: 'Acta Added!' })
         }).catch(err => {
             return res.status(500).json(err);
         });
