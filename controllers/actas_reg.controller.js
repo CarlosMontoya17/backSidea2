@@ -604,6 +604,7 @@ exports.getMyHistory = async (req, res) => {
     }
 }
 
+//Corte
 exports.getDates = async (req, res) => {
     const idUser = req.usuarioID;
     actas_reg.findAll({
@@ -720,7 +721,7 @@ exports.getCorte = async (req, res) => {
                     "createdAt": actas[i].createdAt,
                     "dataset": actas[i].dataset,
                     "nameinside": actas[i].nameinside,
-                    "uploadBy": actas[i].uploadBy,
+                    "uploadBy": actas[i].idcreated,
                     "price": Assigments.Pricing(actas[i], idUser)
         
                 });
