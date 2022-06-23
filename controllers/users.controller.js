@@ -177,15 +177,13 @@ exports.create = async (req, res) => {
     const { username, password, rol, type, idSuper, precios, status, nombre } = req.body;
     try {
         let userExist = await Users.findOne({ where: { username } });
-        try{
-            if(typeof(userExist.id) == "number"){
-                return res.status(304).json({
-                    message: 'User already exist'
-                });
-                
-            }
+        if(userExist){
+            return res.status(304).json({
+                message: 'User already exist'
+            });
+            
         }
-        catch{
+        else{
             const salt = await bcrypt.genSalt(10);
                     const hasedPs = await bcrypt.hash(password, salt)
                     let newUser = await Users.create({
@@ -208,6 +206,38 @@ exports.create = async (req, res) => {
                         });
                     }
         }
+
+        // try{
+        //     if(typeof(userExist.id) == "number"){
+        //         return res.status(304).json({
+        //             message: 'User already exist'
+        //         });
+                
+        //     }
+        // }
+        // catch{
+        //     const salt = await bcrypt.genSalt(10);
+        //             const hasedPs = await bcrypt.hash(password, salt)
+        //             let newUser = await Users.create({
+        //                 username,
+        //                 password: hasedPs,
+        //                 rol,
+        //                 type,
+        //                 idSuper,
+        //                 precios,
+        //                 status,
+        //                 nombre,
+        //                 servicios: "actas"
+        //             }, {
+        //                 fields: ['username', 'password', 'rol', 'type', 'idSuper', 'precios', 'status', 'nombre']
+        //             });
+        //             if (newUser) {
+        //                 return res.status(201).json({
+        //                     message: 'User created',
+        //                     data: newUser
+        //                 });
+        //             }
+        // }
         
         // if(userExist != null){
         //     return res.status(304).json({

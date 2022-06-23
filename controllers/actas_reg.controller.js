@@ -222,72 +222,66 @@ var Assigments = {
                 return element["id"] == Number(actas[i].idcreated);
             }); 
 
-            if(idUser == actas[i].level0){
+            if(idUser == acta.level0){
                 bought.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level0);
+                    return element["id"] == Number(acta.level0);
                 }); 
-                bought.price = actas[i].price0;
+                bought.price = acta.price0;
 
                 seller.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level1);
+                    return element["id"] == Number(acta.level1);
                 }); 
-                seller.price = actas[i].price1;
+                seller.price = acta.price1;
             }
-
-            else if(idUser == actas[i].level1){
+            else if(idUser == acta.level1){
                 bought.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level1);
+                    return element["id"] == Number(acta.level1);
                 }); 
-                bought.price = actas[i].price1;
+                bought.price = acta.price1;
 
                 seller.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level2);
+                    return element["id"] == Number(acta.level2);
                 }); 
-                seller.price = actas[i].price2;
+                seller.price = acta.price2;
             }
-
-            else if(idUser == actas[i].level2){
+            else if(idUser == acta.level2){
                 bought.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level2);
+                    return element["id"] == Number(acta.level2);
                 }); 
-                bought.price = actas[i].price2;
+                bought.price = acta.price2;
 
                 seller.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level3);
+                    return element["id"] == Number(acta.level3);
                 }); 
-                seller.price = actas[i].price3;
+                seller.price = acta.price3;
             }
-
-            else if(idUser == actas[i].level3){
+            else if(idUser == acta.level3){
                 bought.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level3);
+                    return element["id"] == Number(acta.level3);
                 }); 
-                bought.price = actas[i].price3;
+                bought.price = acta.price3;
 
                 seller.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level4);
+                    return element["id"] == Number(acta.level4);
                 }); 
-                seller.price = actas[i].price4;
+                seller.price = acta.price4;
             }
-
-            else if(idUser == actas[i].level4){
+            else if(idUser == acta.level4){
                 bought.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level4);
+                    return element["id"] == Number(acta.level4);
                 }); 
-                bought.price = actas[i].price4;
+                bought.price = acta.price4;
 
                 seller.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level5);
+                    return element["id"] == Number(acta.level5);
                 }); 
-                seller.price = actas[i].price5;
+                seller.price = acta.price5;
             }
-
-
-            else if(idUser == actas[i].level5){
+            else if(idUser == acta.level5){
                 bought.user = users.find(element => {
-                    return element["id"] == Number(actas[i].level5);
+                    return element["id"] == Number(acta.level5);
                 }); 
-                bought.price = actas[i].price5;
+                bought.price = acta.price5;
 
                 seller.user = {"id": 0, "nombre": "Sin vendedor"};
                 seller.price = 0;
@@ -629,7 +623,6 @@ exports.getMyHistory = async (req, res) => {
             }); 
 
             data.push({
-                "i": i+1,
                 "id": actas[i].id,
                 "document": actas[i].document,
                 "dataset": actas[i].dataset,
