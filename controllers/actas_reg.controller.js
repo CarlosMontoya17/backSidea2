@@ -718,11 +718,14 @@ exports.GetClientsOnDate = async (req, res) => {
             
         }
         ClientsAll = Assigments.DeleteDuplicates(ClientsAll);
-        let ClientsData = {};
+        let ClientsData = [];
         for (let client = 0; client < ClientsAll.length; client++) {
-            ClientsData[client] =  users.find(element => {
+
+
+
+            ClientsData.push(users.find(element => {
                 return element["id"] == Number(ClientsAll[client]);
-            });
+            }));
             
         }
         
