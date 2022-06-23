@@ -7,4 +7,5 @@ module.exports = (app) => {
     app.post("/api/actas/reg/new/", verifyAuth, controller.newActaReg);
     app.put("/api/actas/reg/transpose/:id", verifyAuth, controller.TransposeReg);
     app.get("/api/actas/reg/getMyHistory/", verifyAuth, controller.getMyHistory);
+    app.get("/api/actas/reg/Corte/Dates/", verifyAuth, controller.getDates);
 };

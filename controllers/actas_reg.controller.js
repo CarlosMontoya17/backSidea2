@@ -643,6 +643,37 @@ exports.getMyHistory = async (req, res) => {
 }
 
 
+exports.getDates = async (req, res) => {
+    const idUser = req.usuarioID;
+    actas_reg.findAll({
+        where: { 
+            [Op.or]: [
+                {level0: idUser}, 
+                {level1: idUser}, 
+                {level2: idUser}, 
+                {level3: idUser}, 
+                {level4: idUser}, 
+                {level5: idUser}
+            ]
+        },
+        attributes: ['corte'],
+        group: ['corte']
+    }).then(data => {
+            res.status(200).json(data);
+        }).catch(err => {
+            res.status(500).json(err);
+        }); 
+}
+
+exports.getCorte = async (req, res) => {
+    const idClient = req.params.id;
+    const dateClient = req.params.date;
+    
+
+
+}
+
+
 
 // exports.newActaRegister = async (req, res) => {
 //     /*
