@@ -657,7 +657,8 @@ exports.getDates = async (req, res) => {
             ]
         },
         attributes: ['corte'],
-        group: ['corte']
+        group: ['corte'],
+        order: [['corte', 'DESC']]
     }).then(data => {
             res.status(200).json(data);
         }).catch(err => {
@@ -668,7 +669,7 @@ exports.getDates = async (req, res) => {
 exports.getCorte = async (req, res) => {
     const idClient = req.params.id;
     const dateClient = req.params.date;
-    
+
 
 
 }
