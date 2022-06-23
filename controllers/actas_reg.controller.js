@@ -713,6 +713,10 @@ exports.getCorte = async (req, res) => {
                 var superviser = users.find(element => {
                     return element["id"] == Number(actas[i].level1);
                 });
+
+                var uploadBy = users.find(element => {
+                    return element["id"] == Number(actas[i].idcreated);
+                });
                 corte.push({
                     "document": actas[i].document,
                     "state": actas[i].state,
@@ -721,7 +725,7 @@ exports.getCorte = async (req, res) => {
                     "createdAt": actas[i].createdAt,
                     "dataset": actas[i].dataset,
                     "nameinside": actas[i].nameinside,
-                    "uploadBy": actas[i].idcreated,
+                    "uploadBy": uploadBy,
                     "price": Assigments.Pricing(actas[i], idUser)
         
                 });
