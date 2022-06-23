@@ -286,6 +286,19 @@ var Assigments = {
                 seller.user = {"id": 0, "nombre": "Sin vendedor"};
                 seller.price = 0;
             }
+    },
+    Dating: (date) => {
+        if(date == "null"){
+            return JSON.parse(null);
+        }
+        else{
+            return date;
+        }
+    },
+    DeleteDuplicates: (data) => {
+        return data.filter((c, index) => {
+            return data.indexOf(c) === index;
+        });
     }
 
 }
@@ -666,9 +679,67 @@ exports.getDates = async (req, res) => {
         }); 
 }
 
+exports.GetClientsOnDate = async (req, res) => {
+    const { date } = req.params;
+    const idUser = req.usuarioID;
+    const users = await Users.findAll({attributes: ['id', 'nombre']});
+    const clients = await actas_reg.findAll({
+        where: { 
+            [Op.or]: [
+                {level1: idUser}, 
+                {level2: idUser}, 
+                {level3: idUser}, 
+                {level4: idUser}, 
+                {level5: idUser}
+            ],
+            corte: Assigments.Dating(date)
+        },
+        attributes: ['level0', 'level1', 'level2', 'level3', 'level4','level5']
+    });
+
+    try{
+        let ClientsAll = [];
+        for (let i = 0; i < clients.length; i++) {
+            if(clients[i].level1 == idUser){
+                ClientsAll.push(clients[i].level0);
+            }
+            else if(clients[i].level2 == idUser){
+                ClientsAll.push(clients[i].level1);
+            }
+            else if(clients[i].level3 == idUser){
+                ClientsAll.push(clients[i].level2);
+            }
+            else if(clients[i].level4 == idUser){
+                ClientsAll.push(clients[i].level3);
+            }
+            else if(clients[i].level5 == idUser){
+                ClientsAll.push(clients[i].level4);
+            }
+            
+        }
+        ClientsAll = Assigments.DeleteDuplicates(ClientsAll);
+        let ClientsData = {};
+        for (let client = 0; client < ClientsAll.length; client++) {
+            ClientsData[client] =  users.find(element => {
+                return element["id"] == Number(ClientsAll[client]);
+            });
+            
+        }
+        
+        return res.status(200).json(ClientsData);
+    }
+    catch{
+        return res.status(200).json({message: 'Internal Error!'});
+    }
+
+
+}
+
+
 exports.getCorte = async (req, res) => {
     const idClient = req.params.id;
     const dateClient = req.params.date;
+
 
 
 
