@@ -6,4 +6,5 @@ module.exports = (app) => {
     app.post("/api/actas/reg/load/", verifyAuth ,uploaderDoc.upload.single('doc'), controller.upPDF);
     app.post("/api/actas/reg/new/", verifyAuth, controller.newActaReg);
     app.put("/api/actas/reg/transpose/:id", verifyAuth, controller.TransposeReg);
+    app.get("/api/actas/reg/getMyHistory/", verifyAuth, controller.getMyHistory);
 };

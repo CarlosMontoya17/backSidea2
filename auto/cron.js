@@ -3,8 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const database = require("../models");
 const Actas = database.Actas;
+const Actas_reg = database.Actas_reg;
 const Actas_req = database.Actas_req;
-
+const Rfc_req = database.Rfc_req;
 
 exports.corte = () => {
     cron.schedule('59 6 * * 6', () => {
@@ -28,7 +29,20 @@ function corteSemanal(){
         mm='0'+mm;
     } 
     today = yyyy+'-'+mm+'-'+dd;
+    
     Actas.update({corte: today}, {where: {corte: null}}).then(data => {
+        if(data == 1){
+            console.log("Corte Realizado");
+        }
+        else{
+            console.log("No hay actas!");
+        }   
+    }).catch(err => {
+        console.log(err);
+    });
+
+
+    Actas_reg.update({corte: today}, {where: {corte: null}}).then(data => {
         if(data == 1){
             console.log("Corte Realizado");
         }
@@ -50,5 +64,18 @@ function corteSemanal(){
     }).catch(err => {
         console.log(err);
     });
+
+    Rfc_req.update({corte: today}, {where: {corte: null}}).then(data => {
+        if(data == 1){
+            console.log("Corte Realizado");
+        }
+        else{
+            console.log("No hay actas!");
+        }   
+    }).catch(err => {
+        console.log(err);
+    });
+
+
 
 }
