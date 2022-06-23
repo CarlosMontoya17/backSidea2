@@ -11,4 +11,5 @@ module.exports = (app) => {
     //Corte
     app.get("/api/actas/reg/Corte/Dates/", verifyAuth, controller.getDates);
     app.get("/api/actas/reg/Corte/Clients/:date", verifyAuth, controller.GetClientsOnDate);
+    app.get("/api/actas/reg/Corte/:id/:date", verifyAuth, controller.getCorte)
 };

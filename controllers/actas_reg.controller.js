@@ -214,78 +214,27 @@ var Assigments = {
         }
         return levels;
     },
-    Pricing: () => {
-        var bought = {};
-            var seller = {};
-
-            var userCreated = users.find(element => {
-                return element["id"] == Number(actas[i].idcreated);
-            }); 
-
+    Pricing: (acta, idUser) => {
+            var price = 0;
             if(idUser == acta.level0){
-                bought.user = users.find(element => {
-                    return element["id"] == Number(acta.level0);
-                }); 
-                bought.price = acta.price0;
-
-                seller.user = users.find(element => {
-                    return element["id"] == Number(acta.level1);
-                }); 
-                seller.price = acta.price1;
+                price = 0;
             }
             else if(idUser == acta.level1){
-                bought.user = users.find(element => {
-                    return element["id"] == Number(acta.level1);
-                }); 
-                bought.price = acta.price1;
-
-                seller.user = users.find(element => {
-                    return element["id"] == Number(acta.level2);
-                }); 
-                seller.price = acta.price2;
+                price = acta.price0;
             }
             else if(idUser == acta.level2){
-                bought.user = users.find(element => {
-                    return element["id"] == Number(acta.level2);
-                }); 
-                bought.price = acta.price2;
-
-                seller.user = users.find(element => {
-                    return element["id"] == Number(acta.level3);
-                }); 
-                seller.price = acta.price3;
+                price = acta.price1;
             }
             else if(idUser == acta.level3){
-                bought.user = users.find(element => {
-                    return element["id"] == Number(acta.level3);
-                }); 
-                bought.price = acta.price3;
-
-                seller.user = users.find(element => {
-                    return element["id"] == Number(acta.level4);
-                }); 
-                seller.price = acta.price4;
+                price = acta.price2;
             }
             else if(idUser == acta.level4){
-                bought.user = users.find(element => {
-                    return element["id"] == Number(acta.level4);
-                }); 
-                bought.price = acta.price4;
-
-                seller.user = users.find(element => {
-                    return element["id"] == Number(acta.level5);
-                }); 
-                seller.price = acta.price5;
+                price = acta.price3;
             }
             else if(idUser == acta.level5){
-                bought.user = users.find(element => {
-                    return element["id"] == Number(acta.level5);
-                }); 
-                bought.price = acta.price5;
-
-                seller.user = {"id": 0, "nombre": "Sin vendedor"};
-                seller.price = 0;
+                price = acta.price4;
             }
+            return price;
     },
     Dating: (date) => {
         if(date == "null"){
@@ -655,7 +604,6 @@ exports.getMyHistory = async (req, res) => {
     }
 }
 
-
 exports.getDates = async (req, res) => {
     const idUser = req.usuarioID;
     actas_reg.findAll({
@@ -738,12 +686,57 @@ exports.GetClientsOnDate = async (req, res) => {
 
 }
 
-
 exports.getCorte = async (req, res) => {
-    const idClient = req.params.id;
-    const dateClient = req.params.date;
+    const {id, date} = req.params;
+    const idUser = req.usuarioID;
+    const users = await Users.findAll({attributes: ['id', 'nombre']});
 
+    const actas = await actas_reg.findAll({ where: { 
+        [Op.or]: [
+            {level1: id}, 
+            {level2: id}, 
+            {level3: id}, 
+            {level4: id}, 
+            {level5: id}
+        ],
+        corte: Assigments.Dating(date)
+    }});
 
+    try {
+        if(actas){
+            let corte = [];
+            for (let i = 0; i < actas.length; i++) {
+                var client = users.find(element => {
+                    return element["id"] == Number(actas[i].level0);
+                });
+                var superviser = users.find(element => {
+                    return element["id"] == Number(actas[i].level1);
+                });
+                corte.push({
+                    "document": actas[i].document,
+                    "state": actas[i].state,
+                    "client": client,
+                    "superviser": superviser,
+                    "createdAt": actas[i].createdAt,
+                    "dataset": actas[i].dataset,
+                    "nameinside": actas[i].nameinside,
+                    "uploadBy": actas[i].uploadBy,
+                    "price": Assigments.Pricing(actas[i], idUser)
+        
+                });
+            }
+            return res.status(200).json(corte);
+        }
+        else{
+            return res.status(404).json({message: 'No found!'});
+        }
+    } catch {
+        res.status(500).json({message: 'Internal Error!'});
+    }
+
+    
+
+    
 
 
 }
