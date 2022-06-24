@@ -811,6 +811,8 @@ exports.getHistoryOnDate = async (req, res) => {
                 });
 
                 corte.push({
+                    "id": actas[i].id,
+                    "state": actas[i].state,
                     "document": actas[i].document,
                     "buy": cost[0],
                     "pay": cost[1],
@@ -822,7 +824,8 @@ exports.getHistoryOnDate = async (req, res) => {
                     "dataset": actas[i].dataset,
                     "nameinside": actas[i].nameinside,
                     "uploadBy": uploadBy,
-                    "price": Assigments.Pricing(actas[i], idUser)
+                    "price": Assigments.Pricing(actas[i], idUser),
+                    "corte": actas[i].corte
         
                 });
             }
