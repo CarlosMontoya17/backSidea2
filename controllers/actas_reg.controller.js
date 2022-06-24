@@ -756,7 +756,7 @@ exports.getCorte = async (req, res) => {
 
             });
         }
-        res.status(200).json(actas);
+        res.status(200).json(corte);
     } catch {
         res.status(500).json({ message: 'Internal Error!' });
     }
