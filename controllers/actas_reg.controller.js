@@ -248,7 +248,29 @@ var Assigments = {
         return data.filter((c, index) => {
             return data.indexOf(c) === index;
         });
+    },
+    Costing: (acta, user) => {
+        if(acta.level0 == user){
+            //Precio Vendido, Precio a Pagar, Pagar Al usuario
+            return [0, acta.price0, acta.level1]
+        }
+        else if(acta.level1 == user){
+            return [acta.price0, acta.price1, acta.level2];
+        }
+        else if(acta.level2 == user){
+            return [acta.price1, acta.price2, acta.level3];
+        }
+        else if(acta.level3 == user){
+            return [acta.price2, acta.price3, acta.level4];
+        }
+        else if(acta.level4 == user){
+            return [acta.price3, acta.price4, acta.level5];
+        }
+        else if(acta.level5 == user){
+            return [acta.price0, 0, 0];
+        }
     }
+
 
 }
 
@@ -563,7 +585,7 @@ exports.TransposeReg = async (req, res) => {
 }
 
 
-//GetMy Historial
+//GetMy Historial de Registros
 exports.getMyHistory = async (req, res) => {
     const idUser = req.usuarioID;
     const users = await Users.findAll({ attributes: ['id', 'nombre'] });
@@ -747,6 +769,72 @@ exports.getCorte = async (req, res) => {
 
 }
 
+//Historial
+
+exports.getHistoryOnDate = async (req, res) => {
+    const { date } = req.params;
+    //id, vendedor, comprador, documento
+    const idUser = req.usuarioID;
+    const users = await Users.findAll({attributes: ['id', 'nombre']});
+
+    const actas = await actas_reg.findAll({ where: { 
+        [Op.or]: [
+            {level0: idUser}, 
+            {level1: idUser}, 
+            {level2: idUser}, 
+            {level3: idUser}, 
+            {level4: idUser}, 
+            {level5: idUser}
+        ],
+        corte: Assigments.Dating(date)
+    }});
+
+    try {
+        if(actas){
+            let corte = [];
+            for (let i = 0; i < actas.length; i++) {
+                var client = users.find(element => {
+                    return element["id"] == Number(actas[i].level0);
+                });
+                var superviser = users.find(element => {
+                    return element["id"] == Number(actas[i].level1);
+                });
+
+                var uploadBy = users.find(element => {
+                    return element["id"] == Number(actas[i].idcreated);
+                });
+
+                var cost = Assigments.Costing(actas[i], idUser);
+
+                var seller = users.find(element => {
+                    return element["id"] == Number(cost[2]);
+                });
+
+                corte.push({
+                    "document": actas[i].document,
+                    "buy": cost[0],
+                    "pay": cost[1],
+                    "seller": seller,
+                    "state": actas[i].state,
+                    "client": client,
+                    "superviser": superviser,
+                    "createdAt": actas[i].createdAt,
+                    "dataset": actas[i].dataset,
+                    "nameinside": actas[i].nameinside,
+                    "uploadBy": uploadBy,
+                    "price": Assigments.Pricing(actas[i], idUser)
+        
+                });
+            }
+            return res.status(200).json(corte);
+        }
+        else{
+            return res.status(404).json({message: 'No found!'});
+        }
+    } catch {
+        res.status(500).json({message: 'Internal Error!'});
+    }
+}
 
 
 // exports.newActaRegister = async (req, res) => {
