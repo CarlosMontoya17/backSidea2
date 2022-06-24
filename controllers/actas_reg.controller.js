@@ -916,6 +916,27 @@ exports.Delete = async (req, res) => {
 
 }
 
+exports.ChangeDate = async (req, res) => {
+    const { id } = req.params;
+    const { date } = req.body;
+    if (req.usuarioRol != "Cliente" && req.usuarioRol != "Capturista") {
+        await actas_reg.update({ createdAt: date }, { where: { id } }).then(data => {
+            if (data != 0) {
+                return res.status(200).json({ message: 'Updated!' });
+            }
+            else {
+                return res.status(404).json({ message: 'No found!' });
+            }
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+    }
+    else {
+        return res.status(500).json({ message: 'Dont have auth!' })
+    }
+
+}
+
 
 // exports.newActaRegister = async (req, res) => {
 //     /*

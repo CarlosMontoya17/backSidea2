@@ -15,4 +15,5 @@ module.exports = (app) => {
     //Historial General
     app.get("/api/actas/reg/History/:date", verifyAuth, controller.getHistoryOnDate);
     app.delete("/api/actas/reg/Trash/delete/:id", verifyAuth, controller.Delete);
+    app.put("/api/actas/reg/ChangeDate/:id", verifyAuth, controller.ChangeDate);
 };
