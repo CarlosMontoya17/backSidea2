@@ -72,10 +72,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         createdAt: {
-            type: Sequelize.TIME
+            type: Sequelize.DATE
         },
         updatedAt: {
-            type: Sequelize.TIME
+            type: Sequelize.DATE
         },
         namefile: {
             type: Sequelize.TEXT

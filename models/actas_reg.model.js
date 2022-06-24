@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const actas_reg = sequelize.define("actas_reg", {
+    const actas_reg = sequelize.define('actas_reg', {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
@@ -71,16 +71,19 @@ module.exports = (sequelize, Sequelize) => {
         idhidden: {
             type: Sequelize.BOOLEAN
         },
-        createdAt: {
-            type: Sequelize.TIME
-        },
-        updatedAt: {
+        createdtime: {
             type: Sequelize.TIME
         },
         idtranspose: {
             type: Sequelize.INTEGER
+        },
+        createdAt: {
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            type: Sequelize.DATE
         }
     }, {freezeTableName: true});
 
     return actas_reg;
-}
+}   

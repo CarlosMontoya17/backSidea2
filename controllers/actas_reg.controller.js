@@ -1,6 +1,7 @@
 const db = require('../models');
 const actas_reg = db.Actas_reg;
 const actas_req = db.Actas_req;
+const actas_trash = db.Actas_Trash;
 const rfc_req = db.Rfc_req;
 const Op = db.Sequelize.Op;
 const Users = db.Users;
@@ -215,32 +216,32 @@ var Assigments = {
         return levels;
     },
     Pricing: (acta, idUser) => {
-            var price = 0;
-            if(idUser == acta.level0){
-                price = 0;
-            }
-            else if(idUser == acta.level1){
-                price = acta.price0;
-            }
-            else if(idUser == acta.level2){
-                price = acta.price1;
-            }
-            else if(idUser == acta.level3){
-                price = acta.price2;
-            }
-            else if(idUser == acta.level4){
-                price = acta.price3;
-            }
-            else if(idUser == acta.level5){
-                price = acta.price4;
-            }
-            return price;
+        var price = 0;
+        if (idUser == acta.level0) {
+            price = 0;
+        }
+        else if (idUser == acta.level1) {
+            price = acta.price0;
+        }
+        else if (idUser == acta.level2) {
+            price = acta.price1;
+        }
+        else if (idUser == acta.level3) {
+            price = acta.price2;
+        }
+        else if (idUser == acta.level4) {
+            price = acta.price3;
+        }
+        else if (idUser == acta.level5) {
+            price = acta.price4;
+        }
+        return price;
     },
     Dating: (date) => {
-        if(date == "null"){
+        if (date == "null") {
             return JSON.parse(null);
         }
-        else{
+        else {
             return date;
         }
     },
@@ -250,23 +251,23 @@ var Assigments = {
         });
     },
     Costing: (acta, user) => {
-        if(acta.level0 == user){
+        if (acta.level0 == user) {
             //Precio Vendido, Precio a Pagar, Pagar Al usuario
             return [0, acta.price0, acta.level1]
         }
-        else if(acta.level1 == user){
+        else if (acta.level1 == user) {
             return [acta.price0, acta.price1, acta.level2];
         }
-        else if(acta.level2 == user){
+        else if (acta.level2 == user) {
             return [acta.price1, acta.price2, acta.level3];
         }
-        else if(acta.level3 == user){
+        else if (acta.level3 == user) {
             return [acta.price2, acta.price3, acta.level4];
         }
-        else if(acta.level4 == user){
+        else if (acta.level4 == user) {
             return [acta.price3, acta.price4, acta.level5];
         }
-        else if(acta.level5 == user){
+        else if (acta.level5 == user) {
             return [acta.price0, 0, 0];
         }
     }
@@ -561,15 +562,15 @@ exports.TransposeReg = async (req, res) => {
             price5: levels[5].price,
             idtranspose: id_transpose
         }, { where: { id: actaReg.id } }).then(data => {
-            if(service == "acta"){
-                actas_req.update({ idtranspose: id_transpose }, {where: {id}}).then(data2 => {
+            if (service == "acta") {
+                actas_req.update({ idtranspose: id_transpose }, { where: { id } }).then(data2 => {
                     return res.status(200).json({ message: 'Updated!' });
                 }).catch(err2 => {
                     return res.status(500).json({ message: 'Internal Error!' });
                 });
             }
-            else if(service == "rfc"){
-                rfc_req.update({ idtranspose: id_transpose }, {where: {id}}).then(data2 => {
+            else if (service == "rfc") {
+                rfc_req.update({ idtranspose: id_transpose }, { where: { id } }).then(data2 => {
                     return res.status(200).json({ message: 'Updated!' });
                 }).catch(err2 => {
                     return res.status(500).json({ message: 'Internal Error!' });
@@ -590,21 +591,21 @@ exports.getMyHistory = async (req, res) => {
     const idUser = req.usuarioID;
     const users = await Users.findAll({ attributes: ['id', 'nombre'] });
     const actas = await actas_reg.findAll({
-        where: { [Op.or]: [{level0: idUser}, {level1: idUser}, {level2: idUser}, {level3: idUser}, {level4: idUser}, {level5: idUser}, {idcreated: idUser}]},
+        where: { [Op.or]: [{ level0: idUser }, { level1: idUser }, { level2: idUser }, { level3: idUser }, { level4: idUser }, { level5: idUser }, { idcreated: idUser }] },
         order: [['id', 'ASC']]
     });
-    if(actas){
+    if (actas) {
         var data = [];
         for (let i = 0; i < actas.length; i++) {
             var userCreated = users.find(element => {
                 return element["id"] == Number(actas[i].idcreated);
-            }); 
+            });
             var bought = users.find(element => {
                 return element["id"] == Number(actas[i].level0);
             });
             var seller = users.find(element => {
                 return element["id"] == Number(actas[i].level1);
-            }); 
+            });
 
             data.push({
                 "id": actas[i].id,
@@ -617,12 +618,12 @@ exports.getMyHistory = async (req, res) => {
                 "createdAt": actas[i].createdAt,
                 "corte": actas[i].corte,
                 "uploadBy": userCreated
-            });            
+            });
         }
         return res.status(200).json(data);
     }
-    else{
-        return res.status(404).json({message: 'No found!'});
+    else {
+        return res.status(404).json({ message: 'No found!' });
     }
 }
 
@@ -630,63 +631,63 @@ exports.getMyHistory = async (req, res) => {
 exports.getDates = async (req, res) => {
     const idUser = req.usuarioID;
     actas_reg.findAll({
-        where: { 
+        where: {
             [Op.or]: [
-                {level0: idUser}, 
-                {level1: idUser}, 
-                {level2: idUser}, 
-                {level3: idUser}, 
-                {level4: idUser}, 
-                {level5: idUser}
+                { level0: idUser },
+                { level1: idUser },
+                { level2: idUser },
+                { level3: idUser },
+                { level4: idUser },
+                { level5: idUser }
             ]
         },
         attributes: ['corte'],
         group: ['corte'],
         order: [['corte', 'DESC']]
     }).then(data => {
-            res.status(200).json(data);
-        }).catch(err => {
-            res.status(500).json(err);
-        }); 
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json(err);
+    });
 }
 
 exports.GetClientsOnDate = async (req, res) => {
     const { date } = req.params;
     const idUser = req.usuarioID;
-    const users = await Users.findAll({attributes: ['id', 'nombre']});
+    const users = await Users.findAll({ attributes: ['id', 'nombre'] });
     const clients = await actas_reg.findAll({
-        where: { 
+        where: {
             [Op.or]: [
-                {level1: idUser}, 
-                {level2: idUser}, 
-                {level3: idUser}, 
-                {level4: idUser}, 
-                {level5: idUser}
+                { level1: idUser },
+                { level2: idUser },
+                { level3: idUser },
+                { level4: idUser },
+                { level5: idUser }
             ],
             corte: Assigments.Dating(date)
         },
-        attributes: ['level0', 'level1', 'level2', 'level3', 'level4','level5']
+        attributes: ['level0', 'level1', 'level2', 'level3', 'level4', 'level5']
     });
 
-    try{
+    try {
         let ClientsAll = [];
         for (let i = 0; i < clients.length; i++) {
-            if(clients[i].level1 == idUser){
+            if (clients[i].level1 == idUser) {
                 ClientsAll.push(clients[i].level0);
             }
-            else if(clients[i].level2 == idUser){
+            else if (clients[i].level2 == idUser) {
                 ClientsAll.push(clients[i].level1);
             }
-            else if(clients[i].level3 == idUser){
+            else if (clients[i].level3 == idUser) {
                 ClientsAll.push(clients[i].level2);
             }
-            else if(clients[i].level4 == idUser){
+            else if (clients[i].level4 == idUser) {
                 ClientsAll.push(clients[i].level3);
             }
-            else if(clients[i].level5 == idUser){
+            else if (clients[i].level5 == idUser) {
                 ClientsAll.push(clients[i].level4);
             }
-            
+
         }
         ClientsAll = Assigments.DeleteDuplicates(ClientsAll);
         let ClientsData = [];
@@ -697,100 +698,99 @@ exports.GetClientsOnDate = async (req, res) => {
             ClientsData.push(users.find(element => {
                 return element["id"] == Number(ClientsAll[client]);
             }));
-            
+
         }
-        
+
         return res.status(200).json(ClientsData);
     }
-    catch{
-        return res.status(200).json({message: 'Internal Error!'});
+    catch {
+        return res.status(200).json({ message: 'Internal Error!' });
     }
 
 
 }
 
 exports.getCorte = async (req, res) => {
-    const {id, date} = req.params;
+    const { id, date } = req.params;
     const idUser = req.usuarioID;
-    const users = await Users.findAll({attributes: ['id', 'nombre']});
+    const users = await Users.findAll({ attributes: ['id', 'nombre'] });
 
-    const actas = await actas_reg.findAll({ where: { 
-        [Op.or]: [
-            {level0: id}, 
-            {level1: id}, 
-            {level2: id}, 
-            {level3: id}, 
-            {level4: id}, 
-            {level5: id}
-        ],
-        corte: Assigments.Dating(date)
-    }});
+    const actas = await actas_reg.findAll({
+        where: {
+            [Op.or]: [
+                { level0: id },
+                { level1: id },
+                { level2: id },
+                { level3: id },
+                { level4: id },
+                { level5: id }
+            ],
+            corte: null
+        }
+    });
 
     try {
-        if(actas){
-            let corte = [];
-            for (let i = 0; i < actas.length; i++) {
-                var client = users.find(element => {
-                    return element["id"] == Number(actas[i].level0);
-                });
-                var superviser = users.find(element => {
-                    return element["id"] == Number(actas[i].level1);
-                });
 
-                var uploadBy = users.find(element => {
-                    return element["id"] == Number(actas[i].idcreated);
-                });
-                corte.push({
-                    "document": actas[i].document,
-                    "state": actas[i].state,
-                    "client": client,
-                    "superviser": superviser,
-                    "createdAt": actas[i].createdAt,
-                    "dataset": actas[i].dataset,
-                    "nameinside": actas[i].nameinside,
-                    "uploadBy": uploadBy,
-                    "price": Assigments.Pricing(actas[i], idUser)
-        
-                });
-            }
-            return res.status(200).json(corte);
+        let corte = [];
+        for (let i = 0; i < actas.length; i++) {
+            var client = users.find(element => {
+                return element["id"] == Number(actas[i].level0);
+            });
+            var superviser = users.find(element => {
+                return element["id"] == Number(actas[i].level1);
+            });
+
+            var uploadBy = users.find(element => {
+                return element["id"] == Number(actas[i].idcreated);
+            });
+            corte.push({
+                "document": actas[i].document,
+                "state": actas[i].state,
+                "client": client,
+                "superviser": superviser,
+                "createdAt": actas[i].createdAt,
+                "dataset": actas[i].dataset,
+                "nameinside": actas[i].nameinside,
+                "uploadBy": uploadBy,
+                "price": Assigments.Pricing(actas[i], idUser)
+
+            });
         }
-        else{
-            return res.status(404).json({message: 'No found!'});
-        }
+        res.status(200).json(actas);
     } catch {
-        res.status(500).json({message: 'Internal Error!'});
+        res.status(500).json({ message: 'Internal Error!' });
     }
 
-    
 
-    
+
+
 
 
 }
 
 //Historial
-
 exports.getHistoryOnDate = async (req, res) => {
     const { date } = req.params;
     //id, vendedor, comprador, documento
     const idUser = req.usuarioID;
-    const users = await Users.findAll({attributes: ['id', 'nombre']});
+    const users = await Users.findAll({ attributes: ['id', 'nombre'] });
 
-    const actas = await actas_reg.findAll({ where: { 
-        [Op.or]: [
-            {level0: idUser}, 
-            {level1: idUser}, 
-            {level2: idUser}, 
-            {level3: idUser}, 
-            {level4: idUser}, 
-            {level5: idUser}
-        ],
-        corte: Assigments.Dating(date)
-    }});
+    const actas = await actas_reg.findAll({
+        where: {
+            [Op.or]: [
+                { level0: idUser },
+                { level1: idUser },
+                { level2: idUser },
+                { level3: idUser },
+                { level4: idUser },
+                { level5: idUser }
+            ],
+            corte: Assigments.Dating(date)
+        }
+    });
 
     try {
-        if(actas){
+        if (actas) {
             let corte = [];
             for (let i = 0; i < actas.length; i++) {
                 var client = users.find(element => {
@@ -826,17 +826,94 @@ exports.getHistoryOnDate = async (req, res) => {
                     "uploadBy": uploadBy,
                     "price": Assigments.Pricing(actas[i], idUser),
                     "corte": actas[i].corte
-        
+
                 });
             }
             return res.status(200).json(corte);
         }
-        else{
-            return res.status(404).json({message: 'No found!'});
+        else {
+            return res.status(404).json({ message: 'No found!' });
         }
     } catch {
-        res.status(500).json({message: 'Internal Error!'});
+        res.status(500).json({ message: 'Internal Error!' });
     }
+}
+
+exports.Delete = async (req, res) => {
+    const { id } = req.params;
+    const idUser = req.usuarioID;
+    const acta = await actas_reg.findOne({ where: { id } });
+
+    if (acta) {
+        await actas_trash.create({
+            idsuper: id,
+            document: acta.document,
+            state: acta.state,
+            dataset: acta.dataset,
+            nameinside: acta.nameinside,
+            level0: acta.level0,
+            price0: acta.price0,
+            level1: acta.level1,
+            price1: acta.price1,
+            level2: acta.level2,
+            price2: acta.price2,
+            level3: acta.level3,
+            price3: acta.price3,
+            level4: acta.level4,
+            price4: acta.price4,
+            level5: acta.level5,
+            price5: acta.price5,
+            corte: acta.corte,
+            send: acta.send,
+            idcreated: acta.idcreated,
+            idhidden: idUser,
+            idtranspose: acta.idtranspose,
+            createdAt: acta.createdAt,
+            updatedAt: acta.updatedAt,
+            namefile: acta.namefile,
+        }, {
+            fields: [
+                'idsuper',
+                'document',
+                'state',
+                'dataset',
+                'nameinside',
+                'namefile',
+                'level0', 'price0',
+                'level1', 'price1',
+                'level2', 'price2',
+                'level3', 'price3',
+                'level4', 'price4',
+                'level5', 'price5',
+                'idcreated',
+                'corte',
+                'send',
+                'idhidden',
+                'idtranspose',
+                'createdAt',
+                'updatedAt',
+                'namefile',
+            ]
+        }).then(data => {
+
+            actas_reg.destroy({ where: { id } }).then(data2 => {
+                return res.status(200).json({message: 'Deleted!'});
+            }).catch(err2 => {
+                return res.status(500).json({ message: 'Internal Error!' });
+            });
+
+            
+        }).catch(err => {
+            return res.status(500).json({ message: 'Internal Error!' });
+        });
+
+
+        
+    }
+    else {
+        return res.status(404).json({ message: 'No found!' });
+    }
+
 }
 
 
