@@ -694,6 +694,7 @@ exports.getCorte = async (req, res) => {
 
     const actas = await actas_reg.findAll({ where: { 
         [Op.or]: [
+            {level0: id}, 
             {level1: id}, 
             {level2: id}, 
             {level3: id}, 
