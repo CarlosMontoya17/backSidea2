@@ -112,7 +112,6 @@ exports.getRequestNoAttended = async (req, res) => {
 
 exports.getOneRobot1 = async (req, res) => {
     await actas_req.findOne({ where: { robot: 1, [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
-        actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json(err);
@@ -121,7 +120,6 @@ exports.getOneRobot1 = async (req, res) => {
 
 exports.getOneRobot2 = async (req, res) => {
     await actas_req.findOne({ where: { robot: 2, [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
-        actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json(err);
@@ -130,7 +128,6 @@ exports.getOneRobot2 = async (req, res) => {
 
 exports.getOneRobot3 = async (req, res) => {
     await actas_req.findOne({ where: { robot: 3, [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
-        actas_req.update({ send: true }, { where: { id: data.id } });
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json(err);
