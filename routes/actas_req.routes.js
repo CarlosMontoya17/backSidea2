@@ -15,5 +15,5 @@ module.exports = function(app) {
 
     app.put("/api/actas/requests/comment/:id", controller.commentsUp);
     app.post("/api/actas/robotUp/", uploaderActa.upload.single('acta'), controller.upPDF);
-    app.get("/api/actas/requests/whomRequested/:id", verifyAuth ,controller.whomRequested);
+    app.get("/api/actas/requests/whomRequested/:id", controller.whomRequested);
 }
