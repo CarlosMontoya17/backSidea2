@@ -15,7 +15,7 @@ module.exports = (app) => {
     app.get("/api/rfc/request/robots/4/getOne/", controller.getOneTaskRobot4);
 
     app.put("/api/rfc/request/comment/:id", controller.addComments);
-    app.get("/api/rfc/request/getMyData/:id", verifyAuth ,controller.getMyData);
+    app.get("/api/rfc/request/getMyData/:id", controller.getMyData);
 
     app.post("/api/rfc/request/robotUp/", uploaderRFC.upload.single('rfc'), controller.upPdf);
     app.get("/api/rfc/request/getMyRequest/", verifyAuth, controller.getAllRequest);
