@@ -193,10 +193,10 @@ var Assigments = {
             }
             try {
                 if (typeof (lvlCurrent.precios[documentEncrypt]) != "number") {
-                    levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt][stateEncrypt], "idSuper": lvlCurrent.idSuper };
+                    levels[i] = { "id": lvlCurrent.id, "price": Number(lvlCurrent.precios[documentEncrypt][stateEncrypt]), "idSuper": lvlCurrent.idSuper };
                 }
                 else {
-                    levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt], "idSuper": lvlCurrent.idSuper };
+                    levels[i] = { "id": lvlCurrent.id, "price": Number(lvlCurrent.precios[documentEncrypt]), "idSuper": lvlCurrent.idSuper };
                 }
             }
             catch {
