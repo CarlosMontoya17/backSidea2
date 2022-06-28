@@ -192,12 +192,19 @@ var Assigments = {
                 break;
             }
             try {
-                if (typeof (lvlCurrent.precios[documentEncrypt]) != "number") {
-                    levels[i] = { "id": lvlCurrent.id, "price": Number(lvlCurrent.precios[documentEncrypt][stateEncrypt]), "idSuper": lvlCurrent.idSuper };
+
+                if(lvlCurrent.precios[documentEncrypt][stateEncrypt] != undefined){
+                    levels[i] = { "id": lvlCurrent.id, "price": Number(lvlCurrent.precios[documentEncrypt][stateEncrypt]), "idSuper" : lvlCurrent.idSuper };
                 }
-                else {
+                else{
                     levels[i] = { "id": lvlCurrent.id, "price": Number(lvlCurrent.precios[documentEncrypt]), "idSuper": lvlCurrent.idSuper };
                 }
+                // if(typeof (lvlCurrent.precios[documentEncrypt]) == "number") {
+                //     levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt][stateEncrypt], "idSuper": lvlCurrent.idSuper };
+                // }
+                // else{
+                //     levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt], "idSuper": lvlCurrent.idSuper };
+                // }
             }
             catch {
                 for (let index = i + 1; index < 6; index++) {
@@ -528,7 +535,7 @@ exports.newActaReg = async (req, res) => {
     }
 }
 
-//Traspasar un Acta
+//Traspasar un Acta From Requests
 exports.TransposeReg = async (req, res) => {
     const { id } = req.params;
     const { newciber, service } = req.body;
@@ -587,6 +594,47 @@ exports.TransposeReg = async (req, res) => {
     else {
         return res.status(404).json({ message: 'Document no found!' });
     }
+}
+
+exports.TransposeFromItself = async (req, res) => {
+    const { id } = req.params;
+    const { newciber } = req.body;
+    const id_transpose = req.usuarioID;
+
+    const actaReg = await actas_reg.findOne({ where: {id: id} });
+    if (actaReg) {
+        const users = await Users.findAll({ attributes: ['id', 'nombre', 'precios', 'idSuper'] });
+
+        var documentEncrypt = Encrypt.Document(actaReg.document);
+        var stateEncrypt = Encrypt.State(actaReg.state);
+        var levels = Assigments.Levels(newciber, users, documentEncrypt, stateEncrypt);
+
+        actas_reg.update({
+            level0: levels[0].id,
+            price0: levels[0].price,
+            level1: levels[1].id,
+            price1: levels[1].price,
+            level2: levels[2].id,
+            price2: levels[2].price,
+            level3: levels[3].id,
+            price3: levels[3].price,
+            level4: levels[4].id,
+            price4: levels[4].price,
+            level5: levels[5].id,
+            price5: levels[5].price,
+            idtranspose: id_transpose
+        }, { where: { id: actaReg.id } }).then(data => {
+                return res.status(200).json(levels);
+        }).catch(err => {
+            return res.status(500).json({ message: 'Internal Error!' });
+        });
+    }
+    else {
+        return res.status(404).json({ message: 'Document no found!' });
+    }
+
+
+
 }
 
 

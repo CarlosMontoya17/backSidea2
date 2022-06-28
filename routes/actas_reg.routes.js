@@ -6,6 +6,7 @@ module.exports = (app) => {
     app.post("/api/actas/reg/load/", verifyAuth ,uploaderDoc.upload.single('doc'), controller.upPDF);
     app.post("/api/actas/reg/new/", verifyAuth, controller.newActaReg);
     app.put("/api/actas/reg/transpose/:id", verifyAuth, controller.TransposeReg);
+    app.put("/api/actas/reg/transposeSelf/:id", verifyAuth, controller.TransposeFromItself);
     //Historial de Registros
     app.get("/api/actas/reg/getMyHistory/", verifyAuth, controller.getMyHistory);
     //Corte
