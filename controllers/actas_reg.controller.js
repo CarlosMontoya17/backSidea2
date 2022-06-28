@@ -270,6 +270,10 @@ var Assigments = {
         else if (acta.level5 == user) {
             return [acta.price0, 0, 0];
         }
+    },
+    SubstractHours: (numofHours, date = new Date()) => {
+            date.setHours(date.getHours() - numofHours);
+            return date;
     }
 
 
@@ -615,7 +619,7 @@ exports.getMyHistory = async (req, res) => {
                 "nameinside": actas[i].nameinside,
                 "bought": bought,
                 "seller": seller,
-                "createdAt": actas[i].createdAt,
+                "createdAt": Assigments.SubstractHours(5, new Date(actas[i].createdAt)),
                 "corte": actas[i].corte,
                 "uploadBy": userCreated
             });
@@ -725,7 +729,7 @@ exports.getCorte = async (req, res) => {
                 { level4: id },
                 { level5: id }
             ],
-            corte: null
+            corte: Assigments.Dating(date)
         }
     });
 
@@ -748,7 +752,7 @@ exports.getCorte = async (req, res) => {
                 "state": actas[i].state,
                 "client": client,
                 "superviser": superviser,
-                "createdAt": actas[i].createdAt,
+                "createdAt": Assigments.SubstractHours(5, new Date(actas[i].createdAt)) ,
                 "dataset": actas[i].dataset,
                 "nameinside": actas[i].nameinside,
                 "uploadBy": uploadBy,
@@ -810,6 +814,7 @@ exports.getHistoryOnDate = async (req, res) => {
                     return element["id"] == Number(cost[2]);
                 });
 
+                var dateUTC = new Date( actas[i].createdAt);
                 corte.push({
                     "id": actas[i].id,
                     "state": actas[i].state,
@@ -820,7 +825,7 @@ exports.getHistoryOnDate = async (req, res) => {
                     "state": actas[i].state,
                     "client": client,
                     "superviser": superviser,
-                    "createdAt": actas[i].createdAt,
+                    "createdAt":  Assigments.SubstractHours(5, dateUTC),
                     "dataset": actas[i].dataset,
                     "nameinside": actas[i].nameinside,
                     "uploadBy": uploadBy,

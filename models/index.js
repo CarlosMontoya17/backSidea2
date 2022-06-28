@@ -14,7 +14,8 @@ const sequelize = new Sequelize(
             acquire: cnfg.pool.acquire,
             idle: cnfg.pool.idle
         },
-        logging: false
+        logging: false,
+        
     }
 );
 const database = {};
