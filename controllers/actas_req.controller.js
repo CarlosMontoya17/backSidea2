@@ -11,20 +11,37 @@ exports.createARequest = async (req, res) => {
    
     if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
         const { type, metadata, preferences } = req.body;
+            if(id_req == 1500){
+                await actas_req.create({
+                    type,
+                    metadata,
+                    id_req,
+                    send: false,
+                    preferences,
+                    ip_req: req.ip,
+                    robot: 1
+                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
+                    return res.status(201).json({ message: 'Created!' })
+                }).catch(err => {
+                    return res.status(500).json(err);
+                });
+            }
+            else{
+                await actas_req.create({
+                    type,
+                    metadata,
+                    id_req,
+                    send: false,
+                    preferences,
+                    ip_req: req.ip,
+                    robot: 2
+                }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
+                    return res.status(201).json({ message: 'Created!' })
+                }).catch(err => {
+                    return res.status(500).json(err);
+                });
+            }
 
-            await actas_req.create({
-                type,
-                metadata,
-                id_req,
-                send: false,
-                preferences,
-                ip_req: req.ip,
-                robot: 2
-            }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
-                return res.status(201).json({ message: 'Created!' })
-            }).catch(err => {
-                return res.status(500).json(err);
-            });
         // if(id_req == 1509){
         //     await actas_req.create({
         //         type,
