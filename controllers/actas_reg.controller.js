@@ -976,7 +976,9 @@ exports.ChangeDate = async (req, res) => {
     if (req.usuarioRol != "Cliente" && req.usuarioRol != "Capturista") {
         const acta = await actas_reg.findOne({where: {id:id}, attributes: ['createdAt'] });
         if(acta){
+            // var currentDate = Assigments.SubstractHours(5, acta['createdAt']);
             var newDate =  date+"T"+acta['createdAt'].toISOString().split('T')[1]; 
+
             await actas_reg.update({ createdAt: newDate }, { where: { id } }).then(data => {
                 if (data != 0) {
                     return res.status(200).json({ message: 'Updated!' });
@@ -990,6 +992,7 @@ exports.ChangeDate = async (req, res) => {
         }
         else{
             return res.status(404).json({ message: 'No found!' });
+        
         }
 
     }
