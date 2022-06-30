@@ -8,7 +8,7 @@ module.exports = (app) => {
     app.put("/api/actas/reg/transpose/:id", verifyAuth, controller.TransposeReg);
     app.put("/api/actas/reg/transposeSelf/:id", verifyAuth, controller.TransposeFromItself);
     //Historial de Registros
-    app.get("/api/actas/reg/getMyHistory/", verifyAuth, controller.getMyHistory);
+    app.get("/api/actas/reg/getMyHistory/:date", verifyAuth, controller.getMyHistory);
     //Corte
     app.get("/api/actas/reg/Corte/Dates/", verifyAuth, controller.getDates);
     app.get("/api/actas/reg/Corte/Clients/:date", verifyAuth, controller.GetClientsOnDate);

@@ -641,9 +641,10 @@ exports.TransposeFromItself = async (req, res) => {
 //GetMy Historial de Registros
 exports.getMyHistory = async (req, res) => {
     const idUser = req.usuarioID;
+    const { date } = req.params;
     const users = await Users.findAll({ attributes: ['id', 'nombre'] });
     const actas = await actas_reg.findAll({
-        where: { [Op.or]: [{ level0: idUser }, { level1: idUser }, { level2: idUser }, { level3: idUser }, { level4: idUser }, { level5: idUser }, { idcreated: idUser }] },
+        where: { [Op.or]: [{ level0: idUser }, { level1: idUser }, { level2: idUser }, { level3: idUser }, { level4: idUser }, { level5: idUser }, { idcreated: idUser }], corte: Assigments.Dating(date) },
         order: [['id', 'ASC']]
     });
     if (actas) {
