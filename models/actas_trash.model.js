@@ -66,7 +66,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         idhidden: {
-            type: Sequelize.BOOLEAN
+            type: Sequelize.INTEGER
         },
         idtranspose: {
             type: Sequelize.INTEGER

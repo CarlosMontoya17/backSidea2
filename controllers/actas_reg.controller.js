@@ -897,10 +897,9 @@ exports.Delete = async (req, res) => {
     const { id } = req.params;
     const idUser = req.usuarioID;
     const acta = await actas_reg.findOne({ where: { id } });
-
     if (acta) {
         await actas_trash.create({
-            idsuper: id,
+            idsuper: Number(id),
             document: acta.document,
             state: acta.state,
             dataset: acta.dataset,
@@ -958,7 +957,7 @@ exports.Delete = async (req, res) => {
 
             
         }).catch(err => {
-            return res.status(500).json({ message: 'Internal Error!' });
+            return res.status(500).json(err);
         });
 
 
@@ -977,18 +976,17 @@ exports.ChangeDate = async (req, res) => {
         const acta = await actas_reg.findOne({where: {id:id}, attributes: ['createdAt'] });
         if(acta){
             // var currentDate = Assigments.SubstractHours(5, acta['createdAt']);
-            var newDate =  date+"T"+acta['createdAt'].toISOString().split('T')[1]; 
-
-            await actas_reg.update({ createdAt: newDate }, { where: { id } }).then(data => {
-                if (data != 0) {
-                    return res.status(200).json({ message: 'Updated!' });
-                }
-                else {
-                    return res.status(404).json({ message: 'No found!' });
-                }
-            }).catch(err => {
-                return res.status(500).json(err);
-            });
+            // var newDate =  date+"T"+acta['createdAt'].toISOString().split('T')[1]; 
+            // await actas_reg.update({ createdAt: newDate }, { where: { id } }).then(data => {
+            //     if (data != 0) {
+            //         return res.status(200).json({ message: 'Updated!' });
+            //     }
+            //     else {
+            //         return res.status(404).json({ message: 'No found!' });
+            //     }
+            // }).catch(err => {
+            //     return res.status(500).json(err);
+            // });
         }
         else{
             return res.status(404).json({ message: 'No found!' });
