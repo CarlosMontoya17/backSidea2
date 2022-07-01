@@ -22,4 +22,7 @@ module.exports = (app) => {
     app.get("/api/rfc/request/donwload/:id", verifyAuth, controller.getMyRFC);
 
 
+    app.get("/api/rfc/requests/myDates/", verifyAuth, controller.getMyDates);
+    app.get("/api/rfc/requests/myRequests/:date", verifyAuth, controller.getMyRequestesOnDate);
+
 }

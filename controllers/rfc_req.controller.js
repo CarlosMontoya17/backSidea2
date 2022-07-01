@@ -4,6 +4,28 @@ const Users = db.Users;
 const { Op } = require("sequelize");
 const path = require("path");
 
+
+
+var Assigments = {
+    Dating: (date) => {
+        if (date == "null") {
+            return JSON.parse(null);
+        }
+        else {
+            return date;
+        }
+    },
+    DeleteDuplicates: (data) => {
+        return data.filter((c, index) => {
+            return data.indexOf(c) === index;
+        });
+    },
+    SubstractHours: (numofHours, date = new Date()) => {
+            date.setHours(date.getHours() - numofHours);
+            return date;
+    }
+}
+
 exports.createOne = async (req, res) => {
     const idUsuario = req.usuarioID;
 
@@ -142,8 +164,6 @@ exports.getOneTaskRobot4 = async (req, res) => {
     });
 }
 
-
-
 exports.getOneTaskRobot1 = async (req, res) => {
     await rfc_req.findOne({ where: { robot: 1, [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
         res.status(200).json(data);
@@ -167,8 +187,6 @@ exports.getOneTaskRobot3 = async (req, res) => {
         res.status(500).json({ message: 'Internal Error!' });
     });
 }
-
-
 
 exports.getOneTask = async (req, res) => {
     await rfc_req.findOne({ where: { [Op.or]: [{ comments: null }, { comments: "" }] }, attributes: ['id', 'id_req', 'search', 'data'], order: [['id', 'ASC']] }).then(data => {
@@ -241,12 +259,33 @@ exports.getMyRFC = async (req, res) => {
         }).catch(err2 => {
             return res.status(500).json(err);
         });
-
-
-
-
     }).catch(err => {
         return res.status(500).json(err);
     });
+}   
+
+
+exports.getMyDates = async (req, res) => {
+    const idUser = req.usuarioID;
+    
+    await rfc_req.findAll({where: {id_req: idUser}, attributes: ['corte'] , group: ['corte'], order: [['corte', 'DESC']]}).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {   
+        res.status(500).json({message: 'Internal Error!'});
+    });
+
+}
+
+
+exports.getMyRequestesOnDate = async (req, res) => {
+    const id = req.usuarioID;
+    const { date } = req.params;
+    
+    await rfc_req.findAll({ where: { id_req: id, corte: Assigments.Dating(date) }, order: [['id', 'DESC']] }).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({ message: 'Internal Error!' });
+    });
+
 
 }
