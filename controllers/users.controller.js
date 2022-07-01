@@ -420,7 +420,7 @@ exports.newServices = async (req, res) => {
 }
 
 exports.getAllCibers = async (req, res) => {
-    const data = await Users.findAll({ where: { rol: 'Cliente' }, attributes: ['id', 'nombre'] });
+    const data = await Users.findAll({ where: { rol: 'Cliente' }, attributes: ['id', 'nombre'], order: [['id', 'ASC']] });
     if (data) { res.status(200).json(data); }
 
 }
