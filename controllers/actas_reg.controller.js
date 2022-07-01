@@ -723,39 +723,63 @@ exports.GetClientsOnDate = async (req, res) => {
 
     try {
         let ClientsAll = [];
+        
         for (let i = 0; i < clients.length; i++) {
+
             if (clients[i].level1 == idUser) {
-                ClientsAll.push(clients[i].level0);
+                if(clients[i].level0 != null){
+                    ClientsAll.push(clients[i].level0);
+                }
             }
             else if (clients[i].level2 == idUser) {
-                ClientsAll.push(clients[i].level1);
+                if(clients[i].level1 != null){
+                    ClientsAll.push(clients[i].level1);
+                }
             }
             else if (clients[i].level3 == idUser) {
-                ClientsAll.push(clients[i].level2);
+                if(clients[i].level2 != null){
+                    ClientsAll.push(clients[i].level2);
+                }
             }
             else if (clients[i].level4 == idUser) {
-                ClientsAll.push(clients[i].level3);
+                if(clients[i].level3 != null){
+                    ClientsAll.push(clients[i].level3);
+                }
             }
             else if (clients[i].level5 == idUser) {
-                ClientsAll.push(clients[i].level4);
+                if(clients[i].level4 != null){
+                    ClientsAll.push(clients[i].level4);
+                }
             }
-
         }
+
         ClientsAll = Assigments.DeleteDuplicates(ClientsAll);
         let ClientsData = [];
+
         for (let client = 0; client < ClientsAll.length; client++) {
-
-
-
-            ClientsData.push(users.find(element => {
+            var user = users.find(element => {
                 return element["id"] == Number(ClientsAll[client]);
-            }));
+            })
+            try{
+                ClientsData.push({
+                    "id": user["id"],
+                    "nombre": user["nombre"]
+                });
+            }
+            catch{
+                ClientsData.push({
+                    "id": ClientsAll[client],
+                    "nombre": `Usuario '${String(ClientsAll[client])}' Eliminado`
+                });
+            }
+
 
         }
 
         return res.status(200).json(ClientsData);
     }
-    catch {
+    catch(Ex) {
+        console.log(Ex);
         return res.status(200).json({ message: 'Internal Error!' });
     }
 
