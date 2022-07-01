@@ -717,7 +717,8 @@ exports.GetClientsOnDate = async (req, res) => {
             ],
             corte: Assigments.Dating(date)
         },
-        attributes: ['level0', 'level1', 'level2', 'level3', 'level4', 'level5']
+        attributes: ['level0', 'level1', 'level2', 'level3', 'level4', 'level5'],
+        order: [['id', 'ASC']]
     });
 
     try {
