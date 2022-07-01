@@ -705,7 +705,7 @@ exports.getDates = async (req, res) => {
 exports.GetClientsOnDate = async (req, res) => {
     const { date } = req.params;
     const idUser = req.usuarioID;
-    const users = await Users.findAll({ attributes: ['id', 'nombre'] });
+    const users = await Users.findAll({ attributes: ['id', 'nombre'], order: [['id', 'ASC']] });
     const clients = await actas_reg.findAll({
         where: {
             [Op.or]: [
