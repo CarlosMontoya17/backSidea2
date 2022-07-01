@@ -299,12 +299,8 @@ exports.updateServices = async (req, res) => {
 
 exports.deleteUser = async (req, res, next) => {
     const rol = req.usuarioRol;
-    if (rol == "") {
-        res.status(401).json({
-            message: "Don't have auth"
-        });
-    }
-    else {
+    const id = req.usuarioID;
+    if(id == 1 && rol == "Admin"){
         const { id } = req.params;
         await Users.destroy({
             where: { id }
@@ -327,7 +323,11 @@ exports.deleteUser = async (req, res, next) => {
             });
         });
     }
-
+    else{
+        res.status(401).json({
+            message: "Don't have auth"
+        });
+    }
 }
 
 exports.updatedUser = async (req, res) => {
