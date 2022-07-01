@@ -282,8 +282,6 @@ var Assigments = {
             date.setHours(date.getHours() - numofHours);
             return date;
     }
-
-
 }
 
 //Leer PDFs

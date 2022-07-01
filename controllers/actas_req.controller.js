@@ -4,6 +4,28 @@ const Users = db.Users;
 const Op = db.Sequelize.Op;
 const path = require('path');
 
+
+var Assigments = {
+    Dating: (date) => {
+        if (date == "null") {
+            return JSON.parse(null);
+        }
+        else {
+            return date;
+        }
+    },
+    DeleteDuplicates: (data) => {
+        return data.filter((c, index) => {
+            return data.indexOf(c) === index;
+        });
+    },
+    SubstractHours: (numofHours, date = new Date()) => {
+            date.setHours(date.getHours() - numofHours);
+            return date;
+    }
+}
+
+
 exports.createARequest = async (req, res) => {
     const id_req = req.usuarioID;
     const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
@@ -253,4 +275,30 @@ exports.getMyActa = async (req, res) => {
         res.status(500).json(err);
     });
 
+}
+
+
+exports.getMyDates = async (req, res) => {
+    const idUser = req.usuarioID;
+    await actas_req.findAll({where: {id_req: idUser}, attributes: ['corte'] , group: ['corte']}).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {   
+        res.status(500).json({message: 'Internal Error!'});
+    });
+
+}
+
+
+exports.getMyRequestesOnDate = async (req, res) => {
+    const id = req.usuarioID;
+    const { date } = req.params;
+    await actas_req.findAll({
+        where: { id_req: id, corte: Assigments.Dating(date)  }, order: [['createdAt', 'DESC']]
+    }).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({
+            message: 'Internal Error!'
+        })
+    });
 }
