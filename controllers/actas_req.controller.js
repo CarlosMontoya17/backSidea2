@@ -280,7 +280,7 @@ exports.getMyActa = async (req, res) => {
 
 exports.getMyDates = async (req, res) => {
     const idUser = req.usuarioID;
-    await actas_req.findAll({where: {id_req: idUser}, attributes: ['corte'] , group: ['corte']}).then(data => {
+    await actas_req.findAll({where: {id_req: idUser}, attributes: ['corte'] , group: ['corte'], order: [['corte', 'DESC']]}).then(data => {
         res.status(200).json(data);
     }).catch(err => {   
         res.status(500).json({message: 'Internal Error!'});
