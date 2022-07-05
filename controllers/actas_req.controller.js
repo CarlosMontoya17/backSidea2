@@ -33,7 +33,7 @@ exports.createARequest = async (req, res) => {
    
     if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
         const { type, metadata, preferences } = req.body;
-            if(id_req == 1500){
+            if(id_req == 984){
                 await actas_req.create({
                     type,
                     metadata,
@@ -41,7 +41,7 @@ exports.createARequest = async (req, res) => {
                     send: false,
                     preferences,
                     ip_req: req.ip,
-                    robot: 1
+                    robot: 2
                 }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
                     return res.status(201).json({ message: 'Created!' })
                 }).catch(err => {
