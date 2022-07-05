@@ -41,7 +41,7 @@ exports.createARequest = async (req, res) => {
                     send: false,
                     preferences,
                     ip_req: req.ip,
-                    robot: 2
+                    robot: 1
                 }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
                     return res.status(201).json({ message: 'Created!' })
                 }).catch(err => {
