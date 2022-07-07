@@ -4,7 +4,7 @@ const session = require("../middlewares/verifySession");
 module.exports = (app) => {
     app.post("/api/user/createOne/", verifyAuth, session.verifySession,controller.create);
 
-    app.get("/api/user/getFull/", verifyAuth, session.verifySession ,controller.getAll);
+    app.get("/api/user/getFull/", controller.getAll);
     
     app.get("/api/user/getOne/:id", controller.getOne);
     
