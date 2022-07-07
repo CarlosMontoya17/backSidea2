@@ -8,6 +8,8 @@ module.exports = (app) => {
     
     app.get("/api/user/getOne/:id", controller.getOne);
     
+    app.get("/api/user/getMyInfo/:id", verifyAuth, session.verifySession, controller.getOne);
+
     app.delete("/api/user/delete/:id", verifyAuth, session.verifySession ,controller.deleteUser);
     
     app.put("/api/user/updateId/:id", verifyAuth,session.verifySession ,controller.updatedUser);
