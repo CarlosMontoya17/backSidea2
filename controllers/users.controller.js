@@ -32,11 +32,23 @@ exports.signIn = (req, res) => {
                 const token = jwt.sign({ username: username, rol: data.rol, id: data.id }, cnfg.secret, {
                     expiresIn: 60 * 60 * 24
                 });
-                res.status(200).json({
-                    id: data.id,
-                    username: data.username,
-                    token: token
+                Users.update({ token: token }, {where: {id : data.id}}).then(data2 => {
+                    if(data2 != 0){
+                        return res.status(200).json({
+                            id: data.id,
+                            username: data.username,
+                            token: token
+                        });
+                    }
+                    else{
+                        return res.status(404).json({message: 'No found!'});
+                    }
+                }).catch(err2 => {
+                    res.status(500).json({
+                        message: err
+                    });
                 });
+
             }
         }
     }).catch(err => {

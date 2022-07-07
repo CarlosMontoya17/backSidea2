@@ -1,10 +1,11 @@
 const controller = require("../controllers/actas_req.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
 const uploaderActa = require("../middlewares/uploaderActa");
+const session = require("../middlewares/verifySession");
 module.exports = function(app) {
 
-    app.get("/api/actas/requests/obtainAll/", verifyAuth, controller.obtainAllRequets);
-    app.post("/api/actas/requests/createOne/", verifyAuth, controller.createARequest);
+    app.get("/api/actas/requests/obtainAll/", verifyAuth, session.verifySession,controller.obtainAllRequets);
+    app.post("/api/actas/requests/createOne/", verifyAuth, session.verifySession, controller.createARequest);
     app.get("/api/actas/requests/getMyActa/:id", controller.getMyActa);
 
     // -- Robot Sidea --
@@ -18,6 +19,6 @@ module.exports = function(app) {
     app.get("/api/actas/requests/whomRequested/:id", controller.whomRequested);
 
 
-    app.get("/api/actas/requests/myDates/", verifyAuth, controller.getMyDates);
-    app.get("/api/actas/requests/myRequests/:date", verifyAuth, controller.getMyRequestesOnDate);
+    app.get("/api/actas/requests/myDates/", verifyAuth, session.verifySession, controller.getMyDates);
+    app.get("/api/actas/requests/myRequests/:date", verifyAuth, session.verifySession, controller.getMyRequestesOnDate);
 }

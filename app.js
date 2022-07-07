@@ -1,17 +1,17 @@
 const express = require("express");
 const morgan = require("morgan");
+const config = require('./config/auth');
+const dbConfig = require('./config/db');
 const fs = require("fs");
 const https = require("https");
 const cors = require("cors");
 var pKey = fs.readFileSync('./actasalinstante.key');
 var pCert = fs.readFileSync('./actasalinstante.crt');
-
-
 const app = express();
 const cron = require("./auto/cron");
+// var pgSession = require("express-pg-session")(session);
 
 
-app.use(cors());
 
 const port = 3030;
 
@@ -21,9 +21,14 @@ const options = {
   }
 
 
+
 const server = https.createServer(options, app).listen(port, ()=> {
   console.log(`Server is listening on ${port}`);
 });
+
+
+app.use(cors());
+
 
 
 app.use(function(req, res, next) {
@@ -36,12 +41,51 @@ app.use(function(req, res, next) {
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-
-//MW
 app.use(morgan('dev'));
 
+
+// let columnsNames = {
+//   session_id: 'sid',
+//   session_data: 'sess',
+//   expire: 'expires_at'
+// };
+
+// let sessionPg = new pgStore({
+//   pool : dbConfig.pool,                // Connection pool
+//   tableName : 'user_sessions',  // Alternate table name
+//   columns: columnsNames          // Alternate column names
+// })
+
+
+// var pgPool = new pg.Pool({
+//   host: dbConfig.HOST,
+//   database: dbConfig.DB,
+//   user: dbConfig.USER,
+//   password: dbConfig.PASSWORD,
+//   max: dbConfig.pool.max,
+//   idleTimeoutMillis: dbConfig.pool.idle,
+//   connectionTimeoutMillis: 2000,
+// });
+
+
+// //Session Config
+// app.use(session({
+//   key: 'AAISessionId',
+//   store: new pgSession({
+//     pool: pgPool,
+//     tableName: 'user_sessions'
+//   }),
+//   secret: config.secret,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { maxAge:  1000 * 60 * 30 }
+// }));
+
+
 app.get('/', (req, res) => {
-    res.json({ welcome: "S I D E A - 2"})
+    req.session.ip = req.ip;
+    req.session.view = req.session.view ?++req.session.view: 1;
+    res.json(`Welcome to ACTAS AL INSTANTE From EndPoint ${req.session.ip} and view ${req.session.view} times`)
 });
 
 cron.corte();
@@ -70,6 +114,7 @@ const socket = require('socket.io')(server, {
     origin: '*'
   }
 });
+
 socket.on('connection', socket => {
   console.log("Socket!")
 })

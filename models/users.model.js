@@ -41,6 +41,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         servicios: {
             type: Sequelize.TEXT
+        },
+        token: {
+            type: Sequelize.TEXT
         }
     }, { freezeTableName: true });
     return Users;

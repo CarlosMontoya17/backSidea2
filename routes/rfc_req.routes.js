@@ -1,10 +1,10 @@
 const controller = require("../controllers/rfc_req.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
 const uploaderRFC = require("../middlewares/uploaderRFC");
-
+const session = require("../middlewares/verifySession");
 
 module.exports = (app) => {
-    app.post("/api/rfc/request/new/", verifyAuth, controller.createOne);
+    app.post("/api/rfc/request/new/", verifyAuth, session.verifySession, controller.createOne);
 
     app.get("/api/rfc/request/getOne/", controller.getOneTask);
 
@@ -18,11 +18,11 @@ module.exports = (app) => {
     app.get("/api/rfc/request/getMyData/:id", controller.getMyData);
 
     app.post("/api/rfc/request/robotUp/", uploaderRFC.upload.single('rfc'), controller.upPdf);
-    app.get("/api/rfc/request/getMyRequest/", verifyAuth, controller.getAllRequest);
+    app.get("/api/rfc/request/getMyRequest/", verifyAuth, session.verifySession, controller.getAllRequest);
     app.get("/api/rfc/request/donwload/:id", controller.getMyRFC);
 
 
-    app.get("/api/rfc/requests/myDates/", verifyAuth, controller.getMyDates);
-    app.get("/api/rfc/requests/myRequests/:date", verifyAuth, controller.getMyRequestesOnDate);
+    app.get("/api/rfc/requests/myDates/", verifyAuth, session.verifySession, controller.getMyDates);
+    app.get("/api/rfc/requests/myRequests/:date", verifyAuth, session.verifySession, controller.getMyRequestesOnDate);
 
 }
