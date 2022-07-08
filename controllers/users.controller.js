@@ -177,7 +177,9 @@ exports.getOne = async (req, res) => {
     const user = await Users.findOne({
         where: { id }
     });
-    res.json(user);
+    res.json({
+        data: user
+    });
 }
 
 exports.getMyInfo = async (req, res) => {
