@@ -177,9 +177,7 @@ exports.getOne = async (req, res) => {
     const user = await Users.findOne({
         where: { id }
     });
-    res.json({
-        data: user
-    });
+    res.json(user);
 }
 
 exports.getMyInfo = async (req, res) => {
@@ -188,7 +186,9 @@ exports.getMyInfo = async (req, res) => {
         where: { id },
         attributes: ['id', 'username', 'rol', 'servicios', 'status']
     });
-    res.json(user);
+    res.json({
+        data: user
+    });
 }
 
 
