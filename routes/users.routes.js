@@ -6,7 +6,7 @@ module.exports = (app) => {
 
     app.get("/api/user/getFull/", controller.getAll);
     
-    app.get("/api/user/getOne/:id", controller.getOne);
+    app.get("/api/user/getOne/:id", verifyAuth, session.verifySession, controller.getOne);
     
     app.get("/api/user/getMyInfo/:id", verifyAuth, session.verifySession, controller.getMyInfo);
 
