@@ -60,7 +60,7 @@ exports.createOne = async (req, res) => {
                 data,
                 ip: req.ip,
                 id_req: req.usuarioID,
-                robot: 3
+                robot: 2
             }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                 if (data != 0) {
                     return res.status(201).json({ message: 'Created!' });
@@ -105,7 +105,7 @@ exports.createOne = async (req, res) => {
                     data,
                     ip: req.ip,
                     id_req: req.usuarioID,
-                    robot: 3
+                    robot: 2
                 }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                     if (data != 0) {
                         return res.status(201).json({ message: 'Created!' });
