@@ -35,24 +35,7 @@ exports.createOne = async (req, res) => {
 
     if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
 
-        if (idUsuario == 983) {
-            //Robot 2
-            const { search, data } = req.body;
-            await rfc_req.create({
-                search,
-                data,
-                ip: req.ip,
-                id_req: req.usuarioID,
-                robot: 1
-            }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
-                if (data != 0) {
-                    return res.status(201).json({ message: 'Created!' });
-                }
-            }).catch(err => {
-                return res.status(500).json({ message: 'Internal Error!' });
-            });
-        }
-        else if (idUsuario == 1324) {
+        if (idUsuario == 1324) {
             //Robot 2
             const { search, data } = req.body;
             await rfc_req.create({
@@ -77,7 +60,7 @@ exports.createOne = async (req, res) => {
                 data,
                 ip: req.ip,
                 id_req: req.usuarioID,
-                robot: 2
+                robot: 3
             }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                 if (data != 0) {
                     return res.status(201).json({ message: 'Created!' });
@@ -122,7 +105,7 @@ exports.createOne = async (req, res) => {
                     data,
                     ip: req.ip,
                     id_req: req.usuarioID,
-                    robot: 2
+                    robot: 3
                 }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                     if (data != 0) {
                         return res.status(201).json({ message: 'Created!' });
@@ -157,7 +140,7 @@ exports.createOne = async (req, res) => {
                     data,
                     ip: req.ip,
                     id_req: req.usuarioID,
-                    robot: 2
+                    robot: 1
                 }, { field: ['search', 'data', 'ip', 'id_req', 'robot'] }).then(data => {
                     if (data != 0) {
                         return res.status(201).json({ message: 'Created!' });
