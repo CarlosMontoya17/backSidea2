@@ -1,6 +1,7 @@
 const db = require("../models");
 const actas_req = db.Actas_req;
 const Users = db.Users;
+const robots = db.Robots;
 const Op = db.Sequelize.Op;
 const path = require('path');
 
@@ -139,6 +140,44 @@ exports.createARequest = async (req, res) => {
 
     
 }
+
+
+
+exports.newRequest = async (req, res) => {
+    const id_req = req.usuarioID;
+    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
+   
+   
+    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
+
+        const { type, metadata, preferences } = req.body;
+        await robots.create({
+            
+            })
+
+
+            //     await actas_req.create({
+            //         type,
+            //         metadata,
+            //         id_req,
+            //         send: false,
+            //         preferences,
+            //         ip_req: req.ip,
+            //         robot: 2
+            //     }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
+            //         return res.status(201).json({ message: 'Created!' })
+            //     }).catch(err => {
+            //         return res.status(500).json(err);
+            //     });
+             
+    }
+    else{
+        return res.status(401).json({message: 'Unauthorized!'});
+    }
+
+    
+}
+
 
 exports.getRequestNoAttended = async (req, res) => {
     await actas_req.findOne({ where: { [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}] }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {

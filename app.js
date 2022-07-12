@@ -117,10 +117,12 @@ const socket = require('socket.io')(server, {
 
 socket.on('connection', socket => {
   console.log("Socket!")
-})
+});
+
 
 //Routes
 require('./routes/users.routes')(app);
+require('./routes/robots.routes')(app, socket);
 require('./routes/capturistas.routes')(app);
 require('./routes/actas.routes')(app);
 require('./routes/actas_req.routes')(app);

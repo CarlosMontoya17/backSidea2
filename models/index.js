@@ -42,5 +42,6 @@ database.Rfc_req = require("./rfc_req.model")(sequelize,Sequelize);
 //Others
 database.Actas = require("./actas.model")(sequelize,Sequelize);
 database.Publicidad = require("./publicidad.model")(sequelize, Sequelize);
+database.Robots = require("./robots.model")(sequelize, Sequelize);
 
 module.exports = database;
