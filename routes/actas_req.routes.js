@@ -26,5 +26,6 @@ module.exports = (app) => {
 
 
     app.post("/api/actas/requests/new/", auth.verify ,controller.newRequest);
+    app.get("/api/actas/requests/getData/:id", auth.verify, controller.getRequest);
 
 }
