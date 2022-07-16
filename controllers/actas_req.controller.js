@@ -2,6 +2,7 @@ const db = require("../models");
 const actas_req = db.Actas_req;
 const Users = db.Users;
 const robots = db.Robots;
+
 const Op = db.Sequelize.Op;
 const path = require('path');
 
@@ -143,48 +144,14 @@ exports.createARequest = async (req, res) => {
 
 exports.getRequest = async (req, res) => {
     const {id} = req.params;
-    await actas_req.findOne({where: {id}}).then(data => {
+    await actas_req.findOne({ where: { id: id }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
-        res.status(500).json({ message: 'Internal Error!' });
+        res.status(500).json(err);
     });
 }
 
 
-exports.newRequest = async (req, res) => {
-    const id_req = req.usuarioID;
-    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
-   
-   
-    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
-
-        const { type, metadata, preferences } = req.body;
-        await robots.create({
-
-            })
-
-
-            //     await actas_req.create({
-            //         type,
-            //         metadata,
-            //         id_req,
-            //         send: false,
-            //         preferences,
-            //         ip_req: req.ip,
-            //         robot: 2
-            //     }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robot'] }).then(data => {
-            //         return res.status(201).json({ message: 'Created!' })
-            //     }).catch(err => {
-            //         return res.status(500).json(err);
-            //     });
-             
-    }
-    else{
-        return res.status(401).json({message: 'Unauthorized!'});
-    }
-
-    
-}
 
 
 exports.getRequestNoAttended = async (req, res) => {
@@ -231,7 +198,6 @@ exports.commentsUp = async (req, res) => {
         res.status(500).json({ message: 'Internal Error!' });
     });
 }
-
 
 exports.obtainAllRequets = async (req, res) => {
     const id = req.usuarioID;
@@ -348,4 +314,85 @@ exports.getMyRequestesOnDate = async (req, res) => {
             message: 'Internal Error!'
         })
     });
+}
+
+
+
+exports.newRequest = async (req, res, next) => {
+    const id_req = req.usuarioID;
+    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
+   
+   
+    if (datosUsuario.servicios == "actas" || datosUsuario.servicios == "all") {
+        const robot = await robots.findOne({where: {source: "actas", status: "Esperando Solicitudes"}, attributes: ['name']});
+        var robotname = null;
+        try{
+            robotname = robot["name"];
+        }
+        catch{
+            robotname = null;
+        }
+
+        
+        const { type, metadata, preferences } = req.body;
+        await actas_req.create({
+            type,
+            metadata,
+            id_req,
+            send: false,
+            preferences,
+            ip_req: req.ip,
+            robottaken: robotname
+        }, { fields: ['type', 'metadata', 'id_req', 'send', 'preferences', 'ip_req', 'robottaken'] }).then(data => {
+            // return res.status(201).json({ message: 'Created!' })
+            req.robotUser = robotname;
+            req.entryReq = data.id;
+            next();
+        }).catch(err => {
+            return res.status(500).json(err);
+        });
+             
+    }
+    else{
+        return res.status(401).json({message: 'Unauthorized!'});
+    }
+
+    
+}
+
+
+exports.checkReqDesattend = async (req, res) => {
+    const { name } = req.params;
+    await actas_req.findOne({ where: { [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}], robottaken: null }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+        if(data != null){
+            actas_req.update({robottaken: name},{where: { id: data.id }}).then(data2 => {
+                res.status(200).json(data);
+            }).catch(err2 => {
+                res.status(500).json(err2);
+            });
+        }
+        else{
+            return res.status(200).json(null);
+        }
+
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+}
+
+
+exports.updatePassword = async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+    await actas_req.update({password}, {where: {id}}).then(data => {
+            if (data != 0) {
+                return res.status(200).json({ message: 'Updated!' });
+            }
+            else {
+                return res.status(200).json({ message: 'No found!' });
+            }
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+
 }

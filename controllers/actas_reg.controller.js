@@ -198,7 +198,7 @@ var Assigments = {
                 }
                 else{
                     levels[i] = { "id": lvlCurrent.id, "price": Number(lvlCurrent.precios[documentEncrypt]), "idSuper": lvlCurrent.idSuper };
-                }
+                }     
                 // if(typeof (lvlCurrent.precios[documentEncrypt]) == "number") {
                 //     levels[i] = { "id": lvlCurrent.id, "price": lvlCurrent.precios[documentEncrypt][stateEncrypt], "idSuper": lvlCurrent.idSuper };
                 // }
@@ -602,11 +602,9 @@ exports.TransposeFromItself = async (req, res) => {
     const actaReg = await actas_reg.findOne({ where: {id: id} });
     if (actaReg) {
         const users = await Users.findAll({ attributes: ['id', 'nombre', 'precios', 'idSuper'] });
-
         var documentEncrypt = Encrypt.Document(actaReg.document);
         var stateEncrypt = Encrypt.State(actaReg.state);
         var levels = Assigments.Levels(newciber, users, documentEncrypt, stateEncrypt);
-
         actas_reg.update({
             level0: levels[0].id,
             price0: levels[0].price,
@@ -1022,7 +1020,6 @@ exports.ChangeDate = async (req, res) => {
     }
 
 }
-
 
 // exports.newActaRegister = async (req, res) => {
 //     /*

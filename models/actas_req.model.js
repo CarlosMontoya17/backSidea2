@@ -46,10 +46,13 @@ module.exports = (sequelize, Sequelize) => {
         },
         downloaded: {
             type: Sequelize.BOOLEAN
+        },
+        robottaken: {
+            type: Sequelize.TEXT
+        },
+        password:{
+            type: Sequelize.TEXT
         }
-
     }, {freezeTableName: true});
-
     return actas_req;
-
 }

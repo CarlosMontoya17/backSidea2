@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         name: {
             type: Sequelize.TEXT
         },
-        request: {
+        asset: {
             type: Sequelize.TEXT
         },
         status: {
