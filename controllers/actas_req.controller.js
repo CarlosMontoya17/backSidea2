@@ -363,7 +363,7 @@ exports.newRequest = async (req, res, next) => {
 
 exports.checkReqDesattend = async (req, res) => {
     const { name } = req.params;
-    await actas_req.findOne({ where: { [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}], robottaken: null, send: true }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+    await actas_req.findOne({ where: { [Op.or]: [{comments: null}, {comments: ""}, {comments: " "}], [Op.or]: [{robottaken: null}, {robottaken: name}], send: true }, attributes: ['id', 'type', 'metadata', 'id_req'], order: [['id', 'ASC']] }).then(data => {
         if(data != null){
             actas_req.update({robottaken: name},{where: { id: data.id }}).then(data2 => {
                 res.status(200).json(data);
