@@ -1,7 +1,5 @@
 const express = require("express");
 const morgan = require("morgan");
-const config = require('./config/auth');
-const dbConfig = require('./config/db');
 const fs = require("fs");
 const https = require("https");
 const cors = require("cors");

@@ -4,8 +4,6 @@ const Users = db.Users;
 const { Op } = require("sequelize");
 const path = require("path");
 
-
-
 var Assigments = {
     Dating: (date) => {
         if (date == "null") {
@@ -286,6 +284,4 @@ exports.getMyRequestesOnDate = async (req, res) => {
     }).catch(err => {
         res.status(500).json({ message: 'Internal Error!' });
     });
-
-
 }

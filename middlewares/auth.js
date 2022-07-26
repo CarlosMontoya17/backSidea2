@@ -11,23 +11,33 @@ exports.verify = async (req, res, next) => {
             message: "No token provided"
         });
     }
-
-    const decoded = jwt.verify(token, cnfg.secret);
-    req.usuarioRol = decoded.rol;
-    req.usuarioID = decoded.id;
-
-    await Users.findOne({ where: { id: req.usuarioID } }).then(data => {
-        if (data.token == token) {
-            next();
+    else{
+        try{
+            const decoded = jwt.verify(token, cnfg.secret);
+            req.usuarioRol = decoded.rol;
+            req.usuarioID = decoded.id;
+        
+            await Users.findOne({ where: { id: req.usuarioID } }).then(data => {
+                if (data.token == token) {
+                    next();
+                }
+                else {
+                    return res.status(440).json({
+                        message: "Session Closed!"
+                    });
+                }
+            }).catch(err => {
+                return res.status(500).json({
+                    message: "Internal Error!"
+                });
+            });
         }
-        else {
+        catch{
             return res.status(440).json({
                 message: "Session Closed!"
             });
         }
-    }).catch(err => {
-        return res.status(500).json({
-            message: "Internal Error!"
-        });
-    });
+    }
+
+
 }

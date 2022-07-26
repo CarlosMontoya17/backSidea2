@@ -19,6 +19,8 @@ module.exports = (app, socket) => {
     app.get("/api/actas/requests/whomRequested/:id", controller.whomRequested);
     app.get("/api/actas/requests/myDates/", verifyAuth, session.verifySession, controller.getMyDates);
     app.get("/api/actas/requests/myRequests/:date", verifyAuth, session.verifySession, controller.getMyRequestesOnDate);
+
+    //New Robots
     app.post("/api/actas/requests/new/", auth.verify, controller.newRequest, (req, res) => {
         const request = req.entryReq;
         const robot = req.robotUser;
