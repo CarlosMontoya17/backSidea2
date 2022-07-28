@@ -35,7 +35,7 @@ module.exports = (app, socket) => {
             "idrequest": request
         });
     });
-
+    app.get("/api/rfc/requests/getData/:id", auth.verify, controller.getRequest);
 
     app.get("/api/rfc/requests/checkDesattend/:name", controller.checkReqDesattend);
 }

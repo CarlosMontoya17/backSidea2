@@ -343,3 +343,12 @@ exports.checkReqDesattend = async (req, res) => {
         res.status(500).json(err);
     });
 }
+
+exports.getRequest = async (req, res) => {
+    const {id} = req.params;
+    await rfc_req.findOne({ where: { id: id }, attributes: ['id', 'search', 'data', 'id_req', 'clasification'], order: [['id', 'ASC']] }).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+}
