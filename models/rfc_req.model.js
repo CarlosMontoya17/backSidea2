@@ -46,6 +46,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         password: {
             type: Sequelize.TEXT
+        },
+        clasification: {
+            type: Sequelize.TEXT
         }
 
     }, {freezeTableName: true});

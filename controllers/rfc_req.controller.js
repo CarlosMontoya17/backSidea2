@@ -327,7 +327,7 @@ exports.newRequest = async (req, res, next) => {
 
 exports.checkReqDesattend = async (req, res) => {
     const { name } = req.params;
-    await rfc_req.findOne({ where: { [Op.and]: [{[Op.or]: [{comments: null}, {comments: ""}, {comments: " "}]}, {[Op.or]: [{robottaken: name}, {robottaken: null}]}] }, attributes: ['id', 'search', 'data', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+    await rfc_req.findOne({ where: { [Op.and]: [{[Op.or]: [{comments: null}, {comments: ""}, {comments: " "}]}, {[Op.or]: [{robottaken: name}, {robottaken: null}]}], clasification: {[Op.not]: null} }, attributes: ['id', 'search', 'data', 'id_req', 'clasification'], order: [['id', 'ASC']] }).then(data => {
         if(data != null){
             rfc_req.update({robottaken: name},{where: { id: data.id }}).then(data2 => {
                 res.status(200).json(data);
