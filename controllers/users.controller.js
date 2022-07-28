@@ -183,6 +183,18 @@ exports.getOne = async (req, res) => {
 }
 
 exports.getMyInfo = async (req, res) => {
+    const { id } = req.params;
+    const user = await Users.findOne({
+        where: { id },
+        attributes: ['id', 'username', 'rol', 'servicios', 'status']
+    });
+    res.json({
+        data: user
+    });
+}
+
+
+exports.getMyProfile = async (req, res) => {
     const { id } = req.usuarioID;
     const user = await Users.findOne({
         where: { id },
@@ -192,6 +204,7 @@ exports.getMyInfo = async (req, res) => {
         data: user
     });
 }
+
 
 
 exports.create = async (req, res) => {

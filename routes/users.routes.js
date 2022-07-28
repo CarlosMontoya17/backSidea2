@@ -8,8 +8,8 @@ module.exports = (app) => {
     app.get("/api/user/getFull/", controller.getAll);
     
     app.get("/api/user/getOne/:id",  controller.getOne);
-        //New Auth
-    app.get("/api/user/getMyInfo/", auth.verify, controller.getMyInfo);
+    
+    app.get("/api/user/getMyInfo/:id", verifyAuth, session.verifySession, controller.getMyInfo);
 
     app.delete("/api/user/delete/:id", verifyAuth, session.verifySession ,controller.deleteUser);
     
@@ -36,7 +36,7 @@ module.exports = (app) => {
     app.post("/api/hash/", controller.hasheo);
 
     app.put("/api/update/services/:id", verifyAuth, controller.updateServices);
-
-
+    //New Auth
+    app.get("/api/user/myData/", auth.verify, controller.getMyProfile);
 
 }
