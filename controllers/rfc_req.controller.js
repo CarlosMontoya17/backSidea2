@@ -338,7 +338,6 @@ exports.checkReqDesattend = async (req, res) => {
         else{
             return res.status(200).json(null);
         }
-
     }).catch(err => {
         res.status(500).json(err);
     });

@@ -1,14 +1,15 @@
 const controller = require("../controllers/users.controller");
 const verifyAuth = require("../middlewares/verifyAuth");
 const session = require("../middlewares/verifySession");
+const auth = require("../middlewares/auth");
 module.exports = (app) => {
     app.post("/api/user/createOne/", verifyAuth, session.verifySession,controller.create);
 
     app.get("/api/user/getFull/", controller.getAll);
     
     app.get("/api/user/getOne/:id",  controller.getOne);
-    
-    app.get("/api/user/getMyInfo/:id", verifyAuth, session.verifySession, controller.getMyInfo);
+        //New Auth
+    app.get("/api/user/getMyInfo/", auth.verify, controller.getMyInfo);
 
     app.delete("/api/user/delete/:id", verifyAuth, session.verifySession ,controller.deleteUser);
     
@@ -34,6 +35,8 @@ module.exports = (app) => {
 
     app.post("/api/hash/", controller.hasheo);
 
-    app.put("/api/update/services/:id", verifyAuth, controller.updateServices)
+    app.put("/api/update/services/:id", verifyAuth, controller.updateServices);
+
+
 
 }

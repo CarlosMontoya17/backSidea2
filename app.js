@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const fs = require("fs");
-const https = require("https");
+const https = require("http");
 const cors = require("cors");
 var pKey = fs.readFileSync('./actasalinstante.key');
 var pCert = fs.readFileSync('./actasalinstante.crt');
@@ -81,6 +81,9 @@ app.use(morgan('dev'));
 
 
 app.get('/', (req, res) => {
+    // res.json({
+    //   CapId: "FPWD4LUDJ3R3DA4"
+    // });
     req.session.ip = req.ip;
     req.session.view = req.session.view ?++req.session.view: 1;
     res.json(`Welcome to ACTAS AL INSTANTE From EndPoint ${req.session.ip} and view ${req.session.view} times`)
