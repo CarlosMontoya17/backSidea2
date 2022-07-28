@@ -4,7 +4,7 @@ const uploaderRFC = require("../middlewares/uploaderRFC");
 const session = require("../middlewares/verifySession");
 const auth = require("../middlewares/auth");
 
-module.exports = (app) => {
+module.exports = (app, socket) => {
     app.post("/api/rfc/request/new/", verifyAuth, session.verifySession, controller.createOne);
     app.get("/api/rfc/request/getOne/", controller.getOneTask);
 

@@ -120,14 +120,14 @@ socket.on('connection', socket => {
   console.log("Socket!")
 });
 
-
+5
 //Routes
 require('./routes/users.routes')(app);
 require('./routes/robots.routes')(app, socket);
 require('./routes/capturistas.routes')(app);
 require('./routes/actas.routes')(app);
 require('./routes/actas_req.routes')(app, socket);
-require('./routes/rfc_req.routes')(app);
+require('./routes/rfc_req.routes')(app, socket);
 require('./routes/publicidad.routes')(app);
 require('./routes/actas_reg.routes')(app);
 require('./routes/notifications.routes')(app, socket);
