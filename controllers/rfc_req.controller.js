@@ -301,14 +301,15 @@ exports.newRequest = async (req, res, next) => {
         catch{
             robotname = null;
         }
-        const { search, data } = req.body;
+        const { search, data, clasification } = req.body;
         await rfc_req.create({
             search,
             data,
+            clasification,
             ip: req.ip,
             id_req: req.usuarioID,
             robottaken: robotname
-        }, { field: ['search', 'data', 'ip', 'id_req', 'robottaken'] }).then(data => {
+        }, { field: ['search', 'data', 'ip', 'id_req', 'robottaken', 'clasification'] }).then(data => {
                 req.robotUser = robotname;
                 req.entryReq = data.id;
                 next();
