@@ -22,7 +22,7 @@ exports.verify = async (req, res, next) => {
                     next();
                 }
                 else {
-                    return res.status(440).json({
+                    return res.status(401).json({
                         message: "Session Closed!"
                     });
                 }
@@ -33,7 +33,7 @@ exports.verify = async (req, res, next) => {
             });
         }
         catch{
-            return res.status(440).json({
+            return res.status(401).json({
                 message: "Session Closed!"
             });
         }

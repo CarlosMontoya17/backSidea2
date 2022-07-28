@@ -35,5 +35,6 @@ module.exports = (app, socket) => {
     });
     app.put("/api/actas/requests/setPassword/:id", auth.verify, controller.updatePassword);
     app.get("/api/actas/requests/getData/:id", auth.verify, controller.getRequest);
+    
     app.get("/api/actas/requests/checkDesattend/:name", controller.checkReqDesattend);
 }

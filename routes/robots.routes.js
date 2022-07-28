@@ -14,12 +14,12 @@ module.exports = (app, socket) => {
         res.json(emit);
     });
 
-    // //Socket Robot Controller
-    // app.post("/api/robots/controller/instruction/new/", (req, res) => {
-    //     const emit = req.body;
-    //     socket.emit('instruction', emit);
-    //     res.json(emit);
-    // });
+    //Socket RFCs
+    app.post("/api/robots/rfcs/emit/new/", (req, res) => {
+        const emit = req.body;
+        socket.emit('rfcs', emit);
+        res.json(emit);
+    });
 
     //Socket Robot Controller
     app.post("/api/robots/controller/instruction/new/", (req, res) => {
@@ -44,7 +44,7 @@ module.exports = (app, socket) => {
         socket.emit('captcha', {
             name
         });
-        res.status(200).json({message: 'Updated!'});
+        res.status(200).json({ message: 'Updated!' });
     });
 
     //Captcha
@@ -53,13 +53,13 @@ module.exports = (app, socket) => {
     app.put("/api/robots/captcha/resolve/:name", auth.verify, (req, res) => {
         const { captchaValue } = req.body;
         const { name } = req.params;
-        if(captchaValue){
+        if (captchaValue) {
             socket.emit('captchaResolve', {
                 name, captchaValue
             });
             return res.sendStatus(200);
         }
-        else{
+        else {
             return res.sendStatus(400);
         }
 

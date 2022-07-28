@@ -1,6 +1,7 @@
 const db = require("../models");
 const rfc_req = db.Rfc_req;
 const Users = db.Users;
+const robots = db.Robots;
 const { Op } = require("sequelize");
 const path = require("path");
 
@@ -283,5 +284,62 @@ exports.getMyRequestesOnDate = async (req, res) => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json({ message: 'Internal Error!' });
+    });
+}
+
+
+exports.newRequest = async (req, res, next) => {
+    const id_req = req.usuarioID;
+    const datosUsuario = await Users.findOne({ where: { id: id_req }, attributes: ['servicios', 'idSuper', 'rol', 'username'] });
+   
+    if (datosUsuario.servicios == "rfc" || datosUsuario.servicios == "all") {
+        const robot = await robots.findOne({where: {source: "rfcs", status: "Esperando Solicitudes"}, attributes: ['name']});
+        var robotname = null;
+        try{
+            robotname = robot["name"];
+        }
+        catch{
+            robotname = null;
+        }
+        const { search, data } = req.body;
+        await rfc_req.create({
+            search,
+            data,
+            ip: req.ip,
+            id_req: req.usuarioID,
+            robottaken: robotname
+        }, { field: ['search', 'data', 'ip', 'id_req', 'robottaken'] }).then(data => {
+                req.robotUser = robotname;
+                req.entryReq = data.id;
+                next();
+        }).catch(err => {
+            return res.status(500).json({ message: 'Internal Error!' });
+        });
+             
+    }
+    else{
+        return res.status(401).json({message: 'Unauthorized!'});
+    }
+
+    
+}
+
+
+exports.checkReqDesattend = async (req, res) => {
+    const { name } = req.params;
+    await rfc_req.findOne({ where: { [Op.and]: [{[Op.or]: [{comments: null}, {comments: ""}, {comments: " "}]}, {[Op.or]: [{robottaken: name}, {robottaken: null}]}] }, attributes: ['id', 'search', 'data', 'id_req'], order: [['id', 'ASC']] }).then(data => {
+        if(data != null){
+            rfc_req.update({robottaken: name},{where: { id: data.id }}).then(data2 => {
+                res.status(200).json(data);
+            }).catch(err2 => {
+                res.status(500).json(err2);
+            });
+        }
+        else{
+            return res.status(200).json(null);
+        }
+
+    }).catch(err => {
+        res.status(500).json(err);
     });
 }
