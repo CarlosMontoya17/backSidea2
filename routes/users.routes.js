@@ -38,5 +38,4 @@ module.exports = (app) => {
     app.put("/api/update/services/:id", verifyAuth, controller.updateServices);
     //New Auth
     app.get("/api/user/myData/", auth.verify, controller.getMyProfile);
-
 }

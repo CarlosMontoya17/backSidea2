@@ -195,7 +195,7 @@ exports.getMyInfo = async (req, res) => {
 
 
 exports.getMyProfile = async (req, res) => {
-    const { id } = req.usuarioID;
+    const id  = req.usuarioID;
     const user = await Users.findOne({
         where: { id },
         attributes: ['id', 'username', 'rol', 'servicios', 'status']
