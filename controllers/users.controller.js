@@ -200,9 +200,7 @@ exports.getMyProfile = async (req, res) => {
         where: { id },
         attributes: ['id', 'username', 'rol', 'servicios', 'status']
     });
-    res.json({
-        data: user
-    });
+    res.json(user);
 }
 
 
