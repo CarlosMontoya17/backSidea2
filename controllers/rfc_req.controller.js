@@ -241,7 +241,7 @@ exports.upPdf = async (req, res) => {
 exports.getMyData = async (req, res) => {
     const { id } = req.params;
 
-    await rfc_req.findOne({ where: { id }, attributes: ['id_req'] }).then(data => {
+    await rfc_req.findOne({ where: { id }, attributes: ['id_req', 'createdAt'] }).then(data => {
         res.status(200).json(data);
     }).catch(err => {
         res.status(500).json({ message: 'Internal Error!' });
@@ -352,3 +352,21 @@ exports.getRequest = async (req, res) => {
         res.status(500).json(err);
     });
 }
+
+exports.updatePassword = async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+    await rfc_req.update({password}, {where: {id}}).then(data => {
+            if (data != 0) {
+                return res.status(200).json({ message: 'Updated!' });
+            }
+            else {
+                return res.status(200).json({ message: 'No found!' });
+            }
+    }).catch(err => {
+        res.status(500).json(err);
+    });
+
+}
+
+

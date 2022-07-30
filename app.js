@@ -41,20 +41,16 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(morgan('dev'));
 
-
 // let columnsNames = {
 //   session_id: 'sid',
 //   session_data: 'sess',
 //   expire: 'expires_at'
 // };
-
 // let sessionPg = new pgStore({
 //   pool : dbConfig.pool,                // Connection pool
 //   tableName : 'user_sessions',  // Alternate table name
 //   columns: columnsNames          // Alternate column names
 // })
-
-
 // var pgPool = new pg.Pool({
 //   host: dbConfig.HOST,
 //   database: dbConfig.DB,
@@ -64,8 +60,6 @@ app.use(morgan('dev'));
 //   idleTimeoutMillis: dbConfig.pool.idle,
 //   connectionTimeoutMillis: 2000,
 // });
-
-
 // //Session Config
 // app.use(session({
 //   key: 'AAISessionId',
@@ -78,7 +72,6 @@ app.use(morgan('dev'));
 //   saveUninitialized: false,
 //   cookie: { maxAge:  1000 * 60 * 30 }
 // }));
-
 
 app.get('/', (req, res) => {
     // res.json({
@@ -100,10 +93,7 @@ cron.corte();
 //     cb(null, `${Date.now()}.${ext}`)
 //   }
 // });
-
 // const upload = multer({storage});
-
-
 // app.post('/api/uploadAvatar/', upload.single('avatar'), (req, res) => {
 //     res.status(201).json({
 //       message: 'Image was upload!'
