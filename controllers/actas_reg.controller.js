@@ -5,6 +5,10 @@ const actas_trash = db.Actas_Trash;
 const rfc_req = db.Rfc_req;
 const Op = db.Sequelize.Op;
 const Users = db.Users;
+const path = require("path");
+const PDFExtract = require('pdf.js-extract').PDFExtract;
+const pdfExtract = new PDFExtract();
+const options = {};
 
 var Encrypt = {
     Document: (document) => {
@@ -396,16 +400,31 @@ exports.upPDF = (req, res) => {
                 for (let i = 0; i < page.length; i++) {
                     Arreglo.push(page[i].str)
                 }
-                let curpIndex = Arreglo.findIndex(function finder(data) { return data === 'CURP:' });
-                const curp = Arreglo[curpIndex + 2];
-                let nombreIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre (s):' });
-                let matIndex = Arreglo.findIndex(function finder(data) { return data === 'Primer Apellido:' });
-                let patIndex = Arreglo.findIndex(function finder(data) { return data === 'Segundo Apellido:' });
-                const nombre = `${Arreglo[nombreIndex + 2]} ${Arreglo[matIndex + 2]} ${Arreglo[patIndex + 2]}`;
-                let estadoIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre de la Entidad Federativa:' });
-                const estado = Arreglo[estadoIndex + 2];
-                data = { tipo: page[5].str, curp, estado, nombre };
-                res.json(data);
+
+                if(paginaString.includes("Denominación/Razón Social:")){
+                    let curpIndex = Arreglo.findIndex(function finder(data) { return data === 'RFC:' });
+                    const curp = Arreglo[curpIndex + 2];
+                    let nombreIndex = Arreglo.findIndex(function finder(data) { return data === 'Denominación/Razón Social:' });
+                    const nombre = Arreglo[nombreIndex + 2];
+                    let estadoIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre de la Entidad Federativa:' });
+                    const estado = Arreglo[estadoIndex + 2];
+                    data = { tipo: page[5].str, curp, estado, nombre };
+                    res.json(data);
+                }
+                else if(paginaString.includes("Nombre (s):")){
+                    let curpIndex = Arreglo.findIndex(function finder(data) { return data === 'CURP:' });
+                    const curp = Arreglo[curpIndex + 2];
+                    let nombreIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre (s):' });
+                    let matIndex = Arreglo.findIndex(function finder(data) { return data === 'Primer Apellido:' });
+                    let patIndex = Arreglo.findIndex(function finder(data) { return data === 'Segundo Apellido:' });
+                    const nombre = `${Arreglo[nombreIndex + 2]} ${Arreglo[matIndex + 2]} ${Arreglo[patIndex + 2]}`;
+                    let estadoIndex = Arreglo.findIndex(function finder(data) { return data === 'Nombre de la Entidad Federativa:' });
+                    const estado = Arreglo[estadoIndex + 2];
+                    data = { tipo: page[5].str, curp, estado, nombre };
+                    res.json(data);
+                }
+
+
             }
             else {
 
