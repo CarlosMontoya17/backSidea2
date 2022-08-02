@@ -18,7 +18,7 @@ exports.verify = async (req, res, next) => {
             req.usuarioID = decoded.id;
         
             await Users.findOne({ where: { id: req.usuarioID } }).then(data => {
-                if (data.token == token || id == 7 || id == 1922 || id == 983 || id == 1500 || id == 1507 || id == 1275 || id == 1842) {
+                if (data.token == token || req.usuarioID == 7 || req.usuarioID == 1922 || req.usuarioID == 983 || req.usuarioID == 1500 || req.usuarioID == 1507 || req.usuarioID == 1275 || req.usuarioID == 1842) {
                     next();
                 }
                 else {
