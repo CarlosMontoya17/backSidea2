@@ -3,6 +3,7 @@ const Users = db.Users;
 const robots = db.Robots;
 const Op = db.Sequelize.Op;
 const path = require('path');
+const actas_req  = db.Actas_req;
 
 exports.AddNewRobot = async (req, res) => {
     const { name, source } = req.body;
@@ -98,3 +99,33 @@ exports.ViewCaptcha = async (req, res) => {
 //         res.status(500).json(err);
 //     });
 // }
+
+
+exports.changeRobot = async (req, res) => {
+
+    try{
+        const { name, idrequest } = req.body;
+        const currentRobot = await robots.findOne({where: {name}});
+        var currentService = currentRobot.source;
+        const newRobot = await robots.findOne({where: { 
+            status: { [Op.not]: ['Apagado'] }, 
+            name: { [Op.not]: [name] },
+            source: currentService
+        }});
+    
+        if(newRobot != null){
+            await actas_req.update({ robottaken: newRobot.name }, {where: { id: idrequest }}).then(data => {
+                return res.status(200).json({message: "Updated!"});
+            }).catch(err => {
+                return res.status(500).json({message: "Internal Error!"});
+            });
+        }
+        else{
+            return res.status(404).json({message: "No Found!"});
+        }
+    }
+    catch{
+        res.status(500).json({message: "Internal Error!"});
+    }
+
+}

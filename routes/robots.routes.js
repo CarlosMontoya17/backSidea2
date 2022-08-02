@@ -28,6 +28,7 @@ module.exports = (app, socket) => {
         res.json(emit);
     });
 
+    app.post("/api/robot/changeRobot/", controller.changeRobot);
 
     //Socket Robot Status
     app.post("/api/robots/status/", (req, res, next) => {
