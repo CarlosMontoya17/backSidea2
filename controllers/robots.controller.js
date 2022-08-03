@@ -112,7 +112,6 @@ exports.changeRobot = async (req, res) => {
         switch (typeOfRequest.type) {
             case "CURP":
                 newRobot = await robots.findOne({where: { 
-                    status: { [Op.not]: ['Apagado'] }, 
                     name: { [Op.not]: [name] },
                     source: currentService,
                     system: { [Op.or]: ['SID', 'SIDEA', 'ligaBryan'] }
@@ -120,7 +119,6 @@ exports.changeRobot = async (req, res) => {
                 break;
             case "Cadena Digital":
                 newRobot = await robots.findOne({where: { 
-                    status: { [Op.not]: ['Apagado'] }, 
                     name: { [Op.not]: [name] },
                     source: currentService,
                     system: { [Op.or]: ['SID', 'SIDEA'] }
