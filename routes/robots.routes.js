@@ -4,7 +4,7 @@ const auth = require("../middlewares/auth");
 
 module.exports = (app, socket) => {
     app.post("/api/robots/add/", auth.verify, controller.AddNewRobot);
-    app.get("/api/robots/getAll/", auth.verify);
+    app.get("/api/robots/getAll/", auth.verify, controller.GetAll);
 
 
     //Socket Actas
