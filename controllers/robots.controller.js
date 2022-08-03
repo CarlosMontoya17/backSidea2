@@ -107,12 +107,30 @@ exports.changeRobot = async (req, res) => {
         const { name, idrequest } = req.body;
         const currentRobot = await robots.findOne({where: {name}});
         var currentService = currentRobot.source;
-        const newRobot = await robots.findOne({where: { 
-            status: { [Op.not]: ['Apagado'] }, 
-            name: { [Op.not]: [name] },
-            source: currentService
-        }});
-    
+        var newRobot;
+        const typeOfRequest = await actas_req.findOne({where: {id:idrequest}, attributes: ['type']});
+        switch (typeOfRequest.type) {
+            case "CURP":
+                newRobot = await robots.findOne({where: { 
+                    status: { [Op.not]: ['Apagado'] }, 
+                    name: { [Op.not]: [name] },
+                    source: currentService,
+                    system: { [Op.or]: ['SID', 'SIDEA', 'ligaBryan'] }
+                }, attributes: ['name']});
+                break;
+            case "Cadena Digital":
+                newRobot = await robots.findOne({where: { 
+                    status: { [Op.not]: ['Apagado'] }, 
+                    name: { [Op.not]: [name] },
+                    source: currentService,
+                    system: { [Op.or]: ['SID', 'SIDEA'] }
+                }, attributes: ['name']});
+                break;
+            default:
+                break;
+        }
+
+
         if(newRobot != null){
             await actas_req.update({ robottaken: newRobot.name }, {where: { id: idrequest }}).then(data => {
                 return res.status(200).json({message: "Updated!"});

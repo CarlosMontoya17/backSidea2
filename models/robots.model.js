@@ -25,6 +25,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         updatedAt: {
             type: Sequelize.TIME
+        },
+        system:{
+            type: Sequelize.TEXT
         }
 
     }, {freezeTableName: true});
