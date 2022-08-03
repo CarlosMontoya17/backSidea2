@@ -17,6 +17,14 @@ exports.AddNewRobot = async (req, res) => {
     });
 }
 
+exports.GetAll = async (req, res) => {
+    await robots.findAll({attributes: ['name', 'status', 'source', 'system']}).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {
+        res.status(500).json({message: "Internal Error!"});
+    });
+}
+
 
 exports.NewInstruction = async (req, res) => {
     const { instruction } = req.body;
